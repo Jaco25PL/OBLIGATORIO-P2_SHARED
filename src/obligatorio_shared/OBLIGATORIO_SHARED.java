@@ -4,15 +4,33 @@
  */
 package obligatorio_shared;
 
+// Importaciones necesarias para la configuración de UTF-8
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+
 /**
  *
- * @author 59894
+ * @author 59894 // Reemplazar con tus datos
  */
 public class OBLIGATORIO_SHARED {
-     
+
     public static void main(String[] args) {
 
+        // --- Configuración de UTF-8 para la salida estándar ---
+        // Colocar esto ANTES de cualquier System.out.println
+        try {
+            System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8.name()));
+        } catch (UnsupportedEncodingException e) {
+            // Manejar el (muy improbable) caso de que UTF-8 no sea soportado
+            System.err.println("Error grave: Codificación UTF-8 no soportada. " + e.getMessage());
+            // Considerar salir si la codificación es crucial
+            // System.exit(1);
+        }
+        // -------------------------------------------------------
+
         System.out.println("--- Probando la clase Punto ---");
+        System.out.println("Caracteres de prueba: □ ■ áéíóúñ"); // Prueba para ver si UTF-8 funciona
 
         // 1. Pruebas de creación de Puntos VÁLIDOS
         System.out.println("\nIntentando crear puntos válidos:");
@@ -56,13 +74,12 @@ public class OBLIGATORIO_SHARED {
             System.out.println("OK: Excepción capturada como esperado -> " + e.getMessage());
         }
 
-         try {
+        try {
             Punto pInv4 = new Punto(5, 'C'); // Columna C no válida en fila 5
             System.err.println("ERROR: Se creó un punto inválido! " + pInv4);
         } catch (IllegalArgumentException e) {
             System.out.println("OK: Excepción capturada como esperado -> " + e.getMessage());
         }
-
 
         // 3. Pruebas de equals y hashCode
         System.out.println("\nProbando equals y hashCode:");
@@ -86,7 +103,7 @@ public class OBLIGATORIO_SHARED {
             System.out.println("pA.equals(\"E4\")? " + pA.equals("E4")); // Debería ser false
 
         } catch (IllegalArgumentException e) {
-             System.err.println("ERROR INESPERADO durante pruebas equals/hashCode: " + e.getMessage());
+            System.err.println("ERROR INESPERADO durante pruebas equals/hashCode: " + e.getMessage());
         }
 
         System.out.println("\n--- Fin pruebas Punto ---");
