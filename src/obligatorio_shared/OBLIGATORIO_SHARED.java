@@ -107,5 +107,133 @@ public class OBLIGATORIO_SHARED {
         }
 
         System.out.println("\n--- Fin pruebas Punto ---");
+
+        // ---------------------------
+
+        System.out.println("\n\n--- Probando la clase Jugador ---");
+
+        // 1. Pruebas de creación de Jugadores VÁLIDOS
+        System.out.println("\nIntentando crear jugadores válidos:");
+        Jugador j1 = null, j2 = null, j3 = null; // Declarar fuera para usar en pruebas equals
+        try {
+            j1 = new Jugador("Ana García", "anita88", 35);
+            System.out.println("Creado OK: " + j1); // Usa toString()
+
+            j2 = new Jugador("Luis Pérez", "lucho_p", 22);
+            System.out.println("Creado OK: " + j2);
+
+            j3 = new Jugador("Ana García", "ana_g", 40); // Mismo nombre, diferente username
+            System.out.println("Creado OK: " + j3);
+
+        } catch (Exception e) { // Captura genérica por si acaso
+            System.err.println("ERROR INESPERADO al crear jugador válido: " + e.getMessage());
+        }
+
+        // 2. Pruebas de creación de Jugadores INVÁLIDOS
+        System.out.println("\nIntentando crear jugadores inválidos (se esperan excepciones):");
+        try {
+            Jugador jInv1 = new Jugador(null, "errorUser", 30);
+            System.err.println("ERROR: Se creó jugador con nombre null! " + jInv1);
+        } catch (NullPointerException e) {
+            System.out.println("OK (Nombre null): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Nombre null): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        try {
+            Jugador jInv2 = new Jugador("Nombre Real", null, 30);
+            System.err.println("ERROR: Se creó jugador con username null! " + jInv2);
+        } catch (NullPointerException e) {
+            System.out.println("OK (Username null): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Username null): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        try {
+            Jugador jInv3 = new Jugador("   ", "userVacio", 30); // Nombre vacío después de trim
+            System.err.println("ERROR: Se creó jugador con nombre vacío! " + jInv3);
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK (Nombre vacío): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Nombre vacío): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        try {
+            Jugador jInv4 = new Jugador("Nombre OK", "  ", 30); // Username vacío después de trim
+            System.err.println("ERROR: Se creó jugador con username vacío! " + jInv4);
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK (Username vacío): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Username vacío): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        try {
+            Jugador jInv5 = new Jugador("Nombre OK", "userNeg", -5); // Edad negativa
+            System.err.println("ERROR: Se creó jugador con edad negativa! " + jInv5);
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK (Edad negativa): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Edad negativa): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        // 3. Pruebas de equals y hashCode
+        System.out.println("\nProbando equals y hashCode:");
+        try {
+            // Usamos j1 ("anita88") creado antes
+            Jugador j1Bis = new Jugador("Ana García López", "anita88", 36); // Mismo username, otros datos
+            Jugador j2Copia = new Jugador("Luis Pérez", "lucho_p", 22); // Igual a j2
+            // Usamos j3 ("ana_g") creado antes
+
+            System.out.println("j1:      " + j1 + " (hashCode: " + (j1 != null ? j1.hashCode() : "N/A") + ")");
+            System.out.println("j1Bis:   " + j1Bis + " (hashCode: " + j1Bis.hashCode() + ")");
+            System.out.println("j2:      " + j2 + " (hashCode: " + (j2 != null ? j2.hashCode() : "N/A") + ")");
+            System.out.println("j2Copia: " + j2Copia + " (hashCode: " + j2Copia.hashCode() + ")");
+            System.out.println("j3:      " + j3 + " (hashCode: " + (j3 != null ? j3.hashCode() : "N/A") + ")");
+
+            if (j1 != null) {
+                System.out.println("j1.equals(j1Bis)? " + j1.equals(j1Bis)); // Debería ser true (mismo username)
+                System.out.println("j1.hashCode() == j1Bis.hashCode()? " + (j1.hashCode() == j1Bis.hashCode())); // Debería ser true
+                System.out.println("j1.equals(j2)? " + j1.equals(j2));     // Debería ser false
+                System.out.println("j1.equals(j3)? " + j1.equals(j3));     // Debería ser false
+                System.out.println("j1.equals(null)? " + j1.equals(null));   // Debería ser false
+                System.out.println("j1.equals(\"anita88\")? " + j1.equals("anita88")); // Debería ser false
+            }
+             if (j2 != null) {
+                 System.out.println("j2.equals(j2Copia)? " + j2.equals(j2Copia)); // Debería ser true
+                 System.out.println("j2.hashCode() == j2Copia.hashCode()? " + (j2.hashCode() == j2Copia.hashCode())); // Debería ser true
+             }
+
+        } catch (Exception e) {
+             System.err.println("ERROR INESPERADO durante pruebas equals/hashCode Jugador: " + e.getMessage());
+        }
+
+        // 4. Pruebas de métodos de estadísticas
+        System.out.println("\nProbando métodos de estadísticas:");
+        try {
+            Jugador jStats = new Jugador("Carlos Duty", "cal ड्यूटी", 28); // Usando caracteres no ASCII
+            System.out.println("Estado inicial:      " + jStats);
+
+            jStats.incrementarPartidasGanadas();
+            System.out.println("Después de ganar 1:  " + jStats);
+
+            jStats.incrementarPartidasGanadas();
+            System.out.println("Después de ganar 2:  " + jStats);
+
+            jStats.resetearRachaActual();
+            System.out.println("Después de perder:   " + jStats); // Racha actual a 0, mejor racha se mantiene
+
+            jStats.incrementarPartidasGanadas();
+            System.out.println("Después de ganar 3:  " + jStats); // Racha actual 1
+
+            jStats.incrementarPartidasGanadas();
+            jStats.incrementarPartidasGanadas();
+            System.out.println("Después de ganar 4,5:" + jStats); // Racha actual 3, mejor racha 3
+
+        } catch (Exception e) {
+             System.err.println("ERROR INESPERADO durante pruebas de estadísticas: " + e.getMessage());
+        }
+
+
+        System.out.println("\n--- Fin pruebas Jugador ---");
     }
 }
