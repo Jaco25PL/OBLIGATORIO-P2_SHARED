@@ -106,6 +106,21 @@ public class OBLIGATORIO_SHARED {
             System.err.println("ERROR INESPERADO durante pruebas equals/hashCode: " + e.getMessage());
         }
 
+        // --- Pruebas adicionales de Punto ---
+        Punto pA4 = null, pC4 = null, pD1 = null, pC2 = null, pB3 = null, pD3 = null, pE4 = null; // Puntos para Banda
+        try {
+             pA4 = new Punto(4, 'A'); // Corregido: fila 4, columna A
+             pC4 = new Punto(4, 'C'); // Corregido: fila 4, columna C
+             pD1 = new Punto(1, 'D'); // Corregido: fila 1, columna D
+             pC2 = new Punto(2, 'C'); // Corregido: fila 2, columna C
+             pB3 = new Punto(3, 'B'); // Corregido: fila 3, columna B
+             pD3 = new Punto(3, 'D'); // Corregido: fila 3, columna D
+             pE4 = new Punto(4, 'E'); // Corregido: fila 4, columna E
+             System.out.println("Puntos creados para pruebas Banda: " + pA4 + ", " + pC4 + ", " + pD1 + ", " + pC2 + ", " + pB3 + ", " + pD3 + ", " + pE4);
+        } catch (Exception e) {
+             System.err.println("ERROR creando puntos base para pruebas Banda: " + e.getMessage());
+             return; // Salir si no se pueden crear puntos base
+        }
         System.out.println("\n--- Fin pruebas Punto ---");
 
         // ---------------------------
@@ -233,7 +248,157 @@ public class OBLIGATORIO_SHARED {
              System.err.println("ERROR INESPERADO durante pruebas de estadísticas: " + e.getMessage());
         }
 
-
+        // --- Pruebas adicionales de Jugador ---
+        Jugador jPrueba1 = null, jPrueba2 = null; // Jugadores para Banda
+        try {
+            jPrueba1 = new Jugador("Tester Uno", "test1", 20);
+            jPrueba2 = new Jugador("Tester Dos", "test2", 25);
+            System.out.println("Jugadores creados para pruebas Banda: " + jPrueba1.getUsername() + ", " + jPrueba2.getUsername());
+        } catch (Exception e) {
+            System.err.println("ERROR creando jugadores base para pruebas Banda: " + e.getMessage());
+            return; // Salir si no se pueden crear jugadores base
+        }
         System.out.println("\n--- Fin pruebas Jugador ---");
+
+        // ---------------------------
+
+        // --- Pruebas Banda ---
+        System.out.println("\n\n--- Probando la clase Banda ---");
+
+        // Verificar que los objetos base no sean null antes de usarlos
+        if (pA4 == null || pC4 == null || pD1 == null || pC2 == null || pB3 == null || pD3 == null || pE4 == null || jPrueba1 == null || jPrueba2 == null) {
+             System.err.println("ERROR FATAL: No se pudieron crear los Puntos o Jugadores necesarios para las pruebas de Banda.");
+             return;
+        }
+
+        // 1. Pruebas de creación de Bandas VÁLIDAS
+        System.out.println("\nIntentando crear bandas válidas:");
+        Banda b1 = null, b2 = null, b3 = null, b4 = null;
+        try {
+            // Horizontal
+            b1 = new Banda(pA4, pC4, jPrueba1);
+            System.out.println("Creada OK (Horizontal): " + b1); // Usa toString()
+
+            // Diagonal 1
+            b2 = new Banda(pD1, pC2, jPrueba2);
+            System.out.println("Creada OK (Diagonal 1): " + b2);
+
+            // Diagonal 2 (mismos puntos que b2 pero en orden inverso)
+            b3 = new Banda(pC2, pD1, jPrueba1); // Jugador diferente también
+            System.out.println("Creada OK (Diagonal 2, orden inverso): " + b3);
+
+            // Diagonal 3
+            b4 = new Banda(pC2, pB3, jPrueba1);
+            System.out.println("Creada OK (Diagonal 3): " + b4);
+
+        } catch (Exception e) {
+            System.err.println("ERROR INESPERADO al crear banda válida: " + e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        // 2. Pruebas de creación de Bandas INVÁLIDAS
+        System.out.println("\nIntentando crear bandas inválidas (se esperan excepciones):");
+        try {
+            Banda bInv1 = new Banda(null, pC4, jPrueba1);
+            System.err.println("ERROR: Se creó banda con punto A null! " + bInv1);
+        } catch (NullPointerException e) {
+            System.out.println("OK (Punto A null): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Punto A null): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        try {
+            Banda bInv2 = new Banda(pA4, null, jPrueba1);
+            System.err.println("ERROR: Se creó banda con punto B null! " + bInv2);
+        } catch (NullPointerException e) {
+            System.out.println("OK (Punto B null): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Punto B null): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        try {
+            Banda bInv3 = new Banda(pA4, pC4, null);
+            System.err.println("ERROR: Se creó banda con jugador null! " + bInv3);
+        } catch (NullPointerException e) {
+            System.out.println("OK (Jugador null): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Jugador null): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        try {
+            Banda bInv4 = new Banda(pA4, pA4, jPrueba1); // Puntos iguales
+            System.err.println("ERROR: Se creó banda con puntos iguales! " + bInv4);
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK (Puntos iguales): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Puntos iguales): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        try {
+            Banda bInv5 = new Banda(pA4, pE4, jPrueba1); // Puntos NO adyacentes (A4 a E4)
+            System.err.println("ERROR: Se creó banda con puntos no adyacentes! " + bInv5);
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK (Puntos no adyacentes): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Puntos no adyacentes): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        // 3. Pruebas de equals y hashCode
+        System.out.println("\nProbando equals y hashCode:");
+        try {
+            // Usamos b1, b2, b3, b4 creadas antes
+            Banda b1Copia = new Banda(pA4, pC4, jPrueba2); // Misma banda que b1, diferente jugador
+            Banda b2Copia = new Banda(pD1, pC2, jPrueba1); // Misma banda que b2 y b3, diferente jugador
+
+            System.out.println("b1: " + b1 + " (hashCode: " + (b1 != null ? b1.hashCode() : "N/A") + ")");
+            System.out.println("b2: " + b2 + " (hashCode: " + (b2 != null ? b2.hashCode() : "N/A") + ")");
+            System.out.println("b3: " + b3 + " (hashCode: " + (b3 != null ? b3.hashCode() : "N/A") + ")"); // Mismos puntos que b2, orden inverso
+            System.out.println("b4: " + b4 + " (hashCode: " + (b4 != null ? b4.hashCode() : "N/A") + ")");
+            System.out.println("b1Copia: " + b1Copia + " (hashCode: " + b1Copia.hashCode() + ")"); // Mismos puntos que b1, otro jugador
+            System.out.println("b2Copia: " + b2Copia + " (hashCode: " + b2Copia.hashCode() + ")"); // Mismos puntos que b2/b3, otro jugador
+
+            if (b1 != null && b2 != null && b3 != null && b4 != null) {
+                // Comparaciones clave
+                System.out.println("b1.equals(b1Copia)? " + b1.equals(b1Copia)); // Debería ser true (mismos puntos, ignora jugador)
+                System.out.println("b1.hashCode() == b1Copia.hashCode()? " + (b1.hashCode() == b1Copia.hashCode())); // Debería ser true
+
+                System.out.println("b2.equals(b3)? " + b2.equals(b3)); // Debería ser true (mismos puntos, ignora orden y jugador)
+                System.out.println("b2.hashCode() == b3.hashCode()? " + (b2.hashCode() == b3.hashCode())); // Debería ser true
+
+                System.out.println("b2.equals(b2Copia)? " + b2.equals(b2Copia)); // Debería ser true (mismos puntos, ignora jugador)
+                System.out.println("b2.hashCode() == b2Copia.hashCode()? " + (b2.hashCode() == b2Copia.hashCode())); // Debería ser true
+
+                // Comparaciones de desigualdad
+                System.out.println("b1.equals(b2)? " + b1.equals(b2)); // Debería ser false (diferentes puntos)
+                System.out.println("b1.equals(b4)? " + b1.equals(b4)); // Debería ser false (diferentes puntos)
+                System.out.println("b2.equals(b4)? " + b2.equals(b4)); // Debería ser false (diferentes puntos)
+
+                // Comparaciones con otros tipos
+                System.out.println("b1.equals(null)? " + b1.equals(null));   // Debería ser false
+                System.out.println("b1.equals(pA4)? " + b1.equals(pA4)); // Debería ser false (diferente clase)
+            }
+
+        } catch (Exception e) {
+             System.err.println("ERROR INESPERADO durante pruebas equals/hashCode Banda: " + e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        // 4. Pruebas de Getters
+        System.out.println("\nProbando Getters (usando b1 y b3):");
+        if (b1 != null && b3 != null) {
+            try {
+                System.out.println("b1.getPuntoA(): " + b1.getPuntoA() + " (Esperado: A4)");
+                System.out.println("b1.getPuntoB(): " + b1.getPuntoB() + " (Esperado: C4)");
+                System.out.println("b1.getJugador().getUsername(): " + b1.getJugador().getUsername() + " (Esperado: test1)");
+
+                System.out.println("b3.getPuntoA(): " + b3.getPuntoA() + " (Esperado: C2 - el 'menor')"); // C2 es menor que D1
+                System.out.println("b3.getPuntoB(): " + b3.getPuntoB() + " (Esperado: D1 - el 'mayor')");
+                System.out.println("b3.getJugador().getUsername(): " + b3.getJugador().getUsername() + " (Esperado: test1)");
+            } catch (Exception e) {
+                System.err.println("ERROR INESPERADO durante pruebas de getters: " + e.getClass().getName() + ": " + e.getMessage());
+            }
+        } else {
+            System.out.println("No se pueden probar getters porque b1 o b3 son null.");
+        }
+
+        System.out.println("\n--- Fin pruebas Banda ---");
     }
 }
