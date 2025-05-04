@@ -11,7 +11,7 @@ package obligatorio_shared;
 public class OBLIGATORIO_SHARED {
 
     /**
-     * @param args the command line arguments
+     * buenas prueba commiteado bro 
      */
     public static void main(String[] args) {
         // TODO code application logic here
