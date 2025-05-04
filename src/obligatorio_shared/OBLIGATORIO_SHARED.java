@@ -389,8 +389,9 @@ public class OBLIGATORIO_SHARED {
                 System.out.println("b1.getPuntoB(): " + b1.getPuntoB() + " (Esperado: C4)");
                 System.out.println("b1.getJugador().getUsername(): " + b1.getJugador().getUsername() + " (Esperado: test1)");
 
-                System.out.println("b3.getPuntoA(): " + b3.getPuntoA() + " (Esperado: C2 - el 'menor')"); // C2 es menor que D1
-                System.out.println("b3.getPuntoB(): " + b3.getPuntoB() + " (Esperado: D1 - el 'mayor')");
+                // Corrección en los comentarios "Esperado":
+                System.out.println("b3.getPuntoA(): " + b3.getPuntoA() + " (Esperado: D1 - el 'menor')"); // D1 es menor que C2 (fila 1 vs 2)
+                System.out.println("b3.getPuntoB(): " + b3.getPuntoB() + " (Esperado: C2 - el 'mayor')");
                 System.out.println("b3.getJugador().getUsername(): " + b3.getJugador().getUsername() + " (Esperado: test1)");
             } catch (Exception e) {
                 System.err.println("ERROR INESPERADO durante pruebas de getters: " + e.getClass().getName() + ": " + e.getMessage());
