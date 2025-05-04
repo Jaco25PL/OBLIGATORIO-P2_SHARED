@@ -87,7 +87,7 @@ public class OBLIGATORIO_SHARED {
             Punto pA = new Punto(4, 'E');
             Punto pB = new Punto(4, 'E'); // Igual a pA
             Punto pC = new Punto(4, 'G'); // Diferente a pA y pB
-            Punto pD = new Punto(5, 'E'); // Diferente a pA y pB
+            Punto pD = new Punto(5, 'F'); // Diferente a pA y pB
 
             System.out.println("pA: " + pA + " (hashCode: " + pA.hashCode() + ")");
             System.out.println("pB: " + pB + " (hashCode: " + pB.hashCode() + ")");
