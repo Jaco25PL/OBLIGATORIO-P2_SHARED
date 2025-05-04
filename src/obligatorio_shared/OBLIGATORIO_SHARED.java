@@ -10,11 +10,14 @@ package obligatorio_shared;
  */
 public class OBLIGATORIO_SHARED {
 
-    /**
-     * buenas prueba commiteado bro 
-     */
+    
+    // buenas prueba commiteado bro 
+     
     public static void main(String[] args) {
-        // TODO code application logic here
+        
+        String aber = "Aber si anda";
+        
+        System.out.println(aber);
     }
     
 }
