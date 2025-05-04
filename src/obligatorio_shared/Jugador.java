@@ -147,12 +147,15 @@ public class Jugador {
     // --- toString ---
 
     /**
-     * Devuelve una representación textual del Jugador.
-     * @return Un String con el formato "Username [Nombre] (Edad: X, Victorias: Y)".
+     * Devuelve una representación textual del Jugador, incluyendo sus estadísticas.
+     * @return Un String con el formato "Username [Nombre] (Edad: X, Victorias: Y, Racha Actual: Z, Mejor Racha: W)".
      */
     @Override
     public String toString() {
-        return username + " [" + nombre + "] (Edad: " + edad + ", Victorias: " + partidasGanadas + ")";
+        return username + " [" + nombre + "] (Edad: " + edad
+                + ", Victorias: " + partidasGanadas
+                + ", Racha Actual: " + rachaActualVictorias
+                + ", Mejor Racha: " + mejorRachaVictorias + ")";
     }
 
 }
