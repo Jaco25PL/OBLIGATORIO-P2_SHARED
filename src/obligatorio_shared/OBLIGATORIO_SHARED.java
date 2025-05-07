@@ -401,5 +401,184 @@ public class OBLIGATORIO_SHARED {
         }
 
         System.out.println("\n--- Fin pruebas Banda ---");
+
+        // ---------------------------
+
+        System.out.println("\n\n--- Probando la clase ConfiguracionPartida ---");
+
+        // 1. Prueba del constructor por defecto
+        System.out.println("\n1. Probando constructor por defecto:");
+        try {
+            ConfiguracionPartida configDefault = new ConfiguracionPartida();
+            System.out.println("Creada OK (Default): " + configDefault);
+            // Verificar algunos valores por defecto
+            if (configDefault.isRequiereContacto() == ConfiguracionPartida.DEFAULT_REQUIERE_CONTACTO &&
+                !configDefault.isLargoBandasVariable() && // DEFAULT_LARGO_VARIABLE es false
+                configDefault.getLargoFijo() == ConfiguracionPartida.DEFAULT_LARGO_FIJO &&
+                configDefault.getCantidadBandasFin() == ConfiguracionPartida.DEFAULT_CANTIDAD_BANDAS_FIN &&
+                configDefault.getCantidadTablerosMostrar() == ConfiguracionPartida.DEFAULT_CANTIDAD_TABLEROS) {
+                System.out.println("Valores por defecto verificados OK.");
+            } else {
+                System.err.println("ERROR: Los valores por defecto no coinciden con las constantes.");
+            }
+        } catch (Exception e) {
+            System.err.println("ERROR INESPERADO al crear configuración por defecto: " + e.getMessage());
+        }
+
+        // 2. Prueba del constructor personalizado (valores válidos)
+        System.out.println("\n2. Probando constructor personalizado (valores válidos):");
+        try {
+            ConfiguracionPartida configCustomValida = new ConfiguracionPartida(true, true, 3, 15, 2);
+            System.out.println("Creada OK (Custom Válida): " + configCustomValida);
+            if (configCustomValida.isRequiereContacto() &&
+                configCustomValida.isLargoBandasVariable() &&
+                configCustomValida.getLargoFijo() == 3 && // Aunque largoBandasVariable sea true, largoFijo se guarda
+                configCustomValida.getCantidadBandasFin() == 15 &&
+                configCustomValida.getCantidadTablerosMostrar() == 2) {
+                System.out.println("Valores personalizados verificados OK.");
+            } else {
+                System.err.println("ERROR: Los valores personalizados no se asignaron correctamente.");
+            }
+        } catch (Exception e) {
+            System.err.println("ERROR INESPERADO al crear configuración personalizada válida: " + e.getMessage());
+        }
+
+        // 3. Pruebas del constructor personalizado (valores inválidos)
+        System.out.println("\n3. Probando constructor personalizado (valores inválidos - se esperan excepciones):");
+        // 3.1 Largo fijo inválido (menor)
+        try {
+            ConfiguracionPartida configInvLargo1 = new ConfiguracionPartida(false, false, 0, 10, 1);
+            System.err.println("ERROR: Se creó configuración con largo fijo inválido (0)! " + configInvLargo1);
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK (Largo fijo < MIN): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Largo fijo < MIN): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+        // 3.2 Largo fijo inválido (mayor)
+        try {
+            ConfiguracionPartida configInvLargo2 = new ConfiguracionPartida(false, false, 5, 10, 1);
+            System.err.println("ERROR: Se creó configuración con largo fijo inválido (5)! " + configInvLargo2);
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK (Largo fijo > MAX): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Largo fijo > MAX): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+        // 3.3 Cantidad bandas fin inválida
+        try {
+            ConfiguracionPartida configInvBandas = new ConfiguracionPartida(false, false, 4, 0, 1);
+            System.err.println("ERROR: Se creó configuración con cantidad de bandas fin inválida (0)! " + configInvBandas);
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK (Cantidad bandas < MIN): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Cantidad bandas < MIN): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+        // 3.4 Cantidad tableros mostrar inválida (menor)
+        try {
+            ConfiguracionPartida configInvTableros1 = new ConfiguracionPartida(false, false, 4, 10, 0);
+            System.err.println("ERROR: Se creó configuración con cantidad de tableros inválida (0)! " + configInvTableros1);
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK (Cantidad tableros < MIN): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Cantidad tableros < MIN): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+        // 3.5 Cantidad tableros mostrar inválida (mayor)
+        try {
+            ConfiguracionPartida configInvTableros2 = new ConfiguracionPartida(false, false, 4, 10, 5);
+            System.err.println("ERROR: Se creó configuración con cantidad de tableros inválida (5)! " + configInvTableros2);
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK (Cantidad tableros > MAX): Excepción capturada -> " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR (Cantidad tableros > MAX): Excepción inesperada -> " + e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        // 4. Pruebas de Setters (valores válidos e inválidos)
+        System.out.println("\n4. Probando Setters:");
+        try {
+            ConfiguracionPartida configSetters = new ConfiguracionPartida(); // Empezar con default
+            System.out.println("Antes de setters: " + configSetters);
+
+            configSetters.setRequiereContacto(true);
+            configSetters.setLargoBandasVariable(true);
+            configSetters.setLargoFijo(2); // Válido
+            configSetters.setCantidadBandasFin(20); // Válido
+            configSetters.setCantidadTablerosMostrar(3); // Válido
+            System.out.println("Después de setters válidos: " + configSetters);
+            if (!configSetters.isRequiereContacto() || !configSetters.isLargoBandasVariable() ||
+                configSetters.getLargoFijo() != 2 || configSetters.getCantidadBandasFin() != 20 ||
+                configSetters.getCantidadTablerosMostrar() != 3) {
+                System.err.println("ERROR: Setters válidos no funcionaron como esperado.");
+            }
+
+            System.out.println("Intentando setters inválidos (se esperan excepciones):");
+            try {
+                configSetters.setLargoFijo(0);
+                System.err.println("ERROR: Setter aceptó largo fijo inválido (0)!");
+            } catch (IllegalArgumentException e) {
+                System.out.println("OK (setLargoFijo < MIN): Excepción capturada -> " + e.getMessage());
+            }
+            try {
+                configSetters.setCantidadBandasFin(0);
+                System.err.println("ERROR: Setter aceptó cantidad bandas fin inválida (0)!");
+            } catch (IllegalArgumentException e) {
+                System.out.println("OK (setCantidadBandasFin < MIN): Excepción capturada -> " + e.getMessage());
+            }
+            try {
+                configSetters.setCantidadTablerosMostrar(5);
+                System.err.println("ERROR: Setter aceptó cantidad tableros inválida (5)!");
+            } catch (IllegalArgumentException e) {
+                System.out.println("OK (setCantidadTablerosMostrar > MAX): Excepción capturada -> " + e.getMessage());
+            }
+            System.out.println("Después de intentar setters inválidos: " + configSetters); // Debería mantener valores válidos previos
+
+        } catch (Exception e) {
+            System.err.println("ERROR INESPERADO durante pruebas de setters: " + e.getMessage());
+        }
+
+        // 5. Prueba de resetToDefaults
+        System.out.println("\n5. Probando resetToDefaults:");
+        try {
+            ConfiguracionPartida configParaReset = new ConfiguracionPartida(true, true, 2, 25, 4);
+            System.out.println("Antes de reset: " + configParaReset);
+            configParaReset.resetToDefaults();
+            System.out.println("Después de reset: " + configParaReset);
+
+            if (configParaReset.isRequiereContacto() == ConfiguracionPartida.DEFAULT_REQUIERE_CONTACTO &&
+                !configParaReset.isLargoBandasVariable() &&
+                configParaReset.getLargoFijo() == ConfiguracionPartida.DEFAULT_LARGO_FIJO &&
+                configParaReset.getCantidadBandasFin() == ConfiguracionPartida.DEFAULT_CANTIDAD_BANDAS_FIN &&
+                configParaReset.getCantidadTablerosMostrar() == ConfiguracionPartida.DEFAULT_CANTIDAD_TABLEROS) {
+                System.out.println("resetToDefaults verificado OK.");
+            } else {
+                System.err.println("ERROR: resetToDefaults no restauró los valores por defecto correctamente.");
+                System.err.println("Esperado contacto: " + ConfiguracionPartida.DEFAULT_REQUIERE_CONTACTO + ", Obtenido: " + configParaReset.isRequiereContacto());
+                System.err.println("Esperado largo variable: " + ConfiguracionPartida.DEFAULT_LARGO_VARIABLE + ", Obtenido: " + configParaReset.isLargoBandasVariable());
+                System.err.println("Esperado largo fijo: " + ConfiguracionPartida.DEFAULT_LARGO_FIJO + ", Obtenido: " + configParaReset.getLargoFijo());
+                System.err.println("Esperado cant bandas: " + ConfiguracionPartida.DEFAULT_CANTIDAD_BANDAS_FIN + ", Obtenido: " + configParaReset.getCantidadBandasFin());
+                System.err.println("Esperado cant tableros: " + ConfiguracionPartida.DEFAULT_CANTIDAD_TABLEROS + ", Obtenido: " + configParaReset.getCantidadTablerosMostrar());
+            }
+        } catch (Exception e) {
+            System.err.println("ERROR INESPERADO durante prueba de resetToDefaults: " + e.getMessage());
+        }
+
+        // 6. Prueba de toString con diferentes configuraciones
+        System.out.println("\n6. Probando toString con diferentes configuraciones:");
+        try {
+            ConfiguracionPartida cfg1 = new ConfiguracionPartida(false, false, 4, 10, 1); // Default-like
+            System.out.println("toString cfg1: " + cfg1); // Esperado: Contacto=No, Largo=Fijo (4), Bandas=10, Tableros=1
+
+            ConfiguracionPartida cfg2 = new ConfiguracionPartida(true, true, 2, 12, 3); // Largo variable, contacto sí
+            // Aunque largoFijo es 2, si largoBandasVariable es true, el toString debe mostrar "Variable (1-4)"
+            System.out.println("toString cfg2: " + cfg2); // Esperado: Contacto=Sí, Largo=Variable (1-4), Bandas=12, Tableros=3
+
+            ConfiguracionPartida cfg3 = new ConfiguracionPartida(false, true, 4, 8, 1); // Largo variable, contacto no
+            System.out.println("toString cfg3: " + cfg3); // Esperado: Contacto=No, Largo=Variable (1-4), Bandas=8, Tableros=1
+
+        } catch (Exception e) {
+            System.err.println("ERROR INESPERADO durante pruebas de toString: " + e.getMessage());
+        }
+
+
+        System.out.println("\n--- Fin pruebas ConfiguracionPartida ---");
+
     }
 }
