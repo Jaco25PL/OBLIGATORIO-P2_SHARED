@@ -1,0 +1,36 @@
+# Programación 2 - Sugerencias para verificar en el obligatorio. La lista no es exhaustiva. Los items no son equivalentes.
+
+- **UML clases y atributos**: 
+    - Contiene sólo clases del dominio, con los atributos y notación UML correcta. No debe incluir clase Prueba ni interfaz.
+- **Estilo codificacion y std, comentarios, nombres de autor**: 
+    - Correctos, no repite código
+- **Presentacion general PDF**:
+    - Correcta, único pdf, incluye fotos en carátula, carátula completa.
+- **Mostrar menu con opcion fin**:
+    - Se muestra título con nombre y número de autores.
+    - Se muestra menu. Se puede elegir opciones. Tiene opción de fin.
+- **Registrar jugador**:
+    - Se puede dar alta con nombre (único) y edad.
+- **Configurar partida**:
+    - Poder establecer configuración por defecto.
+    - Poder establecer configuración personalizada válida.
+- **Juego**:
+    - Elegir dos jugadores diferentes. Están ordenados alfabeticamente.
+    - Uso de la configuración elegida.
+    - Manejo de turnos: alterna e informa del turno.
+    - Mostrar tablero con formato, letras y diseño correcto. 
+    - Manejo correcto de cantidad de tableros mostrados en pantalla.
+    - Ingresar jugada, formato correcto (LetraFilaDireccionCantidad) ejemplo D1C3 (se puede omitir largo 4) y cumpliendo requisitos (ej. superposición si corresponde).
+    - Reingreso y validación de jugada incorrecta.
+    - Se realiza jugada y se refleja en el tablero.
+    - Detectar correctamente triángulos formados (sin modificar triángulos ya formados).
+    - Con X se termina la partida y pierde el jugador actual.
+    - Con H se muestra la lista de jugadas realizadas.
+    - Siempre se ve en pantalla la cantidad de triangulos obtenidos por los jugadores.
+    - Detectar final e informar ganador.
+    - Mostrar animación al final.
+- **Ranking**:
+    - Mostrar ranking con datos correctos y ordenados. 
+    - Mostrar racha ganadora más larga.
+- **Excepciones**:
+    - Maneja excepciones en general.
