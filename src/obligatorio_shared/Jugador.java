@@ -101,10 +101,31 @@ public class Jugador {
     }
 
     /**
-     * Reinicia la racha actual de victorias a cero.
-     * Se debe llamar cuando el jugador pierde una partida.
+     * Incrementa la racha actual de victorias del jugador.
+     * Nota: Este método es independiente de incrementarPartidasGanadas.
+     * Si se llama después de incrementarPartidasGanadas, la racha se incrementará dos veces.
      */
-    public void resetearRachaActual() {
+    public void incrementarRachaActual() {
+        this.rachaActualVictorias++;
+    }
+
+    /**
+     * Actualiza la mejor racha de victorias si la racha actual es mayor.
+     * Nota: Este método es independiente de incrementarPartidasGanadas.
+     * Se recomienda que la lógica de actualizar la mejor racha esté contenida
+     * dentro del método que incrementa la racha actual (como en incrementarPartidasGanadas).
+     */
+    public void actualizarRachaMaxima() {
+        if (this.rachaActualVictorias > this.mejorRachaVictorias) {
+            this.mejorRachaVictorias = this.rachaActualVictorias;
+        }
+    }
+
+    /**
+     * Reinicia la racha actual de victorias a cero.
+     * Se debe llamar cuando el jugador pierde una partida o la partida termina en empate.
+     */
+    public void resetRachaActual() { // Renamed from resetearRachaActual
         this.rachaActualVictorias = 0;
     }
 

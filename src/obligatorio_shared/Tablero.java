@@ -214,13 +214,6 @@ public class Tablero {
     }
 
 
-    /**
-     * Genera una representación textual del tablero.
-     * Muestra los puntos, las bandas colocadas y los triángulos ganados.
-     * La representación de bandas y triángulos es simplificada aquí.
-     * Una implementación completa requeriría un manejo más detallado de la grilla.
-     * @return Un String que representa el estado actual del tablero.
-     */
     @Override
     public String toString() {
         // Define las dimensiones de la grilla de visualización.
@@ -319,12 +312,13 @@ public class Tablero {
             
             // Si el jugador es conocido y tiene un símbolo asociado (ej. □ o ■)
             // char simboloTri = (t.getJugadorGanador() != null) ? t.getJugadorGanador().getSimbolo() : 'T';
-            char simboloTri = 'T'; // Placeholder
+            char simboloTri = 'T'; // Placeholder. Debería ser '□' o '■' según ConsignaObligatorio.md y el jugador.
             if (t.getJugadorGanador() != null) {
                  // Aquí se podría tener una lógica para obtener '□' o '■'
-                 // basado en el jugador. Por ahora, usamos el alias o un genérico.
-                 // String alias = t.getJugadorGanador().getUsername(); // Suponiendo que Jugador tiene getUsername()
-                 // simboloTri = alias.isEmpty() ? 'T' : alias.charAt(0);
+                 // basado en el jugador. Por ejemplo, si Jugador tiene un método getSimboloTriangulo().
+                 // String alias = t.getJugadorGanador().getUsername(); 
+                 // simboloTri = alias.isEmpty() ? 'T' : alias.charAt(0); // Ejemplo simple
+                 // O mejor: simboloTri = t.getJugadorGanador().getSimboloTriangulo();
             }
 
 
@@ -359,8 +353,11 @@ public class Tablero {
                     Punto pico = null;
                     if(r1 != r2 && r1 != r3) pico = p1;
                     else if (r2 != r1 && r2 != r3) pico = p2;
-                    else pico = p3;
+                    else pico = p3; // p3 es el pico si r1==r2, o si r1,r2,r3 son distintos (no debería pasar para triángulo válido)
                     if (pico != null) {
+                        // Asegurarse de que el pico es el correcto si los tres puntos están en filas distintas (no es un triángulo elemental)
+                        // Esta lógica de "pico" puede necesitar revisión para casos más complejos de triángulos.
+                        // Para triángulos elementales (dos en una fila, uno en la adyacente), esta heurística es más simple.
                         displayGrid[pico.getFila()-1][(pico.getColumna()-'A')*2] = simboloTri; // Sobrescribe el '*' del punto
                     }
                 }
@@ -368,18 +365,25 @@ public class Tablero {
         }
 
 
-        // 5. Construir el String final con encabezados de columna y números de fila.
+        // 5. Construir el String final con encabezados de columna.
         StringBuilder sb = new StringBuilder();
-        sb.append("      A B C D E F G H I J K L M\n"); // Encabezado de columnas
-        sb.append("    +---------------------------+\n");
+        // Encabezado de columnas (sin espacios iniciales extra, la indentación del tablero la da la grilla)
+        sb.append("A B C D E F G H I J K L M\n"); 
+        sb.append("\n"); // Primera línea vacía después del encabezado
+        sb.append("\n"); // Segunda línea vacía después del encabezado
+
         for (int i = 0; i < numFilas; i++) {
-            sb.append(String.format("  %d | ", i + 1)); // Número de fila
+            // Imprimir la fila de la grilla tal como está (contiene los espacios para la forma de diamante)
             for (int j = 0; j < anchoDisplay; j++) {
                 sb.append(displayGrid[i][j]);
             }
-            sb.append(" |\n");
+            sb.append("\n"); // Termina la línea de la grilla
+
+            if (i < numFilas - 1) { // Si no es la última fila de la grilla
+                sb.append("\n"); // Agregar una línea vacía entre las filas de la grilla
+            }
         }
-        sb.append("    +---------------------------+\n");
+        // No hay borde inferior
 
         return sb.toString();
     }
