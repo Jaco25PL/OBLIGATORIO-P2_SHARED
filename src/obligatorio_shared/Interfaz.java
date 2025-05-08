@@ -242,7 +242,6 @@ public class Interfaz {
 
         System.out.println("Jugadores disponibles (ordenados alfabéticamente por username):");
         ArrayList<Jugador> jugadoresOrdenados = new ArrayList<>(jugadoresRegistrados);
-        // Ordenar por username, ignorando mayúsculas/minúsculas
         Collections.sort(jugadoresOrdenados, Comparator.comparing(Jugador::getUsername, String.CASE_INSENSITIVE_ORDER));
 
         for (int i = 0; i < jugadoresOrdenados.size(); i++) {
@@ -294,37 +293,123 @@ public class Interfaz {
         System.out.println("Usando configuración: " + configuracionActual);
         System.out.println("\n¡Que comience el juego!");
 
-        // --- Placeholder para la lógica de la Partida ---
-        System.out.println("\n(Aquí se instanciaría la clase Partida y comenzaría el bucle de juego)");
-        System.out.println("(Se mostraría el tablero, se pedirían jugadas, se alternarían turnos, etc.)");
-        System.out.println("Ejemplo de interacción (a implementar con la clase Partida):");
-        System.out.println("  - Mostrar tablero (usando Tablero.toString())");
-        System.out.println("  - Indicar turno: " + jugadorBlanco.getUsername());
-        System.out.println("  - Pedir jugada: LetraFilaDireccionCantidad (ej: D1C3), H para historial, X para abandonar");
-        System.out.println("  - Validar y procesar jugada...");
-        System.out.println("  - Detectar triángulos, actualizar puntajes...");
-        System.out.println("  - Verificar fin de partida...");
-        System.out.println("  - Mostrar animación si hay ganador...");
-        // --- Fin Placeholder ---
+        // Crear una instancia del tablero para la partida
+        Tablero tablero = new Tablero();
+        // Aquí se podría instanciar la Partida y pasarle los jugadores, config y tablero
+        // Partida partida = new Partida(jugadorBlanco, jugadorNegro, configuracionActual, tablero);
+        // partida.iniciar(); // Método hipotético en Partida
 
-        // Simulación de fin de partida para probar estadísticas (eliminar cuando Partida esté lista)
-        // System.out.println("\nSimulando fin de partida...");
-        // System.out.print("¿Quién ganó? (1 para " + jugadorBlanco.getUsername() + ", 2 para " + jugadorNegro.getUsername() + ", 0 para empate): ");
-        // String ganadorSimulado = scanner.nextLine();
-        // if (ganadorSimulado.equals("1")) {
-        //     jugadorBlanco.incrementarPartidasGanadas();
-        //     jugadorNegro.resetearRachaActual();
-        //     System.out.println(jugadorBlanco.getUsername() + " gana la partida simulada.");
-        // } else if (ganadorSimulado.equals("2")) {
-        //     jugadorNegro.incrementarPartidasGanadas();
-        //     jugadorBlanco.resetearRachaActual();
-        //     System.out.println(jugadorNegro.getUsername() + " gana la partida simulada.");
+        // --- Inicio del bucle de juego (simplificado) ---
+        boolean partidaTerminada = false;
+        Jugador jugadorActual = jugadorBlanco;
+        int movimientos = 0;
+        // Suponiendo que la partida termina después de X bandas o por abandono
+        // int bandasParaTerminar = configuracionActual.getCantidadBandasFin(); 
+
+        while (!partidaTerminada) {
+            System.out.println("\n--- Tablero Actual ---");
+            System.out.println(tablero.toString()); // Mostrar el tablero
+
+            // Mostrar información de la partida (puntos, etc.)
+            // System.out.println(jugadorBlanco.getUsername() + " (Blancas): " + tablero.getTriangulosGanadosPor(jugadorBlanco).size() + " triángulos.");
+            // System.out.println(jugadorNegro.getUsername() + " (Negras): " + tablero.getTriangulosGanadosPor(jugadorNegro).size() + " triángulos.");
+            // System.out.println("Bandas colocadas: " + tablero.getBandas().size() + "/" + bandasParaTerminar);
+
+
+            System.out.println("\nTurno de: " + jugadorActual.getUsername() + (jugadorActual == jugadorBlanco ? " (Blancas)" : " (Negras)"));
+            System.out.print("Ingrese su jugada (ej: D1C3 para banda, H para historial, X para abandonar): ");
+            String entrada = scanner.nextLine().trim().toUpperCase();
+
+            if (entrada.equals("X")) {
+                System.out.println(jugadorActual.getUsername() + " ha abandonado la partida.");
+                // Aquí se determinaría el ganador (el otro jugador)
+                // jugadorActual.resetearRachaActual(); // El que abandona pierde racha
+                // Jugador ganador = (jugadorActual == jugadorBlanco) ? jugadorNegro : jugadorBlanco;
+                // ganador.incrementarPartidasGanadas();
+                // System.out.println(ganador.getUsername() + " gana la partida por abandono.");
+                partidaTerminada = true;
+                continue;
+            } else if (entrada.equals("H")) {
+                System.out.println("Historial de jugadas (funcionalidad no implementada en esta simulación).");
+                // Aquí se mostraría el historial de la partida.
+                continue; // No cuenta como turno
+            }
+
+            // --- Lógica de procesar jugada (Placeholder) ---
+            // 1. Parsear la entrada (ej: "D1C3") para obtener puntos y dirección/largo.
+            // 2. Validar la jugada:
+            //    - Puntos existen en el tablero.
+            //    - Puntos son adyacentes (si es banda de largo 1) o válidos para la dirección/largo.
+            //    - La banda no se superpone con otra existente.
+            //    - Cumple con la regla de contacto (si aplica).
+            // 3. Si la jugada es válida:
+            //    - Crear el objeto Banda.
+            //    - tablero.addBanda(nuevaBanda);
+            //    - Incrementar contador de bandas del jugador.
+            //    - Detectar nuevos triángulos:
+            //        - List<Triangulo> nuevosTriangulos = detectarTriangulos(nuevaBanda, tablero);
+            //        - For (Triangulo t : nuevosTriangulos) { tablero.addTrianguloGanado(t); t.setJugadorGanador(jugadorActual); }
+            // 4. Si la jugada es inválida, mostrar mensaje y el jugador intenta de nuevo.
+
+            System.out.println("Procesando jugada '" + entrada + "'... (lógica de jugada no implementada)");
+            // Simulación de una banda colocada para ver cambios (eliminar/reemplazar con lógica real)
+            if (movimientos == 0 && tablero.getPunto('D',1) != null && tablero.getPunto('C',2) != null) {
+                try {
+                    Banda bandaSimulada = new Banda(tablero.getPunto('D',1), tablero.getPunto('C',2), jugadorActual);
+                    tablero.addBanda(bandaSimulada);
+                    System.out.println("Banda simulada D1-C2 colocada.");
+                } catch (Exception e) { System.out.println("Error al simular banda: " + e.getMessage());}
+            } else if (movimientos == 1 && tablero.getPunto('F',1) != null && tablero.getPunto('E',2) != null) {
+                 try {
+                    Banda bandaSimulada2 = new Banda(tablero.getPunto('F',1), tablero.getPunto('E',2), jugadorActual);
+                    tablero.addBanda(bandaSimulada2);
+                    System.out.println("Banda simulada F1-E2 colocada.");
+                } catch (Exception e) { System.out.println("Error al simular banda: " + e.getMessage());}
+            }
+
+
+            movimientos++;
+
+            // --- Verificar condiciones de fin de partida ---
+            // if (tablero.getBandas().size() >= bandasParaTerminar) {
+            //     System.out.println("Se ha alcanzado el límite de bandas.");
+            //     partidaTerminada = true;
+            //     // Determinar ganador por puntos (triángulos)
+            // }
+            // Otra condición podría ser que no queden movimientos válidos.
+
+            if (movimientos >= 5) { // Simulación de fin de partida después de algunos turnos
+                System.out.println("\nSimulación de partida terminada después de " + movimientos + " movimientos.");
+                // Aquí se calcularía el ganador real basado en triángulos.
+                // Por ahora, solo terminamos.
+                partidaTerminada = true;
+            }
+
+            if (!partidaTerminada) {
+                // Alternar turno
+                jugadorActual = (jugadorActual == jugadorBlanco) ? jugadorNegro : jugadorBlanco;
+            }
+        }
+        // --- Fin del bucle de juego ---
+
+        System.out.println("\n--- Fin de la Partida ---");
+        System.out.println(tablero.toString()); // Mostrar tablero final
+
+        // Actualizar estadísticas de jugadores (esto debería hacerse en la clase Partida o aquí si no hay Partida)
+        // Ejemplo:
+        // Jugador ganador = determinarGanador(tablero, jugadorBlanco, jugadorNegro);
+        // if (ganador != null) {
+        //     ganador.incrementarPartidasGanadas();
+        //     Jugador perdedor = (ganador == jugadorBlanco) ? jugadorNegro : jugadorBlanco;
+        //     perdedor.resetearRachaActual();
+        //     System.out.println("¡El ganador es " + ganador.getUsername() + "!");
+        //     // Aquí iría la animación
         // } else {
+        //     System.out.println("¡La partida es un empate!");
         //     jugadorBlanco.resetearRachaActual();
         //     jugadorNegro.resetearRachaActual();
-        //     System.out.println("Partida simulada termina en empate.");
         // }
-        // System.out.println("Funcionalidad de juego real aún no implementada.");
+        System.out.println("La lógica completa de juego y determinación de ganador aún no está implementada.");
     }
 
     private void mostrarRanking() {
