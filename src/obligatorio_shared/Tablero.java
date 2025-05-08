@@ -2,7 +2,7 @@ package obligatorio_shared;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collections; // Para devolver copias inmodificables si es necesario
+// import java.util.Collections; // Para devolver copias inmodificables si es necesario
 
 public class Tablero {
 
@@ -302,10 +302,10 @@ public class Tablero {
             // Heurística simple: tomar el promedio de coordenadas (aproximado para el display)
             // y usar el caracter del jugador (o 'T' genérico).
             // Esta es una heurística muy básica y puede necesitar refinamiento.
-            int avgFila = (p1.getFila() + p2.getFila() + p3.getFila()) / 3;
-            int avgColChar = (p1.getColumna() + p2.getColumna() + p3.getColumna()) / 3; // Promedio de ASCII
+            // int avgFila = (p1.getFila() + p2.getFila() + p3.getFila()) / 3;
+            // int avgColChar = (p1.getColumna() + p2.getColumna() + p3.getColumna()) / 3; // Promedio de ASCII
             
-            int displayFilaTri = p1.getFila() - 1;
+            // int displayFilaTri = p1.getFila() - 1;
             // La columna del display para el triángulo es más compleja.
             // Intentaremos colocarlo en un espacio "vacío" cercano al centroide.
             // Por simplicidad, si D1,F1,E2 -> centro en (Fila 1, Col E)
@@ -314,8 +314,8 @@ public class Tablero {
             // Este es un placeholder, la lógica real puede ser más compleja.
             // Por ahora, marcaremos el primer punto del triángulo con 'T' si no hay banda.
             
-            int triDisplayFila = p1.getFila() - 1;
-            int triDisplayCol = (p1.getColumna() - 'A') * 2;
+            // int triDisplayFila = p1.getFila() - 1;
+            // int triDisplayCol = (p1.getColumna() - 'A') * 2;
             
             // Si el jugador es conocido y tiene un símbolo asociado (ej. □ o ■)
             // char simboloTri = (t.getJugadorGanador() != null) ? t.getJugadorGanador().getSimbolo() : 'T';
