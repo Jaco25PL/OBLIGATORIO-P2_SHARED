@@ -88,36 +88,28 @@ public class Interfaz {
     private void registrarNuevoJugador() {
         System.out.println("\n--- REGISTRO DE NUEVO JUGADOR ---");
         String nombre;
-        String username;
         int edad = -1;
 
         while (true) {
-            System.out.print("Ingrese el nombre del jugador: ");
+            System.out.print("Ingrese el nombre del jugador (único): ");
             nombre = scanner.nextLine().trim();
-            if (!nombre.isEmpty()) {
-                break;
-            }
-            System.out.println("El nombre no puede estar vacío.");
-        }
-
-        while (true) {
-            System.out.print("Ingrese el username del jugador (único): ");
-            username = scanner.nextLine().trim();
-            if (username.isEmpty()) {
-                System.out.println("El username no puede estar vacío.");
+            if (nombre.isEmpty()) {
+                System.out.println("El nombre no puede estar vacío.");
                 continue;
             }
-            boolean usernameExiste = false;
+
+            boolean nombreExiste = false;
             for (Jugador j : jugadoresRegistrados) {
-                if (j.getUsername().equalsIgnoreCase(username)) { // Compara ignorando mayúsculas/minúsculas
-                    usernameExiste = true;
+                if (j.getNombre().equalsIgnoreCase(nombre)) { // Compara ignorando mayúsculas/minúsculas
+                    nombreExiste = true;
                     break;
                 }
             }
-            if (!usernameExiste) {
-                break;
+
+            if (!nombreExiste) {
+                break; // Nombre válido y no existente
             }
-            System.out.println("El username '" + username + "' ya existe. Por favor, elija otro.");
+            System.out.println("El nombre '" + nombre + "' ya existe. Por favor, elija otro.");
         }
 
         while (true) {
@@ -136,9 +128,9 @@ public class Interfaz {
         }
 
         try {
-            Jugador nuevoJugador = new Jugador(nombre, username, edad);
+            Jugador nuevoJugador = new Jugador(nombre, edad);
             jugadoresRegistrados.add(nuevoJugador);
-            System.out.println("Jugador '" + nuevoJugador.getUsername() + "' registrado exitosamente.");
+            System.out.println("Jugador '" + nuevoJugador.getNombre() + "' registrado exitosamente.");
         } catch (IllegalArgumentException | NullPointerException e) {
             System.err.println("Error al crear el jugador: " + e.getMessage());
         }
@@ -240,12 +232,12 @@ public class Interfaz {
             return;
         }
 
-        System.out.println("Jugadores disponibles (ordenados alfabéticamente por username):");
+        System.out.println("Jugadores disponibles (ordenados alfabéticamente por nombre):");
         ArrayList<Jugador> jugadoresOrdenados = new ArrayList<>(jugadoresRegistrados);
-        Collections.sort(jugadoresOrdenados, Comparator.comparing(Jugador::getUsername, String.CASE_INSENSITIVE_ORDER));
+        Collections.sort(jugadoresOrdenados, Comparator.comparing(Jugador::getNombre, String.CASE_INSENSITIVE_ORDER));
 
         for (int i = 0; i < jugadoresOrdenados.size(); i++) {
-            System.out.println((i + 1) + ". " + jugadoresOrdenados.get(i).getUsername() + " (" + jugadoresOrdenados.get(i).getNombre() + ")");
+            System.out.println((i + 1) + ". " + jugadoresOrdenados.get(i).getNombre());
         }
 
         Jugador jugadorBlanco = null;
@@ -288,8 +280,8 @@ public class Interfaz {
             }
         }
 
-        System.out.println("\nJugador Blanco: " + jugadorBlanco.getUsername());
-        System.out.println("Jugador Negro: " + jugadorNegro.getUsername());
+        System.out.println("\nJugador Blanco: " + jugadorBlanco.getNombre());
+        System.out.println("Jugador Negro: " + jugadorNegro.getNombre());
         System.out.println("Usando configuración: " + configuracionActual);
         System.out.println("\n¡Que comience el juego!");
 
@@ -311,22 +303,22 @@ public class Interfaz {
             System.out.println(tablero.toString()); // Mostrar el tablero
 
             // Mostrar información de la partida (puntos, etc.)
-            // System.out.println(jugadorBlanco.getUsername() + " (Blancas): " + tablero.getTriangulosGanadosPor(jugadorBlanco).size() + " triángulos.");
-            // System.out.println(jugadorNegro.getUsername() + " (Negras): " + tablero.getTriangulosGanadosPor(jugadorNegro).size() + " triángulos.");
+            // System.out.println(jugadorBlanco.getNombre() + " (Blancas): " + tablero.getTriangulosGanadosPor(jugadorBlanco).size() + " triángulos.");
+            // System.out.println(jugadorNegro.getNombre() + " (Negras): " + tablero.getTriangulosGanadosPor(jugadorNegro).size() + " triángulos.");
             // System.out.println("Bandas colocadas: " + tablero.getBandas().size() + "/" + bandasParaTerminar);
 
 
-            System.out.println("\nTurno de: " + jugadorActual.getUsername() + (jugadorActual == jugadorBlanco ? " (Blancas)" : " (Negras)"));
+            System.out.println("\nTurno de: " + jugadorActual.getNombre() + (jugadorActual == jugadorBlanco ? " (Blancas)" : " (Negras)"));
             System.out.print("Ingrese su jugada (ej: D1C3 para banda, H para historial, X para abandonar): ");
             String entrada = scanner.nextLine().trim().toUpperCase();
 
             if (entrada.equals("X")) {
-                System.out.println(jugadorActual.getUsername() + " ha abandonado la partida.");
+                System.out.println(jugadorActual.getNombre() + " ha abandonado la partida.");
                 // Aquí se determinaría el ganador (el otro jugador)
                 // jugadorActual.resetearRachaActual(); // El que abandona pierde racha
                 // Jugador ganador = (jugadorActual == jugadorBlanco) ? jugadorNegro : jugadorBlanco;
                 // ganador.incrementarPartidasGanadas();
-                // System.out.println(ganador.getUsername() + " gana la partida por abandono.");
+                // System.out.println(ganador.getNombre() + " gana la partida por abandono.");
                 partidaTerminada = true;
                 continue;
             } else if (entrada.equals("H")) {
@@ -402,7 +394,7 @@ public class Interfaz {
         //     ganador.incrementarPartidasGanadas();
         //     Jugador perdedor = (ganador == jugadorBlanco) ? jugadorNegro : jugadorBlanco;
         //     perdedor.resetearRachaActual();
-        //     System.out.println("¡El ganador es " + ganador.getUsername() + "!");
+        //     System.out.println("¡El ganador es " + ganador.getNombre() + "!");
         //     // Aquí iría la animación
         // } else {
         //     System.out.println("¡La partida es un empate!");
@@ -420,7 +412,7 @@ public class Interfaz {
         }
 
         ArrayList<Jugador> ranking = new ArrayList<>(jugadoresRegistrados);
-        // Ordenar por partidas ganadas (descendente), luego por username (ascendente) como criterio secundario
+        // Ordenar por partidas ganadas (descendente), luego por nombre (ascendente) como criterio secundario
         Collections.sort(ranking, new Comparator<Jugador>() {
             @Override
             public int compare(Jugador j1, Jugador j2) {
@@ -428,24 +420,23 @@ public class Interfaz {
                 if (comparacionGanadas != 0) {
                     return comparacionGanadas;
                 }
-                return j1.getUsername().compareToIgnoreCase(j2.getUsername());
+                return j1.getNombre().compareToIgnoreCase(j2.getNombre());
             }
         });
 
-        System.out.println("Pos. | Username         | Nombre              | Edad | Ganadas | Racha Act. | Mejor Racha");
-        System.out.println("---------------------------------------------------------------------------------------");
+        System.out.println("Pos. | Nombre            | Edad | Ganadas | Racha Act. | Mejor Racha");
+        System.out.println("---------------------------------------------------------------");
         for (int i = 0; i < ranking.size(); i++) {
             Jugador j = ranking.get(i);
-            System.out.printf("%-4d | %-16s | %-19s | %-4d | %-7d | %-10d | %-11d\n",
+            System.out.printf("%-4d | %-16s | %-4d | %-7d | %-10d | %-11d\n",
                     (i + 1),
-                    j.getUsername(),
                     j.getNombre(),
                     j.getEdad(),
                     j.getPartidasGanadas(),
                     j.getRachaActualVictorias(),
                     j.getMejorRachaVictorias());
         }
-        System.out.println("---------------------------------------------------------------------------------------");
+        System.out.println("---------------------------------------------------------------");
 
         int rachaMasLarga = 0;
         for (Jugador j : jugadoresRegistrados) {
@@ -459,7 +450,7 @@ public class Interfaz {
             List<String> jugadoresConMejorRacha = new ArrayList<>();
             for (Jugador j : jugadoresRegistrados) {
                 if (j.getMejorRachaVictorias() == rachaMasLarga) {
-                    jugadoresConMejorRacha.add(j.getUsername());
+                    jugadoresConMejorRacha.add(j.getNombre());
                 }
             }
             System.out.println(String.join(", ", jugadoresConMejorRacha));

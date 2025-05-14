@@ -135,7 +135,7 @@ public class Triangulo {
     public String toString() {
         String ganadorStr;
         if (jugadorGanador != null) {
-            ganadorStr = "ganado por [" + jugadorGanador.getUsername() + "]";
+            ganadorStr = "ganado por [" + jugadorGanador.getNombre() + "]";
         } else {
             ganadorStr = "(No ganado)";
         }

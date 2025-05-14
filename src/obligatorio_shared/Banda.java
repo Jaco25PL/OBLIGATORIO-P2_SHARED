@@ -163,6 +163,6 @@ public class Banda {
     @Override
     public String toString() {
         // El constructor asegura que jugador no es null
-        return "Banda [A: " + puntoA + ", B: " + puntoB + ", Jugador: " + jugador.getUsername() + "]";
+        return "Banda [A: " + puntoA + ", B: " + puntoB + ", Jugador: " + jugador.getNombre() + "]";
     }
 }

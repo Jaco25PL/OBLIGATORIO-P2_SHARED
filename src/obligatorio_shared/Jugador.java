@@ -8,13 +8,12 @@ package obligatorio_shared;
 
 /**
  * Representa a un jugador registrado en el sistema.
- * Cada jugador tiene un nombre, un username único, edad y estadísticas de juego.
- * El nombre, username y edad se consideran inmutables una vez creado el jugador.
+ * Cada jugador tiene un nombre único y edad y estadísticas de juego.
+ * El nombre y edad se consideran inmutables una vez creado el jugador.
  */
 public class Jugador {
 
-    private final String nombre;
-    private final String username; // Identificador único
+    private final String nombre; // Identificador único
     private final int edad;
 
     private int partidasGanadas;
@@ -24,26 +23,19 @@ public class Jugador {
     /**
      * Constructor para crear un nuevo Jugador.
      *
-     * @param nombre El nombre real del jugador (no nulo, no vacío).
-     * @param username El nombre de usuario único para el jugador (no nulo, no vacío).
+     * @param nombre El nombre real del jugador (no nulo, no vacío, único).
      * @param edad La edad del jugador (debe ser mayor o igual a 0).
-     * @throws NullPointerException si nombre o username son nulos.
-     * @throws IllegalArgumentException si nombre o username están vacíos, o si la edad es negativa.
+     * @throws NullPointerException si nombre es nulo.
+     * @throws IllegalArgumentException si nombre está vacío, o si la edad es negativa.
      */
-    public Jugador(String nombre, String username, int edad) {
+    public Jugador(String nombre, int edad) {
         // Validación de entradas (forma tradicional)
         if (nombre == null) {
             throw new NullPointerException("El nombre no puede ser nulo.");
         }
-        if (username == null) {
-            throw new NullPointerException("El username no puede ser nulo.");
-        }
         // Validación de no vacíos (después de saber que no son nulos)
         if (nombre.trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío.");
-        }
-        if (username.trim().isEmpty()) {
-             throw new IllegalArgumentException("El username no puede estar vacío."); // Corregido
         }
         if (edad < 0) {
             throw new IllegalArgumentException("La edad no puede ser negativa.");
@@ -51,7 +43,6 @@ public class Jugador {
 
         // Asignación a atributos finales
         this.nombre = nombre;
-        this.username = username;
         this.edad = edad;
 
         // Inicializa contadores
@@ -64,10 +55,6 @@ public class Jugador {
 
     public String getNombre() {
         return nombre;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public int getEdad() {
@@ -129,51 +116,42 @@ public class Jugador {
         this.rachaActualVictorias = 0;
     }
 
-    // --- equals y hashCode (Basados en el username) ---
+    // --- equals y hashCode (Basados en el nombre) ---
 
     /**
      * Compara este Jugador con otro objeto para ver si son lógicamente iguales.
-     * Dos jugadores son iguales si tienen el mismo username (sensible a mayúsculas/minúsculas).
+     * Dos jugadores son iguales si tienen el mismo nombre (sensible a mayúsculas/minúsculas).
      * @param o El objeto a comparar.
      * @return true si son iguales, false en caso contrario.
      */
     @Override
     public boolean equals(Object o) {
-        boolean sonIguales = false;
-        if (this == o) {
-            sonIguales = true;
-        } else if (o != null && this.getClass() == o.getClass()) {
-            Jugador otroJugador = (Jugador) o;
-            // La igualdad se basa únicamente en el username
-            if (this.username != null) {
-                 sonIguales = this.username.equals(otroJugador.username);
-            } else {
-                 sonIguales = (otroJugador.username == null);
-            }
-        }
-        return sonIguales;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Jugador jugador = (Jugador) o;
+        return nombre.equals(jugador.nombre);
     }
 
     /**
-     * Genera un código hash para el Jugador, basado únicamente en su username.
+     * Genera un código hash para el Jugador, basado únicamente en su nombre.
      * Es consistente con equals(): jugadores iguales tendrán el mismo hashCode.
      * @return El código hash entero.
      */
     @Override
     public int hashCode() {
-        // Si username es null, el hash es 0. Si no, usa el hash del String.
-        return (username == null) ? 0 : username.hashCode();
+        // Si nombre es null, el hash es 0. Si no, usa el hash del String.
+        return (nombre == null) ? 0 : nombre.hashCode();
     }
 
     // --- toString ---
 
     /**
      * Devuelve una representación textual del Jugador, incluyendo sus estadísticas.
-     * @return Un String con el formato "Username [Nombre] (Edad: X, Victorias: Y, Racha Actual: Z, Mejor Racha: W)".
+     * @return Un String con el formato "[Nombre] (Edad: X, Victorias: Y, Racha Actual: Z, Mejor Racha: W)".
      */
     @Override
     public String toString() {
-        return username + " [" + nombre + "] (Edad: " + edad
+        return nombre + " (Edad: " + edad
                 + ", Victorias: " + partidasGanadas
                 + ", Racha Actual: " + rachaActualVictorias
                 + ", Mejor Racha: " + mejorRachaVictorias + ")";
