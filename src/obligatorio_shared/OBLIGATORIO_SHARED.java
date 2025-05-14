@@ -17,7 +17,6 @@ public class OBLIGATORIO_SHARED {
         } catch (UnsupportedEncodingException e) {
             System.err.println("Error grave: Codificación UTF-8 no soportada. " + e.getMessage());
         }
-        // -------------------------------------------------------
 
         // --- Inicio de la aplicación a través de la Interfaz ---
         Interfaz interfazDeUsuario = new Interfaz();
