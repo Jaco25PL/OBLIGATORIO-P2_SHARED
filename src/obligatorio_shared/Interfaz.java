@@ -232,56 +232,15 @@ public class Interfaz {
             return;
         }
 
-        System.out.println("Jugadores disponibles (ordenados alfabéticamente por nombre):");
         ArrayList<Jugador> jugadoresOrdenados = new ArrayList<>(jugadoresRegistrados);
         Collections.sort(jugadoresOrdenados, Comparator.comparing(Jugador::getNombre, String.CASE_INSENSITIVE_ORDER));
 
-        for (int i = 0; i < jugadoresOrdenados.size(); i++) {
-            System.out.println((i + 1) + ". " + jugadoresOrdenados.get(i).getNombre());
-        }
+        // Asignar automáticamente los dos primeros jugadores de la lista ordenada.
+        Jugador jugadorBlanco = jugadoresOrdenados.get(0);
+        Jugador jugadorNegro = jugadoresOrdenados.get(1);
 
-        Jugador jugadorBlanco = null;
-        Jugador jugadorNegro = null;
-        int indiceJ1 = -1;
-
-        while (jugadorBlanco == null) {
-            System.out.print("Seleccione el número del Jugador 1 (Blancas): ");
-            try {
-                indiceJ1 = scanner.nextInt() - 1;
-                scanner.nextLine();
-                if (indiceJ1 >= 0 && indiceJ1 < jugadoresOrdenados.size()) {
-                    jugadorBlanco = jugadoresOrdenados.get(indiceJ1);
-                } else {
-                    System.out.println("Número de jugador inválido.");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Entrada inválida. Ingrese un número.");
-                scanner.nextLine();
-            }
-        }
-
-        while (jugadorNegro == null) {
-            System.out.print("Seleccione el número del Jugador 2 (Negras): ");
-            try {
-                int indiceJ2 = scanner.nextInt() - 1;
-                scanner.nextLine();
-                if (indiceJ2 >= 0 && indiceJ2 < jugadoresOrdenados.size()) {
-                    if (indiceJ2 == indiceJ1) {
-                        System.out.println("Los jugadores deben ser diferentes.");
-                    } else {
-                        jugadorNegro = jugadoresOrdenados.get(indiceJ2);
-                    }
-                } else {
-                    System.out.println("Número de jugador inválido.");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Entrada inválida. Ingrese un número.");
-                scanner.nextLine();
-            }
-        }
-
-        System.out.println("\nJugador Blanco: " + jugadorBlanco.getNombre());
-        System.out.println("Jugador Negro: " + jugadorNegro.getNombre());
+        System.out.println("Jugador Blanco □: " + jugadorBlanco.getNombre());
+        System.out.println("Jugador Negro ■: " + jugadorNegro.getNombre());
         System.out.println("Usando configuración: " + configuracionActual);
         System.out.println("\n¡Que comience el juego!");
 
