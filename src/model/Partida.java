@@ -148,15 +148,6 @@ public class Partida {
             segmentosColocadosEstaJugada.add(nuevoSegmento);
             this.bandasColocadasEnPartida++;
 
-            
-            
-            
-            
-            
-            
-            
-            
-            
             int nuevosTriangulos = simularDeteccionTriangulos(nuevoSegmento); 
             if (turnoActual.equals(jugadorBlanco)) {
                 triangulosJugadorBlanco += nuevosTriangulos;
