@@ -84,6 +84,11 @@ public class Partida {
         return jugadorAbandono;
     }
 
+    // Getter para bandasColocadasEnPartida
+    public int getBandasColocadasEnPartida() {
+        return bandasColocadasEnPartida;
+    }
+
     // procesa la jugada ingresada.
     public boolean procesarJugada(String inputJugada) {
         if (partidaTerminada) {
@@ -146,7 +151,6 @@ public class Partida {
 
             tablero.addBanda(nuevoSegmento);
             segmentosColocadosEstaJugada.add(nuevoSegmento);
-            this.bandasColocadasEnPartida++;
 
             
             
@@ -168,6 +172,9 @@ public class Partida {
             puntoActual = puntoSiguiente; 
         }
         
+        // Incrementar el contador de bandas colocadas en la partida DESPUÉS de que todos los segmentos de la banda actual se hayan colocado exitosamente.
+        this.bandasColocadasEnPartida++;
+
         historialJugadas.add(inputJugada); 
         movimientosRealizados++;
 
