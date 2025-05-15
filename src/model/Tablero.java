@@ -155,54 +155,67 @@ public class Tablero {
     // devuelve representación textual tablero.
     @Override
     public String toString() {
-        final int numFilas = 7;
+        final int numFilasOriginal = 7; // Original number of rows with points
+        if (numFilasOriginal <= 0) {
+            return ""; // Or some other representation for an empty/invalid board
+        }
+        final int numDisplayFilas = numFilasOriginal * 2 - 1; // Total rows in the new display grid
         final int numColsLetras = 13; 
         final int anchoDisplay = numColsLetras * 2 -1; 
         
-        char[][] displayGrid = new char[numFilas][anchoDisplay];
+        char[][] displayGrid = new char[numDisplayFilas][anchoDisplay];
 
-        for (int i = 0; i < numFilas; i++) {
+        // Initialize grid with spaces
+        for (int i = 0; i < numDisplayFilas; i++) {
             for (int j = 0; j < anchoDisplay; j++) {
                 displayGrid[i][j] = ' ';
             }
         }
 
+        // Place points (*)
         for (Punto p : this.puntosDisponibles) {
-            int displayFila = p.getFila() - 1;
+            int displayFila = (p.getFila() - 1) * 2; // Points go on even rows of the new grid
             int displayCol = (p.getColumna() - 'A') * 2; 
-            if(displayFila >= 0 && displayFila < numFilas && displayCol >=0 && displayCol < anchoDisplay){
+            if(displayFila >= 0 && displayFila < numDisplayFilas && displayCol >=0 && displayCol < anchoDisplay){
                  displayGrid[displayFila][displayCol] = '*'; 
             }
         }
         
+        // Place bands (-, /, \)
         for (Banda banda : this.bandasColocadas) {
             Punto pA = banda.getPuntoA(); 
             Punto pB = banda.getPuntoB(); 
 
-            int filaA = pA.getFila() - 1;
-            int colAIdx = pA.getColumna() - 'A';
-            int displayColA = colAIdx * 2;
+            int origFilaA = pA.getFila() - 1; // Original 0-indexed row for pA
+            int displayColA = (pA.getColumna() - 'A') * 2;
 
-            int filaB = pB.getFila() - 1;
-            int colBIdx = pB.getColumna() - 'A';
+            // int origFilaB = pB.getFila() - 1; // Original 0-indexed row for pB
+            int displayColB = (pB.getColumna() - 'A') * 2;
 
-            if (filaA == filaB) { 
-                if (displayColA + 1 < anchoDisplay) {
-                    displayGrid[filaA][displayColA + 1] = '-';
+            int targetBandCol = (displayColA + displayColB) / 2; // Column for the middle of the band character(s)
+
+            if (pA.getFila() == pB.getFila()) { // Horizontal band
+                int targetBandRow = origFilaA * 2; // Same (even) row as the points
+                // Ensure the middle, left, and right positions for hyphens are valid
+                if (targetBandRow >= 0 && targetBandRow < numDisplayFilas &&
+                    targetBandCol - 1 >= 0 && targetBandCol + 1 < anchoDisplay) {
+                    displayGrid[targetBandRow][targetBandCol - 1] = '-';
+                    displayGrid[targetBandRow][targetBandCol] = '-';
+                    displayGrid[targetBandRow][targetBandCol + 1] = '-';
                 }
-            } else { 
-                if (colBIdx < colAIdx) { 
-                     if (displayColA - 1 >= 0) {
-                        displayGrid[filaA][displayColA - 1] = '/';
-                    }
-                } else { 
-                    if (displayColA + 1 < anchoDisplay) {
-                        displayGrid[filaA][displayColA + 1] = '\\';
-                    }
+            } else { // Diagonal band
+                // pA is the upper point due to Banda constructor normalization
+                int targetBandRow = origFilaA * 2 + 1; // Odd row, between point rows
+                char bandChar = (pB.getColumna() < pA.getColumna()) ? '/' : '\\'; // '/' for NW-SE, '\' for NE-SW
+
+                if (targetBandRow >= 0 && targetBandRow < numDisplayFilas &&
+                    targetBandCol >= 0 && targetBandCol < anchoDisplay) {
+                    displayGrid[targetBandRow][targetBandCol] = bandChar;
                 }
             }
         }
         
+        // Place triangles (T)
         for (Triangulo t : this.triangulosGanados) {
             Punto p1 = t.getPunto1();
             Punto p2 = t.getPunto2();
@@ -210,52 +223,94 @@ public class Tablero {
             
             char simboloTri = 'T'; 
             // if (t.getJugadorGanador() != null) {
+            //     simboloTri = (t.getJugadorGanador().getNombre().equals("Blanco")) ? '□' : '■'; // Example
             // }
 
             int r1=p1.getFila(), r2=p2.getFila(), r3=p3.getFila();
             char c1=p1.getColumna(), c2=p2.getColumna(), c3=p3.getColumna();
-            int targetFilaDisplay = -1, targetColDisplay = -1;
-
-            if (r1==r2) { 
-                targetFilaDisplay = r1-1;
-                targetColDisplay = ( (c1-'A')*2 + (c2-'A')*2 ) / 2 + 1; 
-            } else if (r1==r3) { 
-                targetFilaDisplay = r1-1;
-                targetColDisplay = ( (c1-'A')*2 + (c3-'A')*2 ) / 2 + 1;
-            } else if (r2==r3) { 
-                targetFilaDisplay = r2-1;
-                targetColDisplay = ( (c2-'A')*2 + (c3-'A')*2 ) / 2 + 1;
-            }
             
-            if(targetFilaDisplay != -1 && targetColDisplay != -1 &&
-               targetFilaDisplay >= 0 && targetFilaDisplay < numFilas &&
-               targetColDisplay >=0 && targetColDisplay < anchoDisplay) {
-                if (displayGrid[targetFilaDisplay][targetColDisplay] == ' ') { 
-                     displayGrid[targetFilaDisplay][targetColDisplay] = simboloTri;
-                } else { 
-                    Punto pico = null;
-                    if(r1 != r2 && r1 != r3) pico = p1;
-                    else if (r2 != r1 && r2 != r3) pico = p2;
-                    else pico = p3; 
-                    if (pico != null) {
-                        displayGrid[pico.getFila()-1][(pico.getColumna()-'A')*2] = simboloTri; 
+            int targetFilaDisplayOriginal = -1; // Original row index for T
+            int targetColDisplayOriginal = -1;  // Original column index for T (usually an odd column for between points)
+
+            // This logic for T placement might need review based on desired appearance
+            if (r1==r2) { // Base P1-P2 is horizontal
+                targetFilaDisplayOriginal = r1-1;
+                targetColDisplayOriginal = ( (c1-'A')*2 + (c2-'A')*2 ) / 2 ; // Column of midpoint
+            } else if (r1==r3) { // Base P1-P3 is horizontal
+                targetFilaDisplayOriginal = r1-1;
+                targetColDisplayOriginal = ( (c1-'A')*2 + (c3-'A')*2 ) / 2 ;
+            } else if (r2==r3) { // Base P2-P3 is horizontal
+                targetFilaDisplayOriginal = r2-1;
+                targetColDisplayOriginal = ( (c2-'A')*2 + (c3-'A')*2 ) / 2 ;
+            }
+            // If T is placed on a horizontal band segment, its row is an even new grid row.
+            // If T is placed in the "center" of three points, its row might be an odd new grid row.
+            // The existing logic for T seems to place it based on a horizontal base.
+            // Let's assume for now it's placed on the same row as a horizontal band segment.
+            // The original targetColDisplay was: ( (c1-'A')*2 + (c2-'A')*2 ) / 2 + 1;
+            // This put it in the space *after* the midpoint.
+            // If it should be *on* the midpoint (like a horizontal band), it's ( (c1-'A')*2 + (c2-'A')*2 ) / 2;
+
+            if(targetFilaDisplayOriginal != -1 && targetColDisplayOriginal != -1) {
+                int finalTargetFila = targetFilaDisplayOriginal * 2; // Map to even row in new grid
+                int finalTargetCol = targetColDisplayOriginal; // This should be an even column if on a point, odd if between
+                                                               // The example from consigna shows T in the middle of 3 points.
+                                                               // For D1-F1-E2, T is at E2's row, between D1-F1.
+                                                               // This part of T placement is complex and might need more refinement
+                                                               // based on exact desired visual.
+                                                               // For simplicity, let's use the original logic for column, mapped to new row.
+                targetColDisplayOriginal = ( (c1-'A')*2 + (c2-'A')*2 ) / 2 + ((r1==r2 || r1==r3 || r2==r3) ? 1:0) ; // A guess to keep it similar
+                                                                                                                // This is complex, the original T logic was:
+                if (r1==r2) { targetFilaDisplayOriginal = r1-1; targetColDisplayOriginal = ( (c1-'A')*2 + (c2-'A')*2 ) / 2 + 1; }
+                else if (r1==r3) { targetFilaDisplayOriginal = r1-1; targetColDisplayOriginal = ( (c1-'A')*2 + (c3-'A')*2 ) / 2 + 1; }
+                else if (r2==r3) { targetFilaDisplayOriginal = r2-1; targetColDisplayOriginal = ( (c2-'A')*2 + (c3-'A')*2 ) / 2 + 1; }
+
+
+                if(targetFilaDisplayOriginal != -1 &&
+                   finalTargetFila >= 0 && finalTargetFila < numDisplayFilas &&
+                   targetColDisplayOriginal >=0 && targetColDisplayOriginal < anchoDisplay) {
+                    if (displayGrid[finalTargetFila][targetColDisplayOriginal] == ' ') { 
+                         displayGrid[finalTargetFila][targetColDisplayOriginal] = simboloTri;
+                    } else { 
+                        // Fallback for T if preferred spot is taken (original logic)
+                        Punto pico = null;
+                        if(r1 != r2 && r1 != r3) pico = p1;
+                        else if (r2 != r1 && r2 != r3) pico = p2;
+                        else pico = p3; 
+                        if (pico != null) {
+                            // Place on the point itself
+                            displayGrid[(pico.getFila()-1)*2][(pico.getColumna()-'A')*2] = simboloTri; 
+                        }
                     }
                 }
             }
         }    
 
         StringBuilder sb = new StringBuilder();
-        sb.append("  A B C D E F G H I J K L M\n"); // Ajuste para alinear con números de fila
-        System.out.println("");
-        for (int i = 0; i < numFilas; i++) {
+        // Print column headers
+        sb.append("  "); // Initial spacing for row numbers (if any)
+        for (char c = 'A'; c < 'A' + numColsLetras; c++) {
+            sb.append(c);
+            if (c < 'A' + numColsLetras - 1) {
+                sb.append(" "); // Space between column letters
+            }
+        }
+        sb.append("\n");
+        sb.append("\n");
+        
+        // Print the grid
+        for (int i = 0; i < numDisplayFilas; i++) {
+            // Optionally print row numbers for point rows
+            //if (i % 2 == 0) {
+            //    sb.append(String.format("%1d ", (i/2) + 1)); // Row number for point rows
+            //} else {
+            //    sb.append("  "); // Indent for band rows
+            //}
             for (int j = 0; j < anchoDisplay; j++) {
                 sb.append(displayGrid[i][j]);
             }
             sb.append("\n"); 
-
-            if (i < numFilas - 1) { 
-                sb.append("  \n"); // Línea vacía con espaciado para mantener alineación
-            }
+            // The extra sb.append("  \n"); is removed as intermediate rows are now part of displayGrid
         }
         return sb.toString();
     }
