@@ -248,7 +248,6 @@ public class Tablero {
         sb.append("  A B C D E F G H I J K L M\n"); // Ajuste para alinear con números de fila
         
         for (int i = 0; i < numFilas; i++) {
-            sb.append(String.format("%1d ", i + 1)); // Número de fila
             for (int j = 0; j < anchoDisplay; j++) {
                 sb.append(displayGrid[i][j]);
             }

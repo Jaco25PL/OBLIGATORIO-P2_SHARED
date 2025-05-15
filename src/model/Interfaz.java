@@ -313,8 +313,10 @@ public class Interfaz {
             System.out.println("Bandas colocadas: " + bandasColocadas + "/" + configuracionActual.getCantidadBandasFin());
             
             System.out.println("Turno de: " + partidaActual.getTurnoActual().getNombre() + 
-                               (partidaActual.getTurnoActual().equals(jugadorBlanco) ? " (Blanco □)" : " (Negro ■)"));
-            System.out.print("Ingrese su jugada (ej: D1C3 para banda, H para historial, X para abandonar): ");
+            (partidaActual.getTurnoActual().equals(jugadorBlanco) ? " (Blanco □)" : " (Negro ■)"));
+            
+            String ejemploCantidadStr = Integer.toString(configuracionActual.getLargoFijo());
+            System.out.print("Ingrese su jugada (ej: D1C" + ejemploCantidadStr + " para banda, H para historial, X para abandonar): ");
             String entrada = scanner.nextLine().trim(); 
 
             partidaActual.procesarJugada(entrada);
