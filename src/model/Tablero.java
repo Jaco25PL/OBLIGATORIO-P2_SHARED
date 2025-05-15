@@ -192,13 +192,16 @@ public class Tablero {
             // int origFilaB = pB.getFila() - 1; // Original 0-indexed row for pB
             int displayColB = (pB.getColumna() - 'A') * 2;
 
-            int targetBandCol = (displayColA + displayColB) / 2; // Column for the band character
+            int targetBandCol = (displayColA + displayColB) / 2; // Column for the middle of the band character(s)
 
             if (pA.getFila() == pB.getFila()) { // Horizontal band
                 int targetBandRow = origFilaA * 2; // Same (even) row as the points
+                // Ensure the middle, left, and right positions for hyphens are valid
                 if (targetBandRow >= 0 && targetBandRow < numDisplayFilas &&
-                    targetBandCol >= 0 && targetBandCol < anchoDisplay) {
+                    targetBandCol - 1 >= 0 && targetBandCol + 1 < anchoDisplay) {
+                    displayGrid[targetBandRow][targetBandCol - 1] = '-';
                     displayGrid[targetBandRow][targetBandCol] = '-';
+                    displayGrid[targetBandRow][targetBandCol + 1] = '-';
                 }
             } else { // Diagonal band
                 // pA is the upper point due to Banda constructor normalization
@@ -292,6 +295,7 @@ public class Tablero {
                 sb.append(" "); // Space between column letters
             }
         }
+        sb.append("\n");
         sb.append("\n");
         
         // Print the grid
