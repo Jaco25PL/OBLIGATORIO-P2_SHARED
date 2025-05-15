@@ -309,16 +309,12 @@ public class Interfaz {
             System.out.println(jugadorBlanco.getNombre() + " (Blancas □): " + partidaActual.getTriangulosJugadorBlanco() + " triángulos.");
             System.out.println(jugadorNegro.getNombre() + " (Negras ■): " + partidaActual.getTriangulosJugadorNegro() + " triángulos.");
             
-            int bandasColocadas = 0;
-            if (partidaActual.getTablero() != null && partidaActual.getTablero().getBandas() != null) {
-                bandasColocadas = partidaActual.getTablero().getBandas().size();
-            }
+            int bandasColocadas = partidaActual.getBandasColocadasEnPartida(); // Use the new getter
             System.out.println("Bandas colocadas: " + bandasColocadas + "/" + configuracionActual.getCantidadBandasFin());
-
-            String ejemploCantidadStr = Integer.toString(configuracionActual.getLargoFijo());
-            Jugador turnoDe = partidaActual.getTurnoActual();
-            System.out.println("\nTurno de: " + turnoDe.getNombre() + (turnoDe.equals(jugadorBlanco) ? " (Blancas □)" : " (Negras ■)"));
-            System.out.print("Ingrese su jugada (ej: D1C" + ejemploCantidadStr + " para banda, H para historial, X para abandonar): ");
+            
+            System.out.println("Turno de: " + partidaActual.getTurnoActual().getNombre() + 
+                               (partidaActual.getTurnoActual().equals(jugadorBlanco) ? " (Blanco □)" : " (Negro ■)"));
+            System.out.print("Ingrese su jugada (ej: D1C3 para banda, H para historial, X para abandonar): ");
             String entrada = scanner.nextLine().trim(); 
 
             partidaActual.procesarJugada(entrada);
