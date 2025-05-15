@@ -4,10 +4,10 @@
 
 package model;
 
-import model.Jugador;
-import model.Direccion;
-import model.ConfiguracionPartida;
-import model.Banda;
+// import model.Jugador;
+// import model.Direccion;
+// import model.ConfiguracionPartida;
+// import model.Banda;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -257,10 +257,6 @@ public class Partida {
             }
         } else { 
             if (jugada.getLargo() != configuracion.getLargoFijo()) {
-                
-                
-                
-                
                  System.out.println("Largo de banda debe ser fijo de " + configuracion.getLargoFijo() + ", se intentó " + jugada.getLargo());
                  return false;
             }

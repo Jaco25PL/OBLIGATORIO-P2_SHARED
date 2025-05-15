@@ -4,8 +4,8 @@
 
  package model;
 
-import model.Punto;
-import model.Jugador;
+// import model.Punto;
+// import model.Jugador;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
