@@ -152,7 +152,7 @@ public class Partida {
             tablero.addBanda(nuevoSegmento);
             segmentosColocadosEstaJugada.add(nuevoSegmento);
 
-            int nuevosTriangulos = simularDeteccionTriangulos(nuevoSegmento); 
+            int nuevosTriangulos = detectarNuevosTriangulosConBanda(nuevoSegmento); // Changed method name here
             if (turnoActual.equals(jugadorBlanco)) {
                 triangulosJugadorBlanco += nuevosTriangulos;
             } else {
@@ -179,10 +179,10 @@ public class Partida {
         return true; 
     }
 
-    // simula detección de triángulos.
-    private int simularDeteccionTriangulos(Banda banda) {
-        
-        
+    // Renamed from simularDeteccionTriangulos for clarity
+    private int detectarNuevosTriangulosConBanda(Banda nuevaBanda) {
+        int nuevosTriangulosFormados = 0;
+        Punto p1 = nuevaBanda.getPuntoA();
         return 0; 
     }
 
