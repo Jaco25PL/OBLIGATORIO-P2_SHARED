@@ -1,5 +1,10 @@
-package obligatorio_shared;
+/*
+ * Autores: [Matías Piedra 354007], [Joaquin Piedra ######] // Reemplazar con datos reales
+ */
 
+package model;
+
+import model.ConfiguracionPartida;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,15 +17,17 @@ public class Interfaz {
     private Scanner scanner;
     private ArrayList<Jugador> jugadoresRegistrados;
     private ConfiguracionPartida configuracionActual;
-    private Partida partidaActual; // Añadir para mantener la partida en curso
+    private Partida partidaActual; 
 
+    // constructor de la interfaz.
     public Interfaz() {
         this.scanner = new Scanner(System.in);
         this.jugadoresRegistrados = new ArrayList<>();
         this.configuracionActual = new ConfiguracionPartida();
-        this.partidaActual = null; // Inicializar a null
+        this.partidaActual = null; 
     }
 
+    // inicia la aplicación.
     public void iniciarAplicacion() {
         mostrarTitulo();
         boolean salir = false;
@@ -54,13 +61,15 @@ public class Interfaz {
         scanner.close();
     }
 
+    // muestra el título.
     private void mostrarTitulo() {
         System.out.println("***************************************************");
         System.out.println("**        TRABAJO DESARROLLADO POR:            **");
-        System.out.println("**  [Matías Piedra 354007], [Joaquin Piedra]   **"); // Reemplazar con datos reales
+        System.out.println("**  [Matías Piedra 354007], [Joaquin Piedra]   **"); 
         System.out.println("***************************************************");
     }
 
+    // muestra el menú principal.
     private void mostrarMenuPrincipal() {
         System.out.println("\n--- MENÚ PRINCIPAL ---");
         System.out.println("1. Registrar un jugador");
@@ -71,19 +80,21 @@ public class Interfaz {
         System.out.print("Seleccione una opción: ");
     }
 
+    // lee opción del menú.
     private int leerOpcionMenu() {
         int opcion = -1;
         try {
             opcion = scanner.nextInt();
         } catch (InputMismatchException e) {
             System.out.println("Entrada inválida. Por favor, ingrese un número.");
-            // No se consume el newline aquí, se hará en el finally para cubrir todos los casos
+            
         } finally {
-            scanner.nextLine(); // Consumir el newline restante o la entrada incorrecta
+            scanner.nextLine(); 
         }
         return opcion;
     }
 
+    // registra un nuevo jugador.
     private void registrarNuevoJugador() {
         System.out.println("\n--- REGISTRO DE NUEVO JUGADOR ---");
         String nombre;
@@ -99,14 +110,14 @@ public class Interfaz {
 
             boolean nombreExiste = false;
             for (Jugador j : jugadoresRegistrados) {
-                if (j.getNombre().equalsIgnoreCase(nombre)) { // Compara ignorando mayúsculas/minúsculas
+                if (j.getNombre().equalsIgnoreCase(nombre)) { 
                     nombreExiste = true;
                     break;
                 }
             }
 
             if (!nombreExiste) {
-                break; // Nombre válido y no existente
+                break; 
             }
             System.out.println("El nombre '" + nombre + "' ya existe. Por favor, elija otro.");
         }
@@ -115,14 +126,14 @@ public class Interfaz {
             System.out.print("Ingrese la edad del jugador: ");
             try {
                 edad = scanner.nextInt();
-                scanner.nextLine(); // Consumir newline
+                scanner.nextLine(); 
                 if (edad >= 0) {
                     break;
                 }
                 System.out.println("La edad no puede ser negativa.");
             } catch (InputMismatchException e) {
                 System.out.println("Entrada inválida para la edad. Por favor, ingrese un número.");
-                scanner.nextLine(); // Consumir la entrada incorrecta
+                scanner.nextLine(); 
             }
         }
 
@@ -135,6 +146,7 @@ public class Interfaz {
         }
     }
 
+    // configura la partida.
     private void configurarPartida() {
         System.out.println("\n--- CONFIGURACIÓN DE PARTIDA ---");
         System.out.println("Configuración actual: " + configuracionActual);
@@ -156,7 +168,7 @@ public class Interfaz {
         System.out.println("Configuración personalizada:");
         boolean tempRequiereContacto;
         boolean tempLargoVariable;
-        int tempLargoFijo = configuracionActual.getLargoFijo(); // Valor por si no se cambia
+        int tempLargoFijo = configuracionActual.getLargoFijo(); 
         int tempCantBandasFin;
         int tempCantTableros;
 
@@ -172,7 +184,7 @@ public class Interfaz {
                 try {
                     tempLargoFijo = scanner.nextInt();
                     scanner.nextLine();
-                    // La validación se hará al crear el objeto ConfiguracionPartida
+                    
                     break;
                 } catch (InputMismatchException e) {
                     System.out.println("Entrada inválida. Ingrese un número.");
@@ -206,7 +218,7 @@ public class Interfaz {
         }
 
         try {
-            // Se crea una nueva instancia para validar. Si es válida, se asigna.
+            
             ConfiguracionPartida nuevaConfig = new ConfiguracionPartida(
                 tempRequiereContacto,
                 tempLargoVariable,
@@ -223,6 +235,7 @@ public class Interfaz {
         }
     }
 
+    // inicia y juega partida.
     private void jugarPartida() {
         System.out.println("\n--- COMIENZO DE PARTIDA ---");
 
@@ -246,7 +259,7 @@ public class Interfaz {
             System.out.print("Seleccione el número del primer jugador (será Blanco □): ");
             try {
                 indiceJ1 = scanner.nextInt() - 1;
-                scanner.nextLine(); // Consumir newline
+                scanner.nextLine(); 
                 if (indiceJ1 >= 0 && indiceJ1 < jugadoresOrdenados.size()) {
                     jugador1 = jugadoresOrdenados.get(indiceJ1);
                 } else {
@@ -262,7 +275,7 @@ public class Interfaz {
             System.out.print("Seleccione el número del segundo jugador (será Negro ■): ");
             try {
                 indiceJ2 = scanner.nextInt() - 1;
-                scanner.nextLine(); // Consumir newline
+                scanner.nextLine(); 
                 if (indiceJ2 >= 0 && indiceJ2 < jugadoresOrdenados.size()) {
                     if (indiceJ2 == indiceJ1) {
                         System.out.println("Los jugadores deben ser diferentes.");
@@ -295,7 +308,7 @@ public class Interfaz {
 
             System.out.println(jugadorBlanco.getNombre() + " (Blancas □): " + partidaActual.getTriangulosJugadorBlanco() + " triángulos.");
             System.out.println(jugadorNegro.getNombre() + " (Negras ■): " + partidaActual.getTriangulosJugadorNegro() + " triángulos.");
-            // Mostrar bandas colocadas vs total para fin
+            
             int bandasColocadas = 0;
             if (partidaActual.getTablero() != null && partidaActual.getTablero().getBandas() != null) {
                 bandasColocadas = partidaActual.getTablero().getBandas().size();
@@ -309,7 +322,7 @@ public class Interfaz {
             String entrada = scanner.nextLine().trim(); 
 
             partidaActual.procesarJugada(entrada);
-            // La lógica de cambio de turno, fin de partida, etc., se maneja dentro de Partida.procesarJugada()
+            
         }
         
         System.out.println("\n--- Fin de la Partida ---");
@@ -324,16 +337,17 @@ public class Interfaz {
             Jugador ganador = partidaActual.getGanador();
             if (ganador != null) {
                 System.out.println("¡El ganador es " + ganador.getNombre() + "!");
-                // Aquí se podría llamar a la animación de fuegos artificiales
-                // mostrarAnimacionFuegosArtificiales(); 
+                
+                
             } else if (partidaActual.getJugadorAbandono() == null && partidaActual.isPartidaTerminada()) { 
-                // Solo es empate si terminó y no hubo abandono ni ganador
+                
                 System.out.println("¡La partida es un empate!");
             }
         }
         partidaActual = null; 
     }
 
+    // muestra el ranking.
     private void mostrarRanking() {
         System.out.println("\n--- RANKING DE JUGADORES ---");
         if (jugadoresRegistrados.isEmpty()) {
@@ -342,7 +356,7 @@ public class Interfaz {
         }
 
         ArrayList<Jugador> ranking = new ArrayList<>(jugadoresRegistrados);
-        // Ordenar por partidas ganadas (descendente), luego por nombre (ascendente) como criterio secundario
+        
         Collections.sort(ranking, new Comparator<Jugador>() {
             @Override
             public int compare(Jugador j1, Jugador j2) {
@@ -389,12 +403,14 @@ public class Interfaz {
         }
     }
 
+    // termina el programa.
     private void terminarPrograma() {
         System.out.println("\nGracias por jugar a Triángulos. ¡Hasta pronto!");
     }
 
+    // espera enter para continuar.
     private void presioneEnterParaContinuar() {
         System.out.print("\nPresione Enter para continuar...");
-        scanner.nextLine(); // Espera a que el usuario presione Enter
+        scanner.nextLine(); 
     }
 }

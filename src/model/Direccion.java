@@ -1,9 +1,9 @@
-package obligatorio_shared;
-
-/**
- * Representa las 6 direcciones posibles para una banda.
- * Q (Noroeste), E (Noreste), D (Este), C (Sureste), Z (Suroeste), A (Oeste).
+/*
+ * Autores: [Matías Piedra 354007], [Joaquin Piedra ######] // Reemplazar con datos reales
  */
+
+package model;
+
 public enum Direccion {
     NOROESTE('Q'), // Fila-1, Col-1
     NORESTE('E'),  // Fila-1, Col+1
@@ -22,6 +22,7 @@ public enum Direccion {
         return codigo;
     }
 
+    // obtiene dirección desde carácter
     public static Direccion fromChar(char c) {
         char upperC = Character.toUpperCase(c);
         for (Direccion dir : values()) {
@@ -29,6 +30,6 @@ public enum Direccion {
                 return dir;
             }
         }
-        return null; // O lanzar IllegalArgumentException
+        return null; 
     }
 }
