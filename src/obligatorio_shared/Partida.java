@@ -10,7 +10,7 @@ public class Partida {
     private Tablero tablero;
     private ConfiguracionPartida configuracion;
     private Jugador turnoActual;
-    private int bandasColocadasEnPartida; // Contador de bandas totales en la partida
+    private int contadorBandasJugadas; // Renombrado y lógica de incremento cambiada
     private int triangulosJugadorBlanco;
     private int triangulosJugadorNegro;
     private List<String> historialJugadas;
@@ -25,7 +25,7 @@ public class Partida {
         this.configuracion = configuracion;
         this.tablero = new Tablero(); // Cada partida tiene su propio tablero
         this.turnoActual = jugadorBlanco; // Por defecto, el jugador Blanco comienza
-        this.bandasColocadasEnPartida = 0;
+        this.contadorBandasJugadas = 0; // Inicializar el contador de bandas jugadas
         this.triangulosJugadorBlanco = 0;
         this.triangulosJugadorNegro = 0;
         this.historialJugadas = new ArrayList<>();
@@ -50,6 +50,10 @@ public class Partida {
 
     public int getTriangulosJugadorNegro() {
         return triangulosJugadorNegro;
+    }
+
+    public int getContadorBandasJugadas() {
+        return contadorBandasJugadas;
     }
 
     public List<String> getHistorialJugadas() {
@@ -141,21 +145,9 @@ public class Partida {
 
             tablero.addBanda(nuevoSegmento);
             segmentosColocadosEstaJugada.add(nuevoSegmento);
-            this.bandasColocadasEnPartida++;
 
             // 4. Detectar y asignar triángulos para CADA segmento
             // Se asume que Tablero tiene un método para esto.
-            // int triangulosFormadosEsteSegmento = tablero.detectarYAsignarNuevosTriangulos(nuevoSegmento, turnoActual);
-            // if (turnoActual.equals(jugadorBlanco)) {
-            //     triangulosJugadorBlanco += triangulosFormadosEsteSegmento;
-            // } else {
-            //     triangulosJugadorNegro += triangulosFormadosEsteSegmento;
-            // }
-            // NOTA: La detección de triángulos es compleja y debe ser implementada cuidadosamente en Tablero.
-            // Por ahora, simularemos que se llama a un método que actualiza el tablero y devuelve el conteo.
-            // Este es un placeholder para la lógica de detección de triángulos.
-            // Deberás implementar `detectarYAsignarNuevosTriangulos` en la clase Tablero.
-            // Dicho método debería modificar `tablero.triangulosGanados` y devolver el número de nuevos triángulos.
             int nuevosTriangulos = simularDeteccionTriangulos(nuevoSegmento); // Placeholder
             if (turnoActual.equals(jugadorBlanco)) {
                 triangulosJugadorBlanco += nuevosTriangulos;
@@ -163,10 +155,10 @@ public class Partida {
                 triangulosJugadorNegro += nuevosTriangulos;
             }
 
-
             puntoActual = puntoSiguiente; // Avanzar al siguiente punto para el próximo segmento
         }
         
+        this.contadorBandasJugadas++; // Incrementar una vez por jugada de banda exitosa
         historialJugadas.add(inputJugada); // Guardar la jugada original
         movimientosRealizados++;
 
@@ -354,11 +346,10 @@ public class Partida {
         } else {
             turnoActual = jugadorBlanco;
         }
-        System.out.println("Turno del jugador: " + turnoActual.getNombre());
     }
 
     private boolean verificarFinPartida() {
-        if (this.bandasColocadasEnPartida >= configuracion.getCantidadBandasFin()) {
+        if (this.contadorBandasJugadas >= configuracion.getCantidadBandasFin()) {
             partidaTerminada = true;
             return true;
         }
