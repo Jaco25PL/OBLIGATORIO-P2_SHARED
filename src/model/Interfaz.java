@@ -25,6 +25,21 @@ public class Interfaz {
         this.jugadoresRegistrados = new ArrayList<>();
         this.configuracionActual = new ConfiguracionPartida();
         this.partidaActual = null; 
+
+
+        // Test players for debugging
+        try {
+        // Create two test players with different names
+        Jugador jugador1 = new Jugador("Test Player 1", 25);
+        Jugador jugador2 = new Jugador("Test Player 2", 30);
+        
+        // Add them to the registered players list
+        jugadoresRegistrados.add(jugador1);
+        jugadoresRegistrados.add(jugador2);
+        
+    } catch (Exception e) {
+        System.err.println("Error adding test players: " + e.getMessage());
+    }
     }
 
     // inicia la aplicación.

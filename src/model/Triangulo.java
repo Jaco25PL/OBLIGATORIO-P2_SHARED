@@ -16,6 +16,7 @@ public class Triangulo {
     private final Punto punto2;
     private final Punto punto3;
     private Jugador jugadorGanador; 
+    private boolean isWhitePlayer; // true if the winner is the white player
 
     // crea un nuevo triangulo.
     public Triangulo(Punto p1, Punto p2, Punto p3) {
@@ -51,6 +52,17 @@ public class Triangulo {
     // establece jugador ganador.
     public void setJugadorGanador(Jugador jugadorGanador) {
         this.jugadorGanador = jugadorGanador;
+    }
+
+    // establece jugador ganador y si es jugador blanco.
+    public void setJugadorGanador(Jugador jugador, boolean isWhitePlayer) {
+        this.jugadorGanador = jugador;
+        this.isWhitePlayer = isWhitePlayer;
+    }
+
+    // obtiene si es jugador blanco.
+    public boolean isWhitePlayer() {
+        return isWhitePlayer;
     }
 
     // verifica si contiene punto.

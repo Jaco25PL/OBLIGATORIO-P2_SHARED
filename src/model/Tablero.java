@@ -199,7 +199,17 @@ public class Tablero {
             Punto p2 = t.getPunto2();
             Punto p3 = t.getPunto3();
             
-            char simboloTri = 'T'; 
+            char simboloTri;
+            if (t.getJugadorGanador() != null) {
+                // Use white square for white player, black square for black player
+                if (t.isWhitePlayer()) {
+                    simboloTri = '□';  // White square for white player
+                } else {
+                    simboloTri = '■';  // Black square for black player
+                }
+            } else {
+                simboloTri = 'T';  // Fallback if no winner somehow
+            }
 
             int r1=p1.getFila(), r2=p2.getFila(), r3=p3.getFila();
             char c1=p1.getColumna(), c2=p2.getColumna(), c3=p3.getColumna();

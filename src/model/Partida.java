@@ -4,10 +4,10 @@
 
 package model;
 
-// import model.Jugador;
-// import model.Direccion;
-// import model.ConfiguracionPartida;
-// import model.Banda;
+import model.Jugador;
+import model.Direccion;
+import model.ConfiguracionPartida;
+import model.Banda;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -179,11 +179,79 @@ public class Partida {
         return true; 
     }
 
-    // Renamed from simularDeteccionTriangulos for clarity
-    private int detectarNuevosTriangulosConBanda(Banda nuevaBanda) {
-        int nuevosTriangulosFormados = 0;
-        Punto p1 = nuevaBanda.getPuntoA();
-        return 0; 
+    // Replace the detectarNuevosTriangulosConBanda method with this implementation:
+    private int detectarNuevosTriangulosConBanda(Banda banda) {
+        int nuevos = 0;
+        Punto a = banda.getPuntoA();
+        Punto b = banda.getPuntoB();
+        Jugador jugador = banda.getJugador();
+        
+        // Get all common adjacent points to both endpoints of the new banda
+        List<Punto> adyacentesA = tablero.getPuntosAdyacentes(a);
+        List<Punto> adyacentesB = tablero.getPuntosAdyacentes(b);
+        
+        System.out.println("Checking for triangles with new banda: " + a + " to " + b);
+        System.out.println("Adjacent to " + a + ": " + adyacentesA.size() + " points");
+        System.out.println("Adjacent to " + b + ": " + adyacentesB.size() + " points");
+        
+        for (Punto c : adyacentesA) {
+            if (adyacentesB.contains(c)) {
+                System.out.println("Found common adjacent point: " + c);
+                
+                // Check if bandas (a-c) and (b-c) exist and belong to same player
+                Banda acBanda = null;
+                Banda bcBanda = null;
+                
+                for (Banda other : tablero.getBandas()) {
+                    if (other.getJugador().equals(jugador)) {
+                        // Check for banda a-c
+                        if ((other.getPuntoA().equals(a) && other.getPuntoB().equals(c)) ||
+                            (other.getPuntoA().equals(c) && other.getPuntoB().equals(a))) {
+                            acBanda = other;
+                        }
+                        
+                        // Check for banda b-c
+                        if ((other.getPuntoA().equals(b) && other.getPuntoB().equals(c)) ||
+                            (other.getPuntoA().equals(c) && other.getPuntoB().equals(b))) {
+                            bcBanda = other;
+                        }
+                    }
+                }
+                
+                // If we found all three bands forming a triangle
+                if (acBanda != null && bcBanda != null) {
+                    System.out.println("Found triangle with bands: " + banda + ", " + acBanda + ", " + bcBanda);
+                    
+                    // Check if this triangle is already won
+                    Triangulo nuevoTriangulo = new Triangulo(a, b, c);
+                    boolean yaExiste = false;
+                    
+                    for (Triangulo existente : tablero.getTriangulosGanados()) {
+                        if (existente.equals(nuevoTriangulo)) {
+                            yaExiste = true;
+                            System.out.println("Triangle already exists in won triangles");
+                            break;
+                        }
+                    }
+                    
+                    if (!yaExiste) {
+                        // Mark this triangle as won by the current player
+                        nuevoTriangulo.setJugadorGanador(jugador, jugador.equals(jugadorBlanco));
+                        tablero.addTrianguloGanado(nuevoTriangulo);
+                        System.out.println("New triangle added for player " + jugador.getNombre() + 
+                                          (jugador.equals(jugadorBlanco) ? " (White)" : " (Black)"));
+                        nuevos++;
+                    }
+                } else {
+                    System.out.println("Missing bands for triangle. AC band: " + 
+                                      (acBanda != null ? "found" : "missing") + 
+                                      ", BC band: " + (bcBanda != null ? "found" : "missing"));
+                }
+            }
+        }
+        
+        System.out.println("Found " + nuevos + " new triangles");
+        return nuevos;
     }
 
     // parsea entrada de jugada.
