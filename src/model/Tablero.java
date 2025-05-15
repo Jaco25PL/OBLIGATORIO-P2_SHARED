@@ -242,11 +242,11 @@ public class Tablero {
                     }
                 }
             }
-        }
+        }    
 
         StringBuilder sb = new StringBuilder();
         sb.append("  A B C D E F G H I J K L M\n"); // Ajuste para alinear con números de fila
-        
+        System.out.println("");
         for (int i = 0; i < numFilas; i++) {
             for (int j = 0; j < anchoDisplay; j++) {
                 sb.append(displayGrid[i][j]);
