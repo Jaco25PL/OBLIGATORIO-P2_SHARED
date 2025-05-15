@@ -1,5 +1,5 @@
 /*
- * Autores: [Matías Piedra 354007], [Joaquin Piedra ######] // Reemplazar con datos reales
+ * Autores: [Matías Piedra 354007], [Joaquin Piedra 304804] 
  */
 
 package obligatorio_shared;
