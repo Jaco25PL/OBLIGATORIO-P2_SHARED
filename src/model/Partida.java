@@ -189,19 +189,16 @@ public class Partida {
         List<Punto> adyacentesA = tablero.getPuntosAdyacentes(a);
         List<Punto> adyacentesB = tablero.getPuntosAdyacentes(b);
         
-        System.out.println("Checking for triangles with new banda: " + a + " to " + b);
-        // ... (más System.out.println si los tienes) ...
+        // System.out.println("Checking for triangles with new banda: " + a + " to " + b);
 
         for (Punto c : adyacentesA) {
-            if (adyacentesB.contains(c)) {
-                System.out.println("Found common adjacent point: " + c);
+            if (adyacentesB.contains(c)) { // 'c' es un punto común adyacente a 'a' y 'b'
+                // System.out.println("Found common adjacent point: " + c);
                 
                 Banda acBanda = null;
                 Banda bcBanda = null;
                 
                 for (Banda other : tablero.getBandas()) {
-                    // Ya no se verifica: if (other.getJugador().equals(jugador))
-                    
                     // Check for banda a-c
                     if ((other.getPuntoA().equals(a) && other.getPuntoB().equals(c)) ||
                         (other.getPuntoA().equals(c) && other.getPuntoB().equals(a))) {
@@ -216,14 +213,14 @@ public class Partida {
                 }
                 
                 if (acBanda != null && bcBanda != null) {
-                    System.out.println("Found triangle with bands: " + banda + ", " + acBanda + ", " + bcBanda);
+                    // System.out.println("Found triangle with bands: " + banda + ", " + acBanda + ", " + bcBanda);
                     
                     Triangulo nuevoTriangulo = new Triangulo(a, b, c);
                     boolean yaExiste = false;
                     for (Triangulo existente : tablero.getTriangulosGanados()) {
                         if (existente.equals(nuevoTriangulo)) {
                             yaExiste = true;
-                            System.out.println("Triangle already exists in won triangles");
+                            // System.out.println("Triangle already exists in won triangles");
                             break;
                         }
                     }
@@ -231,19 +228,19 @@ public class Partida {
                     if (!yaExiste) {
                         nuevoTriangulo.setJugadorGanador(jugador, jugador.equals(jugadorBlanco));
                         tablero.addTrianguloGanado(nuevoTriangulo);
-                        System.out.println("New triangle added for player " + jugador.getNombre() + 
-                                          (jugador.equals(jugadorBlanco) ? " (White)" : " (Black)"));
+                        // System.out.println("New triangle added for player " + jugador.getNombre() + 
+                        //                   (jugador.equals(jugadorBlanco) ? " (White)" : " (Black)"));
                         nuevos++;
                     }
                 } else {
-                    System.out.println("Missing bands for triangle. AC band: " + 
-                                      (acBanda != null ? "found" : "missing") + 
-                                      ", BC band: " + (bcBanda != null ? "found" : "missing"));
+                    // System.out.println("Missing bands for triangle. AC band: " + 
+                    //                   (acBanda != null ? "found" : "missing") + 
+                    //                   ", BC band: " + (bcBanda != null ? "found" : "missing"));
                 }
             }
         }
         
-        System.out.println("Found " + nuevos + " new triangles");
+        // System.out.println("Found " + nuevos + " new triangles");
         return nuevos;
     }
 
