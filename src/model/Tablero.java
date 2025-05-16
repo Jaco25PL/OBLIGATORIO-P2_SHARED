@@ -7,6 +7,8 @@ package model;
 // import model.Jugador;
 // import model.Banda;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class Tablero {
@@ -204,56 +206,64 @@ public class Tablero {
             
             char simboloTri;
             if (t.getJugadorGanador() != null) {
-                // Use white square for white player, black square for black player
                 if (t.isWhitePlayer()) {
                     simboloTri = '□';  // White square for white player
                 } else {
                     simboloTri = '■';  // Black square for black player
                 }
             } else {
-                simboloTri = 'T';  // Fallback if no winner somehow
+                simboloTri = '?'; // No debería ocurrir si la lógica es correcta
             }
 
-            int r1=p1.getFila(), r2=p2.getFila(), r3=p3.getFila();
-            char c1=p1.getColumna(), c2=p2.getColumna(), c3=p3.getColumna();
-            
-            int targetFilaDisplayOriginal = -1;
-            int targetColDisplayOriginal = -1;
+            Punto[] puntosDelTriangulo = {p1, p2, p3};
+            // Ordenar los puntos: primero por fila, luego por columna.
+            // Esto ayuda a identificar la orientación del triángulo (hacia arriba o hacia abajo).
+            Arrays.sort(puntosDelTriangulo, Comparator.comparingInt(Punto::getFila)
+                                              .thenComparingInt(Punto::getColumna));
 
-            if (r1==r2) {
-                targetFilaDisplayOriginal = r1-1;
-                targetColDisplayOriginal = ( (c1-'A')*2 + (c2-'A')*2 ) / 2 ;
-            } else if (r1==r3) {
-                targetFilaDisplayOriginal = r1-1;
-                targetColDisplayOriginal = ( (c1-'A')*2 + (c3-'A')*2 ) / 2 ;
-            } else if (r2==r3) {
-                targetFilaDisplayOriginal = r2-1;
-                targetColDisplayOriginal = ( (c2-'A')*2 + (c3-'A')*2 ) / 2 ;
+            Punto ptA = puntosDelTriangulo[0]; // El punto más arriba (o más a la izquierda si están en la misma fila)
+            Punto ptB = puntosDelTriangulo[1]; // Punto intermedio
+            Punto ptC = puntosDelTriangulo[2]; // El punto más abajo (o más a la derecha si están en la misma fila)
+
+            int symbolDisplayRow = -1;
+            int symbolDisplayCol = -1;
+
+            // Verificar si es un triángulo que apunta hacia ARRIBA
+            // (ptA es el pico superior, ptB y ptC forman la base horizontal inferior)
+            if (ptA.getFila() < ptB.getFila() && 
+                ptB.getFila() == ptC.getFila() && 
+                ptC.getColumna() - ptB.getColumna() == 2 && // Base tiene ancho 2 (ej. F, H)
+                ptA.getColumna() == ptB.getColumna() + 1) {  // Pico está centrado sobre la base
+                
+                symbolDisplayRow = (ptA.getFila() - 1) * 2 + 1; // Fila impar debajo del pico
+                symbolDisplayCol = (ptA.getColumna() - 'A') * 2; // Columna par del pico
+            } 
+            // Verificar si es un triángulo que apunta hacia ABAJO
+            // (ptC es el pico inferior, ptA y ptB forman la base horizontal superior)
+            else if (ptC.getFila() > ptA.getFila() && 
+                     ptA.getFila() == ptB.getFila() &&
+                     ptB.getColumna() - ptA.getColumna() == 2 && // Base tiene ancho 2
+                     ptC.getColumna() == ptA.getColumna() + 1) {  // Pico está centrado bajo la base
+                
+                symbolDisplayRow = (ptC.getFila() - 1) * 2 - 1; // Fila impar encima del pico
+                symbolDisplayCol = (ptC.getColumna() - 'A') * 2; // Columna par del pico
             }
 
-            if(targetFilaDisplayOriginal != -1 && targetColDisplayOriginal != -1) {
-                int finalTargetFila = targetFilaDisplayOriginal * 2;
-                // int finalTargetCol = targetColDisplayOriginal;
-                targetColDisplayOriginal = ( (c1-'A')*2 + (c2-'A')*2 ) / 2 + ((r1==r2 || r1==r3 || r2==r3) ? 1:0) ;
-                if (r1==r2) { targetFilaDisplayOriginal = r1-1; targetColDisplayOriginal = ( (c1-'A')*2 + (c2-'A')*2 ) / 2 + 1; }
-                else if (r1==r3) { targetFilaDisplayOriginal = r1-1; targetColDisplayOriginal = ( (c1-'A')*2 + (c3-'A')*2 ) / 2 + 1; }
-                else if (r2==r3) { targetFilaDisplayOriginal = r2-1; targetColDisplayOriginal = ( (c2-'A')*2 + (c3-'A')*2 ) / 2 + 1; }
-
-                if(targetFilaDisplayOriginal != -1 &&
-                   finalTargetFila >= 0 && finalTargetFila < numDisplayFilas &&
-                   targetColDisplayOriginal >=0 && targetColDisplayOriginal < anchoDisplay) {
-                    if (displayGrid[finalTargetFila][targetColDisplayOriginal] == ' ') { 
-                         displayGrid[finalTargetFila][targetColDisplayOriginal] = simboloTri;
-                    } else { 
-                        Punto pico = null;
-                        if(r1 != r2 && r1 != r3) pico = p1;
-                        else if (r2 != r1 && r2 != r3) pico = p2;
-                        else pico = p3; 
-                        if (pico != null) {
-                            displayGrid[(pico.getFila()-1)*2][(pico.getColumna()-'A')*2] = simboloTri; 
-                        }
-                    }
+            if (symbolDisplayRow != -1 && symbolDisplayCol != -1 &&
+                symbolDisplayRow >= 0 && symbolDisplayRow < numDisplayFilas &&
+                symbolDisplayCol >= 0 && symbolDisplayCol < anchoDisplay) {
+                
+                if (displayGrid[symbolDisplayRow][symbolDisplayCol] == ' ') {
+                    displayGrid[symbolDisplayRow][symbolDisplayCol] = simboloTri;
+                } else {
+                    // Si el lugar calculado no está vacío (inesperado para triángulos unitarios bien formados),
+                    // se podría imprimir un error o intentar un fallback muy simple,
+                    // pero es preferible no dibujar si no se encuentra un buen lugar.
+                    // System.err.println("Advertencia: La celda para el símbolo del triángulo " + t + " no estaba vacía: (" + symbolDisplayRow + "," + symbolDisplayCol + ") contiene '" + displayGrid[symbolDisplayRow][symbolDisplayCol] + "'");
                 }
+            } else {
+                // Si no se pudo determinar la posición (triángulo no estándar o error de cálculo)
+                // System.err.println("Advertencia: No se pudo determinar la posición para el símbolo del triángulo: " + t);
             }
         }    
 
