@@ -80,7 +80,7 @@ public class Interfaz {
     private void mostrarTitulo() {
         System.out.println("***************************************************");
         System.out.println("**        TRABAJO DESARROLLADO POR:            **");
-        System.out.println("**  [Matías Piedra 354007], [Joaquin Piedra]   **"); 
+        System.out.println("**  [Matías Piedra 354007], [Joaquin Piedra 304804]   **"); 
         System.out.println("***************************************************");
     }
 

@@ -8,7 +8,6 @@ public class Jugador {
 
     private final String nombre; 
     private final int edad;
-
     private int partidasGanadas;
     private int rachaActualVictorias;
     private int mejorRachaVictorias;
