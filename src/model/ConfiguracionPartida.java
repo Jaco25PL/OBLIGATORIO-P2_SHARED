@@ -137,12 +137,12 @@ public class ConfiguracionPartida {
             contactoDesc = "No";
         }
 
-        return "ConfiguracionPartida [" +
-               "Requiere Contacto=" + contactoDesc +
-               ", Largo Bandas=" + largoDesc +
-               ", Bandas para Fin=" + cantidadBandasFin +
-               ", Tableros a Mostrar=" + cantidadTablerosMostrar +
-               ']';
+        StringBuilder sb = new StringBuilder();
+        sb.append("- Requiere Contacto: ").append(contactoDesc).append("\n");
+        sb.append("- Largo Bandas: ").append(largoDesc).append("\n");
+        sb.append("- Bandas para Fin: ").append(cantidadBandasFin).append("\n");
+        sb.append("- Tableros a Mostrar: ").append(cantidadTablerosMostrar);
+        return sb.toString();
     }
 
     // restablece a valores predeterminados.

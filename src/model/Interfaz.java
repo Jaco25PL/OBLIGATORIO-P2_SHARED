@@ -4,7 +4,6 @@
 
 package model;
 
-import model.ConfiguracionPartida;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -164,14 +163,14 @@ public class Interfaz {
     // configura la partida.
     private void configurarPartida() {
         System.out.println("\n--- CONFIGURACIÓN DE PARTIDA ---");
-        System.out.println("Configuración actual: " + configuracionActual);
+        System.out.println("Configuración actual: \n" + configuracionActual);
         System.out.print("¿Desea usar la configuración por defecto (S) o personalizarla (N)? [S/N]: ");
         String respuesta = scanner.nextLine().trim().toUpperCase();
 
         if (respuesta.equals("S")) {
             configuracionActual.resetToDefaults();
             System.out.println("Configuración restablecida a los valores por defecto.");
-            System.out.println("Nueva configuración: " + configuracionActual);
+            System.out.println("\nNueva configuración:\n" + configuracionActual);
             return;
         }
 
@@ -180,7 +179,7 @@ public class Interfaz {
             return;
         }
 
-        System.out.println("Configuración personalizada:");
+        System.out.println("\nConfiguración personalizada:");
         boolean tempRequiereContacto;
         boolean tempLargoVariable;
         int tempLargoFijo = configuracionActual.getLargoFijo(); 
@@ -199,7 +198,7 @@ public class Interfaz {
                 try {
                     tempLargoFijo = scanner.nextInt();
                     scanner.nextLine();
-                    
+                    // No es necesario validar aquí, ConfiguracionPartida lo hará
                     break;
                 } catch (InputMismatchException e) {
                     System.out.println("Entrada inválida. Ingrese un número.");
@@ -213,6 +212,7 @@ public class Interfaz {
             try {
                 tempCantBandasFin = scanner.nextInt();
                 scanner.nextLine();
+                // No es necesario validar aquí, ConfiguracionPartida lo hará
                 break;
             } catch (InputMismatchException e) {
                 System.out.println("Entrada inválida. Ingrese un número.");
@@ -225,6 +225,7 @@ public class Interfaz {
             try {
                 tempCantTableros = scanner.nextInt();
                 scanner.nextLine();
+                // No es necesario validar aquí, ConfiguracionPartida lo hará
                 break;
             } catch (InputMismatchException e) {
                 System.out.println("Entrada inválida. Ingrese un número.");
@@ -243,10 +244,10 @@ public class Interfaz {
             );
             configuracionActual = nuevaConfig;
             System.out.println("Configuración actualizada exitosamente.");
-            System.out.println("Nueva configuración: " + configuracionActual);
+            System.out.println("\nNueva configuración:\n" + configuracionActual); // MODIFICADO
         } catch (IllegalArgumentException e) {
             System.err.println("Error en la configuración: " + e.getMessage());
-            System.out.println("No se guardaron los cambios. Se mantiene la configuración anterior: " + configuracionActual);
+            System.out.println("No se guardaron los cambios. Se mantiene la configuración anterior: \n" + configuracionActual); // MODIFICADO
         }
     }
 

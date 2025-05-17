@@ -4,10 +4,6 @@
 
 package model;
 
-import model.Jugador;
-import model.Direccion;
-import model.ConfiguracionPartida;
-import model.Banda;
 import java.util.ArrayList;
 import java.util.List;
 
