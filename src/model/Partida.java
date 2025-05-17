@@ -415,46 +415,61 @@ public class Partida {
     // determina ganador final.
     private void determinarGanadorFinal() {
         if (!partidaTerminada) return; 
+
+        Jugador determinedWinner = null; // Renombrado para claridad interna del método
+        Jugador determinedLoser = null;  // Renombrado para claridad interna del método
+
         if (jugadorAbandono != null) { 
-            ganador = (jugadorAbandono.equals(jugadorBlanco)) ? jugadorNegro : jugadorBlanco;
+            determinedWinner = (jugadorAbandono.equals(jugadorBlanco)) ? jugadorNegro : jugadorBlanco;
+            determinedLoser = jugadorAbandono;
         } else { 
             if (triangulosJugadorBlanco > triangulosJugadorNegro) {
-                ganador = jugadorBlanco;
+                determinedWinner = jugadorBlanco;
+                determinedLoser = jugadorNegro;
             } else if (triangulosJugadorNegro > triangulosJugadorBlanco) {
-                ganador = jugadorNegro;
+                determinedWinner = jugadorNegro;
+                determinedLoser = jugadorBlanco;
             } else {
-                ganador = null; 
+                // Empate sin abandono
+                this.ganador = null; // Establece el ganador de la partida como null
+                if (jugadorBlanco != null) jugadorBlanco.resetRachaActual();
+                if (jugadorNegro != null) jugadorNegro.resetRachaActual();
+                System.out.println("Partida finalizada. Es un empate!");
+                // Aquí puedes añadir los mensajes de puntuación final para el empate si lo deseas
+                // y luego retornar, ya que el resto del método es para cuando hay un ganador/perdedor claro.
+                // Por ejemplo:
+                System.out.println("--- Puntuación Final ---");
+                System.out.println(jugadorBlanco.getNombre() + " (Blanco): " + triangulosJugadorBlanco + " triángulos.");
+                System.out.println(jugadorNegro.getNombre() + " (Negro): " + triangulosJugadorNegro + " triángulos.");
+                System.out.println("¡Ha sido un empate!");
+                System.out.println("--- Fin de la Partida ---");
+                return;
             }
         }
         
+        this.ganador = determinedWinner; // Asigna el ganador oficial de la Partida
         
-        if (ganador != null) {
-            ganador.incrementarPartidasGanadas();
-            ganador.incrementarRachaActual();
-            ganador.actualizarRachaMaxima();
-            Jugador perdedor = ganador.equals(jugadorBlanco) ? jugadorNegro : jugadorBlanco;
-            perdedor.resetRachaActual();
-            System.out.println("Partida finalizada. Ganador: " + ganador.getNombre());
+        if (this.ganador != null) {
+            this.ganador.incrementarPartidasGanadas(); // Solo incrementa partidas ganadas
+            this.ganador.incrementarRachaActual();     // Solo incrementa racha actual
+            this.ganador.actualizarRachaMaxima();      // Actualiza la mejor racha basada en la nueva racha actual
             
-        } else if (jugadorAbandono == null) { 
-            jugadorBlanco.resetRachaActual();
-            jugadorNegro.resetRachaActual();
-            System.out.println("Partida finalizada. Es un empate!");
+            System.out.println("Partida finalizada. Ganador: " + this.ganador.getNombre());
+        }
+
+        if (determinedLoser != null) {
+            determinedLoser.resetRachaActual(); // El perdedor reinicia su racha actual
         }
         
-        if (jugadorAbandono != null) {
-             jugadorAbandono.resetRachaActual();
-        }
-
-
-        System.out.println("--- Fin de la Partida ---");
+        // Mensajes finales (pueden ser redundantes si el empate ya los imprimió)
+        System.out.println("--- Puntuación Final ---");
         System.out.println(jugadorBlanco.getNombre() + " (Blanco): " + triangulosJugadorBlanco + " triángulos.");
         System.out.println(jugadorNegro.getNombre() + " (Negro): " + triangulosJugadorNegro + " triángulos.");
-        if (ganador != null) {
-            System.out.println("¡Felicidades " + ganador.getNombre() + "!");
-        } else if (jugadorAbandono == null) {
-            System.out.println("¡Ha sido un empate!");
+        if (this.ganador != null) {
+            System.out.println("¡Felicidades " + this.ganador.getNombre() + "!");
         }
+        // El mensaje de empate ya se manejó arriba.
+        System.out.println("--- Fin de la Partida ---");
     }
 
     // abandona la partida.

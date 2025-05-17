@@ -60,10 +60,7 @@ public class Jugador {
     // incrementa partidas ganadas.
     public void incrementarPartidasGanadas() {
         this.partidasGanadas++;
-        this.rachaActualVictorias++;
-        if (this.rachaActualVictorias > this.mejorRachaVictorias) {
-            this.mejorRachaVictorias = this.rachaActualVictorias;
-        }
+        // La racha actual y la mejor racha se manejan con sus propios métodos.
     }
 
     // incrementa racha actual.
