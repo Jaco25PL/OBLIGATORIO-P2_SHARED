@@ -268,7 +268,7 @@ public class Tablero {
         }    
 
         StringBuilder sb = new StringBuilder();
-        sb.append("  ");
+        // sb.append("  ");
         for (char c = 'A'; c < 'A' + numColsLetras; c++) {
             sb.append(c);
             if (c < 'A' + numColsLetras - 1) {

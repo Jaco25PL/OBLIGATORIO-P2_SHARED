@@ -487,9 +487,13 @@ public class Partida {
             System.out.println("No se han realizado jugadas aún.");
         } else {
             for (int i = 0; i < historialJugadas.size(); i++) {
-                System.out.println((i + 1) + ". " + historialJugadas.get(i));
+                System.out.print(historialJugadas.get(i).toUpperCase());
+                if(i < historialJugadas.size() - 1) {
+                    System.out.print(", ");
+                }
             }
         }
+        System.out.println("");
         System.out.println("----------------------------");
     }
 
