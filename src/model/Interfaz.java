@@ -78,8 +78,8 @@ public class Interfaz {
     // muestra el título.
     private void mostrarTitulo() {
         System.out.println("***************************************************");
-        System.out.println("**        TRABAJO DESARROLLADO POR:            **");
-        System.out.println("**  [Matías Piedra 354007], [Joaquin Piedra 304804]   **"); 
+        System.out.println("**           TRABAJO DESARROLLADO POR:           **");
+        System.out.println("**[Matías Piedra 354007], [Joaquin Piedra 304804]**"); 
         System.out.println("***************************************************");
     }
 
@@ -312,7 +312,7 @@ public class Interfaz {
 
         System.out.println("Jugador Blanco □: " + jugadorBlanco.getNombre());
         System.out.println("Jugador Negro ■: " + jugadorNegro.getNombre());
-        System.out.println("Usando configuración: " + configuracionActual);
+        System.out.println("Usando configuración: \n" + configuracionActual);
         
         partidaActual = new Partida(jugadorBlanco, jugadorNegro, configuracionActual);
         System.out.println("\n¡Que comience el juego!");
