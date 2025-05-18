@@ -481,10 +481,20 @@ public class Partida {
 
         if (this.ganador != null) {
             System.out.println("¡Felicidades " + this.ganador.getNombre() + "!");
+            mostrarAnimacionFuegosArtificiales(); // Call the new animation method
         } else if (jugadorAbandono == null) { // Empate natural
             System.out.println("¡Ha sido un empate!");
         }
         System.out.println("--- Fin de la Partida ---");
+    }
+
+    // Method to display fireworks animation
+    private void mostrarAnimacionFuegosArtificiales() {
+        // Ensure FireworksAnimation.java is in your project, in the 'model' package
+        // Adjust width/height based on your console view in NetBeans
+        // Adjust numberOfFireworks and totalDurationMillis as desired
+        FireworksAnimation animator = new FireworksAnimation(70, 20); // (width, height)
+        animator.play(5, 6000); // (numberOfFireworks, totalDurationMillis)
     }
 
     // abandona la partida.
