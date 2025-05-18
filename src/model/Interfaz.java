@@ -205,7 +205,7 @@ public class Interfaz {
 
         // Validar Largo de Bandas Variable
         while (true) {
-            System.out.print("¿Largo de bandas variable (1-" + ConfiguracionPartida.MAX_LARGO_BANDA + ")? (S/N) (Actual: " + (configuracionActual.isLargoBandasVariable() ? "Variable" : "Fijo " + configuracionActual.getLargoFijo()) + "): ");
+            System.out.print("¿Largo de bandas variable (1-" + configuracionActual.getMaxLargoBanda() + ")? (S/N) (Actual: " + (configuracionActual.isLargoBandasVariable() ? "Variable" : "Fijo " + configuracionActual.getLargoFijo()) + "): ");
             inputSN = scanner.nextLine().trim().toUpperCase();
             if (inputSN.equals("S")) {
                 tempLargoVariable = true;
@@ -220,15 +220,15 @@ public class Interfaz {
 
         if (!tempLargoVariable) {
             while (true) {
-                System.out.print("Ingrese el largo fijo de las bandas (" + ConfiguracionPartida.MIN_LARGO_BANDA + "-" + ConfiguracionPartida.MAX_LARGO_BANDA + ") (Actual: " + configuracionActual.getLargoFijo() + "): ");
+                System.out.print("Ingrese el largo fijo de las bandas (" + configuracionActual.getMinLargoBanda() + "-" + configuracionActual.getMaxLargoBanda() + ") (Actual: " + configuracionActual.getLargoFijo() + "): ");
                 try {
                     int inputVal = scanner.nextInt();
                     scanner.nextLine(); // Consume newline
-                    if (inputVal >= ConfiguracionPartida.MIN_LARGO_BANDA && inputVal <= ConfiguracionPartida.MAX_LARGO_BANDA) {
+                    if (inputVal >= configuracionActual.getMinLargoBanda() && inputVal <= configuracionActual.getMaxLargoBanda()) {
                         tempLargoFijo = inputVal;
                         break;
                     } else {
-                        System.out.println("Largo inválido. Debe ser entre " + ConfiguracionPartida.MIN_LARGO_BANDA + " y " + ConfiguracionPartida.MAX_LARGO_BANDA + ".");
+                        System.out.println("Largo inválido. Debe ser entre " + configuracionActual.getMinLargoBanda() + " y " + configuracionActual.getMaxLargoBanda() + ".");
                     }
                 } catch (InputMismatchException e) {
                     System.out.println("Entrada inválida. Ingrese un número.");
@@ -239,15 +239,15 @@ public class Interfaz {
 
         // Validar Cantidad de Bandas para Finalizar
         while (true) {
-            System.out.print("Ingrese la cantidad de bandas para finalizar la partida (mínimo " + ConfiguracionPartida.MIN_BANDAS_FIN + ") (Actual: " + configuracionActual.getCantidadBandasFin() + "): ");
+            System.out.print("Ingrese la cantidad de bandas para finalizar la partida (mínimo " + configuracionActual.getMinBandasFin() + ") (Actual: " + configuracionActual.getCantidadBandasFin() + "): ");
             try {
                 int inputVal = scanner.nextInt();
                 scanner.nextLine(); // Consume newline
-                if (inputVal >= ConfiguracionPartida.MIN_BANDAS_FIN) {
+                if (inputVal >= configuracionActual.getMinBandasFin()) {
                     tempCantBandasFin = inputVal;
                     break;
                 } else {
-                    System.out.println("Cantidad inválida. Debe ser como mínimo " + ConfiguracionPartida.MIN_BANDAS_FIN + ".");
+                    System.out.println("Cantidad inválida. Debe ser como mínimo " + configuracionActual.getMinBandasFin() + ".");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Entrada inválida. Ingrese un número.");
@@ -257,15 +257,15 @@ public class Interfaz {
 
         // Validar Cantidad de Tableros a Mostrar
         while (true) {
-            System.out.print("Ingrese la cantidad de tableros a mostrar (" + ConfiguracionPartida.MIN_TABLEROS_MOSTRAR + "-" + ConfiguracionPartida.MAX_TABLEROS_MOSTRAR + ") (Actual: " + configuracionActual.getCantidadTablerosMostrar() + "): ");
+            System.out.print("Ingrese la cantidad de tableros a mostrar (" + configuracionActual.getMinTablerosMostrar() + "-" + configuracionActual.getMaxTablerosMostrar() + ") (Actual: " + configuracionActual.getCantidadTablerosMostrar() + "): ");
             try {
                 int inputVal = scanner.nextInt();
                 scanner.nextLine(); // Consume newline
-                if (inputVal >= ConfiguracionPartida.MIN_TABLEROS_MOSTRAR && inputVal <= ConfiguracionPartida.MAX_TABLEROS_MOSTRAR) {
+                if (inputVal >= configuracionActual.getMinTablerosMostrar() && inputVal <= configuracionActual.getMaxTablerosMostrar()) {
                     tempCantTableros = inputVal;
                     break;
                 } else {
-                    System.out.println("Cantidad inválida. Debe ser entre " + ConfiguracionPartida.MIN_TABLEROS_MOSTRAR + " y " + ConfiguracionPartida.MAX_TABLEROS_MOSTRAR + ".");
+                    System.out.println("Cantidad inválida. Debe ser entre " + configuracionActual.getMinTablerosMostrar() + " y " + configuracionActual.getMaxTablerosMostrar() + ".");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Entrada inválida. Ingrese un número.");
