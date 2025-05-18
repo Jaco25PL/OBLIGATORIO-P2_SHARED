@@ -81,8 +81,8 @@ public class FireworksAnimation {
         activeFireworks.clear();
 
         // Initial message and space for animation
-        String winnerMessage = " ".repeat(Math.max(0,this.width/2 - 5)) + ANSI_YELLOW + "¡GANADOR!" + ANSI_RESET;
-        System.out.println(winnerMessage);
+        // String winnerMessage = " ".repeat(Math.max(0,this.width/2 - 5)) + ANSI_YELLOW + "¡GANADOR!" + ANSI_RESET; // REMOVED
+        // System.out.println(winnerMessage); // REMOVED
         for(int i=0; i<this.height; i++) {
             System.out.println(); 
         }
@@ -139,12 +139,12 @@ public class FireworksAnimation {
                 break;
             }
         }
-        // Cleanup: Clear the animation area and reprint the winner message
+        // Cleanup: Clear the animation area
         if (firstFrame) { // If animation didn't even start (e.g., duration too short)
              System.out.println(ANSI_RESET); // Just reset color
         } else {
             System.out.print(String.format("\033[%dA\033[0J", this.height)); // Move up and clear
-            System.out.println(winnerMessage); // Reprint winner message
+            // System.out.println(winnerMessage); // REMOVED
             for(int i=0; i<3;i++) System.out.println(); // Some spacing after
         }
         System.out.print(ANSI_RESET); // Ensure color is reset
