@@ -7,8 +7,8 @@ package model;
 public class Banda {
 
     // Atributos finales para inmutabilidad
-    private final Punto puntoA; 
-    private final Punto puntoB; 
+    private final Punto puntoA;
+    private final Punto puntoB;
     private final Jugador jugador; // Jugador que colocó la banda
 
     // crea una nueva banda.
@@ -28,16 +28,17 @@ public class Banda {
             this.puntoA = pA;
             this.puntoB = pB;
         } else {
-            this.puntoA = pB; 
+            this.puntoA = pB;
             this.puntoB = pA;
         }
     }
 
     // verifica si puntos son adyacentes.
-    private boolean sonAdyacentes(Punto p1, Punto p2) { 
-        int diffFilas = Math.abs(p1.getFila() - p2.getFila()); 
+    private boolean sonAdyacentes(Punto p1, Punto p2) {
+        int diffFilas = Math.abs(p1.getFila() - p2.getFila());
         int diffCols = Math.abs(p1.getColumna() - p2.getColumna());
-        return (diffFilas == 0 && diffCols == 2) || (diffFilas == 1 && diffCols == 1);
+        boolean adyacentes = (diffFilas == 0 && diffCols == 2) || (diffFilas == 1 && diffCols == 1);
+        return adyacentes;
     }
 
     // obtiene el primer punto.
@@ -58,10 +59,14 @@ public class Banda {
     //compara esta banda con otra.
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Banda otraBanda = (Banda) o;
-        return puntoA.equals(otraBanda.puntoA) && puntoB.equals(otraBanda.puntoB);
+        boolean sonIguales = false;
+        if (this == o) {
+            sonIguales = true;
+        } else if (o != null && getClass() == o.getClass()) {
+            Banda otraBanda = (Banda) o;
+            sonIguales = puntoA.equals(otraBanda.puntoA) && puntoB.equals(otraBanda.puntoB);
+        }
+        return sonIguales;
     }
 
     //genera código hash para banda.

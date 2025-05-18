@@ -28,7 +28,13 @@ public class ConfiguracionPartida {
     }
 
     // Crea configuración personalizada.
-    public ConfiguracionPartida(boolean requiereContacto, boolean largoBandasVariable, int largoFijo, int cantidadBandasFin, int cantidadTablerosMostrar) {
+    public ConfiguracionPartida(
+        boolean requiereContacto, 
+        boolean largoBandasVariable, 
+        int largoFijo, 
+        int cantidadBandasFin, 
+        int cantidadTablerosMostrar) {
+            
         validarLargoFijo(largoFijo);
         validarCantidadBandasFin(cantidadBandasFin);
         validarCantidadTablerosMostrar(cantidadTablerosMostrar);

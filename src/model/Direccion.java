@@ -20,10 +20,14 @@ public class Direccion {
     // Compara esta dirección con otra.
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Direccion that = (Direccion) o;
-        return codigo == that.codigo;
+        boolean sonIguales = false;
+        if (this == o) {
+            sonIguales = true;
+        } else if (o != null && getClass() == o.getClass()) {
+            Direccion that = (Direccion) o;
+            sonIguales = (codigo == that.codigo);
+        }
+        return sonIguales;
     }
 
     // genera código hash para dirección.

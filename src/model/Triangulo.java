@@ -5,8 +5,6 @@
 package model;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Triangulo {
 
@@ -14,7 +12,7 @@ public class Triangulo {
     private Punto punto2;
     private Punto punto3;
     private Jugador jugadorGanador; 
-    private boolean isWhitePlayer; // true if the winner is the white player
+    private boolean isWhitePlayer;
 
     // crea un nuevo triangulo.
     public Triangulo(Punto p1, Punto p2, Punto p3) {
@@ -27,10 +25,14 @@ public class Triangulo {
         // Ordenar puntos para consistencia en equals
         Punto[] puntos = {p1, p2, p3};
         Arrays.sort(puntos, (pt1, pt2) -> {
-            if (pt1.getFila() != pt2.getFila()) {
-                return Integer.compare(pt1.getFila(), pt2.getFila());
+            int comparacionFilas = Integer.compare(pt1.getFila(), pt2.getFila());
+            int resultadoComparacion;
+            if (comparacionFilas != 0) {
+                resultadoComparacion = comparacionFilas;
+            } else {
+                resultadoComparacion = Character.compare(pt1.getColumna(), pt2.getColumna());
             }
-            return Character.compare(pt1.getColumna(), pt2.getColumna());
+            return resultadoComparacion;
         });
         this.punto1 = puntos[0];
         this.punto2 = puntos[1];
@@ -93,13 +95,6 @@ public class Triangulo {
         return this.punto1.equals(otro.punto1) &&
                this.punto2.equals(otro.punto2) &&
                this.punto3.equals(otro.punto3);
-    }
-
-    // genera código hash.
-    @Override
-    public int hashCode() {
-        Set<Punto> misPuntos = new HashSet<>(Arrays.asList(this.punto1, this.punto2, this.punto3));
-        return misPuntos.hashCode();
     }
 
     // devuelve representación textual.

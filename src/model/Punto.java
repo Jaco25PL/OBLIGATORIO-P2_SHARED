@@ -51,10 +51,14 @@ public class Punto {
     // Compara este punto con otro.
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Punto otroPunto = (Punto) o;
-        return this.fila == otroPunto.fila && this.columna == otroPunto.columna;
+        boolean sonIguales = false;
+        if (this == o) {
+            sonIguales = true;
+        } else if (o != null && getClass() == o.getClass()) {
+            Punto otroPunto = (Punto) o;
+            sonIguales = (this.fila == otroPunto.fila && this.columna == otroPunto.columna);
+        }
+        return sonIguales;
     }
 
     // genera código hash.

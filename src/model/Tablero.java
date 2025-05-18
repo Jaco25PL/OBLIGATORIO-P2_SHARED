@@ -53,26 +53,30 @@ public class Tablero {
 
     // Devuelve punto por coordenadas.
     public Punto getPunto(char columna, int fila) {
+        Punto puntoEncontrado = null;
+        char colMayuscula = Character.toUpperCase(columna);
         for (Punto p : this.puntosDisponibles) {
-            if (p.getFila() == fila && p.getColumna() == Character.toUpperCase(columna)) {
-                return p;
+            if (p.getFila() == fila && p.getColumna() == colMayuscula) {
+                puntoEncontrado = p;
+                break;
             }
         }
-        return null;
+        return puntoEncontrado;
     }
 
     // Devuelve punto por string.
     public Punto getPunto(String coordenada) {
-        if (coordenada == null || coordenada.length() < 2) {
-            return null;
+        Punto puntoResultado = null;
+        if (coordenada != null && coordenada.length() >= 2) {
+            char col = Character.toUpperCase(coordenada.charAt(0));
+            try {
+                int fil = Integer.parseInt(coordenada.substring(1));
+                puntoResultado = getPunto(col, fil);
+            } catch (NumberFormatException e) {
+                // puntoResultado permanece null si hay error de formato
+            }
         }
-        char col = Character.toUpperCase(coordenada.charAt(0));
-        try {
-            int fil = Integer.parseInt(coordenada.substring(1));
-            return getPunto(col, fil);
-        } catch (NumberFormatException e) {
-            return null;
-        }
+        return puntoResultado;
     }
 
     // Agrega banda al tablero.
@@ -127,27 +131,27 @@ public class Tablero {
 
     // Verifica si puntos adyacentes.
     public static boolean sonPuntosAdyacentes(Punto p1, Punto p2) {
-        if (p1 == null || p2 == null || p1.equals(p2)) {
-            return false;
+        boolean adyacentes = false;
+        if (p1 != null && p2 != null && !p1.equals(p2)) {
+            int diffFilas = Math.abs(p1.getFila() - p2.getFila());
+            int diffCols = Math.abs(p1.getColumna() - p2.getColumna());
+
+            boolean mismaFilaAdy = (diffFilas == 0 && diffCols == 2);
+            boolean filaAdyacenteAdy = (diffFilas == 1 && diffCols == 1);
+
+            adyacentes = mismaFilaAdy || filaAdyacenteAdy;
         }
-        int diffFilas = Math.abs(p1.getFila() - p2.getFila());
-        int diffCols = Math.abs(p1.getColumna() - p2.getColumna());
-
-        boolean mismaFilaAdy = (diffFilas == 0 && diffCols == 2);
-        boolean filaAdyacenteAdy = (diffFilas == 1 && diffCols == 1);
-
-        return mismaFilaAdy || filaAdyacenteAdy;
+        return adyacentes;
     }
 
     // Devuelve puntos adyacentes.
     public List<Punto> getPuntosAdyacentes(Punto punto) {
         List<Punto> adyacentes = new ArrayList<>();
-        if (punto == null) {
-            return adyacentes;
-        }
-        for (Punto p : this.puntosDisponibles) {
-            if (sonPuntosAdyacentes(punto, p)) {
-                adyacentes.add(p);
+        if (punto != null) {
+            for (Punto p : this.puntosDisponibles) {
+                if (sonPuntosAdyacentes(punto, p)) {
+                    adyacentes.add(p);
+                }
             }
         }
         return adyacentes;
@@ -241,21 +245,21 @@ public class Tablero {
             }
         }
 
-        String result = "";
+        StringBuilder resultBuilder = new StringBuilder();
         for (char c = 'A'; c < 'A' + numColsLetras; c++) {
-            result += c; 
+            resultBuilder.append(c); 
             if (c < 'A' + numColsLetras - 1) {
-                result += " ";
+                resultBuilder.append(" ");
             }
         }
-        result += "\n\n";
+        resultBuilder.append("\n\n");
         
         for (int i = 0; i < numDisplayFilas; i++) {
             for (int j = 0; j < anchoDisplay; j++) {
-                result += displayGrid[i][j]; 
+                resultBuilder.append(displayGrid[i][j]); 
             }
-            result += "\n";
+            resultBuilder.append("\n");
         }
-        return result;
+        return resultBuilder.toString();
     }
 }

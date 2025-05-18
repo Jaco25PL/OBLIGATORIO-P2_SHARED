@@ -164,9 +164,11 @@ public class FireworksAnimation {
 
         // Crea instancia de fuego artificial.
         FireworkInstance() {
-            this.currentX = (int) (FireworksAnimation.this.width * 0.15 + FireworksAnimation.this.random.nextDouble() * FireworksAnimation.this.width * 0.7);
+            this.currentX = (int) (FireworksAnimation.this.width * 0.15 + 
+                FireworksAnimation.this.random.nextDouble() * FireworksAnimation.this.width * 0.7);
+            this.maxHeight = (int) (FireworksAnimation.this.height * 0.1 + 
+                FireworksAnimation.this.random.nextDouble() * FireworksAnimation.this.height * 0.35);
             this.currentY = FireworksAnimation.this.height - 1;
-            this.maxHeight = (int) (FireworksAnimation.this.height * 0.1 + FireworksAnimation.this.random.nextDouble() * FireworksAnimation.this.height * 0.35);
             this.exploded = false;
             this.explosionStep = 0;
             this.maxExplosionSteps = 5 + FireworksAnimation.this.random.nextInt(3);
