@@ -175,7 +175,7 @@ public class Interfaz {
         }
 
         if (!respuesta.equals("N")) {
-            System.out.println("Opción no válida. Se mantiene la configuración actual.");
+            System.out.println("Opción no válida. Por favor, ingrese S o N. Se mantiene la configuración actual.");
             return;
         }
 
@@ -186,55 +186,94 @@ public class Interfaz {
         int tempCantBandasFin;
         int tempCantTableros;
 
-        System.out.print("¿Se requiere contacto para nuevas bandas (después del 2do mov.)? (S/N) (Actual: " + (configuracionActual.isRequiereContacto() ? "Sí" : "No") + "): ");
-        tempRequiereContacto = scanner.nextLine().trim().equalsIgnoreCase("S");
+        String inputSN;
 
-        System.out.print("¿Largo de bandas variable (1-" + ConfiguracionPartida.MAX_LARGO_BANDA + ")? (S/N) (Actual: " + (configuracionActual.isLargoBandasVariable() ? "Variable" : "Fijo " + configuracionActual.getLargoFijo()) + "): ");
-        tempLargoVariable = scanner.nextLine().trim().equalsIgnoreCase("S");
+        // Validar Requiere Contacto
+        while (true) {
+            System.out.print("¿Se requiere contacto para nuevas bandas (después del 2do mov.)? (S/N) (Actual: " + (configuracionActual.isRequiereContacto() ? "Sí" : "No") + "): ");
+            inputSN = scanner.nextLine().trim().toUpperCase();
+            if (inputSN.equals("S")) {
+                tempRequiereContacto = true;
+                break;
+            } else if (inputSN.equals("N")) {
+                tempRequiereContacto = false;
+                break;
+            } else {
+                System.out.println("Opción inválida. Por favor, ingrese S o N.");
+            }
+        }
+
+        // Validar Largo de Bandas Variable
+        while (true) {
+            System.out.print("¿Largo de bandas variable (1-" + ConfiguracionPartida.MAX_LARGO_BANDA + ")? (S/N) (Actual: " + (configuracionActual.isLargoBandasVariable() ? "Variable" : "Fijo " + configuracionActual.getLargoFijo()) + "): ");
+            inputSN = scanner.nextLine().trim().toUpperCase();
+            if (inputSN.equals("S")) {
+                tempLargoVariable = true;
+                break;
+            } else if (inputSN.equals("N")) {
+                tempLargoVariable = false;
+                break;
+            } else {
+                System.out.println("Opción inválida. Por favor, ingrese S o N.");
+            }
+        }
 
         if (!tempLargoVariable) {
             while (true) {
                 System.out.print("Ingrese el largo fijo de las bandas (" + ConfiguracionPartida.MIN_LARGO_BANDA + "-" + ConfiguracionPartida.MAX_LARGO_BANDA + ") (Actual: " + configuracionActual.getLargoFijo() + "): ");
                 try {
-                    tempLargoFijo = scanner.nextInt();
-                    scanner.nextLine();
-                    // No es necesario validar aquí, ConfiguracionPartida lo hará
-                    break;
+                    int inputVal = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline
+                    if (inputVal >= ConfiguracionPartida.MIN_LARGO_BANDA && inputVal <= ConfiguracionPartida.MAX_LARGO_BANDA) {
+                        tempLargoFijo = inputVal;
+                        break;
+                    } else {
+                        System.out.println("Largo inválido. Debe ser entre " + ConfiguracionPartida.MIN_LARGO_BANDA + " y " + ConfiguracionPartida.MAX_LARGO_BANDA + ".");
+                    }
                 } catch (InputMismatchException e) {
                     System.out.println("Entrada inválida. Ingrese un número.");
-                    scanner.nextLine();
+                    scanner.nextLine(); // Consume invalid input
                 }
             }
         }
 
+        // Validar Cantidad de Bandas para Finalizar
         while (true) {
             System.out.print("Ingrese la cantidad de bandas para finalizar la partida (mínimo " + ConfiguracionPartida.MIN_BANDAS_FIN + ") (Actual: " + configuracionActual.getCantidadBandasFin() + "): ");
             try {
-                tempCantBandasFin = scanner.nextInt();
-                scanner.nextLine();
-                // No es necesario validar aquí, ConfiguracionPartida lo hará
-                break;
+                int inputVal = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+                if (inputVal >= ConfiguracionPartida.MIN_BANDAS_FIN) {
+                    tempCantBandasFin = inputVal;
+                    break;
+                } else {
+                    System.out.println("Cantidad inválida. Debe ser como mínimo " + ConfiguracionPartida.MIN_BANDAS_FIN + ".");
+                }
             } catch (InputMismatchException e) {
                 System.out.println("Entrada inválida. Ingrese un número.");
-                scanner.nextLine();
+                scanner.nextLine(); // Consume invalid input
             }
         }
 
+        // Validar Cantidad de Tableros a Mostrar
         while (true) {
             System.out.print("Ingrese la cantidad de tableros a mostrar (" + ConfiguracionPartida.MIN_TABLEROS_MOSTRAR + "-" + ConfiguracionPartida.MAX_TABLEROS_MOSTRAR + ") (Actual: " + configuracionActual.getCantidadTablerosMostrar() + "): ");
             try {
-                tempCantTableros = scanner.nextInt();
-                scanner.nextLine();
-                // No es necesario validar aquí, ConfiguracionPartida lo hará
-                break;
+                int inputVal = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+                if (inputVal >= ConfiguracionPartida.MIN_TABLEROS_MOSTRAR && inputVal <= ConfiguracionPartida.MAX_TABLEROS_MOSTRAR) {
+                    tempCantTableros = inputVal;
+                    break;
+                } else {
+                    System.out.println("Cantidad inválida. Debe ser entre " + ConfiguracionPartida.MIN_TABLEROS_MOSTRAR + " y " + ConfiguracionPartida.MAX_TABLEROS_MOSTRAR + ".");
+                }
             } catch (InputMismatchException e) {
                 System.out.println("Entrada inválida. Ingrese un número.");
-                scanner.nextLine();
+                scanner.nextLine(); // Consume invalid input
             }
         }
 
         try {
-            
             ConfiguracionPartida nuevaConfig = new ConfiguracionPartida(
                 tempRequiereContacto,
                 tempLargoVariable,
@@ -244,10 +283,10 @@ public class Interfaz {
             );
             configuracionActual = nuevaConfig;
             System.out.println("Configuración actualizada exitosamente.");
-            System.out.println("\nNueva configuración:\n" + configuracionActual); // MODIFICADO
+            System.out.println("\nNueva configuración:\n" + configuracionActual);
         } catch (IllegalArgumentException e) {
-            System.err.println("Error en la configuración: " + e.getMessage());
-            System.out.println("No se guardaron los cambios. Se mantiene la configuración anterior: \n" + configuracionActual); // MODIFICADO
+            System.err.println("Error al crear la configuración: " + e.getMessage());
+            System.out.println("No se guardaron los cambios. Se mantiene la configuración anterior: \n" + configuracionActual);
         }
     }
 
