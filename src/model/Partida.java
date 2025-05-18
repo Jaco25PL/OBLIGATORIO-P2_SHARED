@@ -290,8 +290,15 @@ public class Partida {
         }
         
         if (input.length() <= dirIndex) return null; 
-        dir = Direccion.fromChar(input.charAt(dirIndex));
-        if (dir == null) return null;
+        char dirCharInput = input.charAt(dirIndex);
+        char upperDirChar = Character.toUpperCase(dirCharInput);
+
+        // Validate the direction character
+        if (!(upperDirChar == 'Q' || upperDirChar == 'E' || upperDirChar == 'D' || upperDirChar == 'C' || upperDirChar == 'Z' || upperDirChar == 'A')) {
+            System.out.println("Dirección inválida: " + dirCharInput);
+            return null;
+        }
+        dir = new Direccion(dirCharInput); // Constructor of Direccion class handles toUpperCase
 
         if (input.length() > dirIndex + 1) { 
             try {
@@ -328,8 +335,8 @@ public class Partida {
 
         
         if (configuracion.isLargoBandasVariable()) {
-            if (jugada.getLargo() < ConfiguracionPartida.MIN_LARGO_BANDA || jugada.getLargo() > ConfiguracionPartida.MAX_LARGO_BANDA) {
-                System.out.println("Largo de banda ("+jugada.getLargo()+") inválido. Debe ser entre " + ConfiguracionPartida.MIN_LARGO_BANDA + " y " + ConfiguracionPartida.MAX_LARGO_BANDA + ".");
+            if (jugada.getLargo() < this.configuracion.getMinLargoBanda() || jugada.getLargo() > this.configuracion.getMaxLargoBanda()) {
+                System.out.println("Largo de banda ("+jugada.getLargo()+") inválido. Debe ser entre " + this.configuracion.getMinLargoBanda() + " y " + this.configuracion.getMaxLargoBanda() + ".");
                 return false;
             }
         } else { 
@@ -382,29 +389,32 @@ public class Partida {
         int nuevaFila = filaActual;
         char nuevaCol = colActual;
 
-        switch (dir) {
-            case NOROESTE: 
+        switch (dir.getCodigo()) { // Use getCodigo() and char literals
+            case 'Q': // NOROESTE
                 nuevaFila--;
                 nuevaCol--;
                 break;
-            case NORESTE:  
+            case 'E':  // NORESTE
                 nuevaFila--;
                 nuevaCol++;
                 break;
-            case ESTE:     
+            case 'D':     // ESTE
                 nuevaCol += 2;
                 break;
-            case SURESTE:  
+            case 'C':  // SURESTE
                 nuevaFila++;
                 nuevaCol++; 
                 break;
-            case SUROESTE: 
+            case 'Z': // SUROESTE
                 nuevaFila++;
                 nuevaCol--;
                 break;
-            case OESTE:    
+            case 'A':    // OESTE
                 nuevaCol -= 2;
                 break;
+            default:
+                // This case should ideally not be reached if parsearJugadaInput validates the char
+                return null; 
         }
         
         
