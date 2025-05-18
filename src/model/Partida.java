@@ -22,6 +22,7 @@ public class Partida {
     private Jugador ganador;
     private Jugador jugadorAbandono;
     private int movimientosRealizados; 
+    private static final int MAX_TRIANGULOS_POSIBLES = 54; // Nuevo constante
 
     // crea una nueva partida.
     public Partida(Jugador jugadorBlanco, Jugador jugadorNegro, ConfiguracionPartida configuracion) {
@@ -162,9 +163,8 @@ public class Partida {
         movimientosRealizados++;
 
         
-        if (verificarFinPartida()) {
-            determinarGanadorFinal();
-            
+        if (verificarFinPartida()) { // This now only sets the flag and returns true if game ended
+            determinarGanadorFinal(); // This method now handles all final printing in order
         } else {
             cambiarTurno();
         }
@@ -396,24 +396,56 @@ public class Partida {
     }
 
     // verifica fin de partida.
+    // MODIFIED: This method now only checks conditions and sets the flag. It does not print.
     private boolean verificarFinPartida() {
         if (this.bandasColocadasEnPartida >= configuracion.getCantidadBandasFin()) {
+            partidaTerminada = true;
+            return true;
+        }
+        int totalTriangulosFormados = this.triangulosJugadorBlanco + this.triangulosJugadorNegro;
+        if (totalTriangulosFormados >= MAX_TRIANGULOS_POSIBLES) {
             partidaTerminada = true;
             return true;
         }
         return false;
     }
 
+    // NEW HELPER METHOD: Gets the reason text for a natural game end.
+    private String getNaturalEndReason() {
+        if (this.bandasColocadasEnPartida >= configuracion.getCantidadBandasFin()) {
+            return "Partida terminada: Se alcanzó el límite de bandas colocadas.";
+        }
+        int totalTriangulosFormados = this.triangulosJugadorBlanco + this.triangulosJugadorNegro;
+        if (totalTriangulosFormados >= MAX_TRIANGULOS_POSIBLES) {
+            return "Partida terminada: Se formaron todos los triángulos posibles en el tablero.";
+        }
+        return null; // Should not be called if game didn't end naturally
+    }
+
     // determina ganador final.
+    // MODIFIED: This method now prints the final board, then the reason, then the summary.
     private void determinarGanadorFinal() {
         if (!partidaTerminada) return; 
 
-        Jugador determinedWinner = null; // Renombrado para claridad interna del método
-        Jugador determinedLoser = null;  // Renombrado para claridad interna del método
+        // 1. Print the final board state
+        System.out.println("\n" + this.tablero.toString() + "\n");
+
+        // 2. Print the reason for natural game end (if not abandoned)
+        if (jugadorAbandono == null) {
+            String reason = getNaturalEndReason();
+            if (reason != null) {
+                System.out.println(reason);
+            }
+        }
+        // If abandoned, "El jugador X ha abandonado..." is printed by abandonarPartida()
+
+        Jugador determinedWinner = null;
+        Jugador determinedLoser = null;
 
         if (jugadorAbandono != null) { 
             determinedWinner = (jugadorAbandono.equals(jugadorBlanco)) ? jugadorNegro : jugadorBlanco;
             determinedLoser = jugadorAbandono;
+            // "Partida finalizada. Ganador: ..." will be printed below.
         } else { 
             if (triangulosJugadorBlanco > triangulosJugadorNegro) {
                 determinedWinner = jugadorBlanco;
@@ -422,45 +454,36 @@ public class Partida {
                 determinedWinner = jugadorNegro;
                 determinedLoser = jugadorBlanco;
             } else {
-                // Empate sin abandono
-                this.ganador = null; // Establece el ganador de la partida como null
-                if (jugadorBlanco != null) jugadorBlanco.resetRachaActual();
-                if (jugadorNegro != null) jugadorNegro.resetRachaActual();
-                System.out.println("Partida finalizada. Es un empate!");
-                // Aquí puedes añadir los mensajes de puntuación final para el empate si lo deseas
-                // y luego retornar, ya que el resto del método es para cuando hay un ganador/perdedor claro.
-                // Por ejemplo:
-                System.out.println("--- Puntuación Final ---");
-                System.out.println(jugadorBlanco.getNombre() + " (Blanco): " + triangulosJugadorBlanco + " triángulos.");
-                System.out.println(jugadorNegro.getNombre() + " (Negro): " + triangulosJugadorNegro + " triángulos.");
-                System.out.println("¡Ha sido un empate!");
-                System.out.println("--- Fin de la Partida ---");
-                return;
+                // Empate
             }
         }
         
-        this.ganador = determinedWinner; // Asigna el ganador oficial de la Partida
+        this.ganador = determinedWinner; 
         
         if (this.ganador != null) {
-            this.ganador.incrementarPartidasGanadas(); // Solo incrementa partidas ganadas
-            this.ganador.incrementarRachaActual();     // Solo incrementa racha actual
-            this.ganador.actualizarRachaMaxima();      // Actualiza la mejor racha basada en la nueva racha actual
-            
             System.out.println("Partida finalizada. Ganador: " + this.ganador.getNombre());
+            this.ganador.incrementarPartidasGanadas();
+            this.ganador.incrementarRachaActual();
+            this.ganador.actualizarRachaMaxima();
+            if (determinedLoser != null) {
+                determinedLoser.resetRachaActual();
+            }
+        } else if (jugadorAbandono == null) { // Empate natural
+            System.out.println("Partida finalizada. Es un empate!");
+            if (jugadorBlanco != null) jugadorBlanco.resetRachaActual();
+            if (jugadorNegro != null) jugadorNegro.resetRachaActual();
         }
+        // For abandonment, the "Partida finalizada. Ganador: ..." is handled above.
 
-        if (determinedLoser != null) {
-            determinedLoser.resetRachaActual(); // El perdedor reinicia su racha actual
-        }
-        
-        // Mensajes finales (pueden ser redundantes si el empate ya los imprimió)
         System.out.println("--- Puntuación Final ---");
         System.out.println(jugadorBlanco.getNombre() + " (Blanco): " + triangulosJugadorBlanco + " triángulos.");
         System.out.println(jugadorNegro.getNombre() + " (Negro): " + triangulosJugadorNegro + " triángulos.");
+
         if (this.ganador != null) {
             System.out.println("¡Felicidades " + this.ganador.getNombre() + "!");
+        } else if (jugadorAbandono == null) { // Empate natural
+            System.out.println("¡Ha sido un empate!");
         }
-        // El mensaje de empate ya se manejó arriba.
         System.out.println("--- Fin de la Partida ---");
     }
 
@@ -469,7 +492,7 @@ public class Partida {
         this.partidaTerminada = true;
         this.jugadorAbandono = jugadorQueAbandona;
         System.out.println("El jugador " + jugadorQueAbandona.getNombre() + " ha abandonado la partida.");
-        determinarGanadorFinal(); 
+        determinarGanadorFinal(); // This will now print board and full summary
     }
 
     // muestra historial de jugadas.

@@ -357,11 +357,10 @@ public class Interfaz {
         partidaActual = new Partida(jugadorBlanco, jugadorNegro, configuracionActual);
         System.out.println("\n¡Que comience el juego!");
 
-
+        // Main game loop
         while (partidaActual != null && !partidaActual.isPartidaTerminada()) {
             System.out.println("\n--- Tablero Actual ---");
             System.out.println(partidaActual.getTablero().toString()); 
-
             System.out.println(jugadorBlanco.getNombre() + " (Blancas □): " + partidaActual.getTriangulosJugadorBlanco() + " triángulos.");
             System.out.println(jugadorNegro.getNombre() + " (Negras ■): " + partidaActual.getTriangulosJugadorNegro() + " triángulos.");
             
@@ -378,26 +377,12 @@ public class Interfaz {
             partidaActual.procesarJugada(entrada);
         }
         
-        System.out.println("\n--- Fin de la Partida ---");
-        if (partidaActual != null && partidaActual.getTablero() != null) {
-             System.out.println(partidaActual.getTablero().toString()); 
-        }
+        // After the loop, the game is over.
+        // The Partida class has already printed all necessary end-of-game messages.
+        // Ensure there are NO System.out.println calls here for the board,
+        // winner, or "--- Fin de la Partida ---".
 
-        if (partidaActual != null) {
-            if (partidaActual.getJugadorAbandono() != null) {
-                System.out.println("Partida terminada por abandono de " + partidaActual.getJugadorAbandono().getNombre() + ".");
-            }
-            Jugador ganador = partidaActual.getGanador();
-            if (ganador != null) {
-                System.out.println("¡El ganador es " + ganador.getNombre() + "!");
-                
-                
-            } else if (partidaActual.getJugadorAbandono() == null && partidaActual.isPartidaTerminada()) { 
-                
-                System.out.println("¡La partida es un empate!");
-            }
-        }
-        partidaActual = null; 
+        partidaActual = null; // Clean up the current game instance.
     }
 
     // muestra el ranking.
