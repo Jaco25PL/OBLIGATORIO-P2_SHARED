@@ -6,17 +6,7 @@ package model;
 
 public class ConfiguracionPartida {
 
-    // public static final int MAX_TABLEROS_MOSTRAR = 4;
-    // public static final int MIN_TABLEROS_MOSTRAR = 1;
-    // public static final int MIN_LARGO_BANDA = 1;
-    // public static final int MAX_LARGO_BANDA = 4;
-    // public static final int MIN_BANDAS_FIN = 1; 
 
-    // public static final boolean DEFAULT_REQUIERE_CONTACTO = false;
-    // public static final boolean DEFAULT_LARGO_VARIABLE = false;
-    // public static final int DEFAULT_LARGO_FIJO = 4;
-    // public static final int DEFAULT_CANTIDAD_BANDAS_FIN = 10;
-    // public static final int DEFAULT_CANTIDAD_TABLEROS = 1;
 
     private int maxTablerosMostrar = 4;
     private int minTablerosMostrar = 1;
