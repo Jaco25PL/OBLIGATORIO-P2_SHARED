@@ -241,21 +241,21 @@ public class Tablero {
             }
         }
 
-        StringBuilder sb = new StringBuilder();
+        String result = "";
         for (char c = 'A'; c < 'A' + numColsLetras; c++) {
-            sb.append(c);
+            result += c; 
             if (c < 'A' + numColsLetras - 1) {
-                sb.append(" ");
+                result += " ";
             }
         }
-        sb.append("\n\n");
+        result += "\n\n";
         
         for (int i = 0; i < numDisplayFilas; i++) {
             for (int j = 0; j < anchoDisplay; j++) {
-                sb.append(displayGrid[i][j]);
+                result += displayGrid[i][j]; 
             }
-            sb.append("\n");
+            result += "\n";
         }
-        return sb.toString();
+        return result;
     }
 }

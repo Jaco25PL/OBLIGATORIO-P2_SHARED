@@ -496,22 +496,21 @@ public class Interfaz {
         }
 
         for (int i = 0; i < maxLines; i++) {
-            StringBuilder lineToShow = new StringBuilder();
+            String lineToShow = ""; 
             for (String[] boardLines : splitBoardLines) {
                 if (i < boardLines.length) {
-                    // Formatea cada línea de tablero para que tenga un ancho fijo
-                    lineToShow.append(String.format("%-" + boardDisplayWidth + "s", boardLines[i]));
+                    lineToShow += String.format("%-" + boardDisplayWidth + "s", boardLines[i]); // Concatenación de String
                 } else {
-                    // Si un tablero tiene menos líneas, rellena con espacios
-                    lineToShow.append(String.format("%-" + boardDisplayWidth + "s", ""));
+                    
+                    lineToShow += String.format("%-" + boardDisplayWidth + "s", ""); // Concatenación de String
                 }
-                lineToShow.append("    "); // Separador entre tableros
+                lineToShow += "    ";
             }
-            // Eliminar el último separador de la línea
-            if (lineToShow.length() > 5) { // "  |  " tiene 5 caracteres
-                 System.out.println(lineToShow.substring(0, lineToShow.length() - 5));
+            
+            if (lineToShow.length() > 4) { 
+                 System.out.println(lineToShow.substring(0, lineToShow.length() - 4));
             } else {
-                 System.out.println(lineToShow.toString());
+                 System.out.println(lineToShow);
             }
         } 
     }
