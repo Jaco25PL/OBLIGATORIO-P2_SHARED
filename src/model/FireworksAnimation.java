@@ -83,9 +83,10 @@ public class FireworksAnimation {
         // Initial message and space for animation
         // String winnerMessage = " ".repeat(Math.max(0,this.width/2 - 5)) + ANSI_YELLOW + "¡GANADOR!" + ANSI_RESET; // REMOVED
         // System.out.println(winnerMessage); // REMOVED
-        for(int i=0; i<this.height; i++) {
-            System.out.println(); 
-        }
+        //for(int i=0; i<this.height; i++) {
+        //    System.out.println(); 
+        //}
+        System.out.println(); 
 
         boolean firstFrame = true;
         while (System.currentTimeMillis() - startTime < totalDurationMillis) {
