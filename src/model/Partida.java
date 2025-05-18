@@ -86,6 +86,11 @@ public class Partida {
         return bandasColocadasEnPartida;
     }
 
+    // Getter para movimientosRealizados
+    public int getMovimientosRealizados() {
+        return movimientosRealizados;
+    }
+
     // procesa la jugada ingresada.
     public boolean procesarJugada(String inputJugada) {
         if (partidaTerminada) {

@@ -370,8 +370,12 @@ public class Interfaz {
             System.out.println("Turno de: " + partidaActual.getTurnoActual().getNombre() + 
             (partidaActual.getTurnoActual().equals(jugadorBlanco) ? " (Blanco □)" : " (Negro ■)"));
             
-            String ejemploCantidadStr = Integer.toString(configuracionActual.getLargoFijo());
-            System.out.print("Ingrese su jugada (ej: D1C" + ejemploCantidadStr + " para banda, H para historial, X para abandonar): ");
+            if (partidaActual.getMovimientosRealizados() == 0) {
+                String ejemploCantidadStr = Integer.toString(configuracionActual.getLargoFijo());
+                System.out.print("Ingrese su jugada (ej: D1C" + ejemploCantidadStr + " para banda, H para historial, X para abandonar): ");
+            } else {
+                System.out.print("Ingrese su jugada (H para historial, X para abandonar): ");
+            }
             String entrada = scanner.nextLine().trim(); 
 
             partidaActual.procesarJugada(entrada);
