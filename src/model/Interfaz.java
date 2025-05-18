@@ -359,8 +359,29 @@ public class Interfaz {
 
         // Main game loop
         while (partidaActual != null && !partidaActual.isPartidaTerminada()) {
-            System.out.println("\n--- Tablero Actual ---");
-            System.out.println(partidaActual.getTablero().toString()); 
+            System.out.println("\n--- Tablero(s) ---");
+
+            List<String> boardStringsToDisplay = new ArrayList<>();
+            List<Tablero> snapshots = partidaActual.getHistorialDeTablerosSnapshots();
+            int numConfigured = configuracionActual.getCantidadTablerosMostrar();
+
+            if (!snapshots.isEmpty()) {
+                // Los snapshots están en orden cronológico (el más antiguo primero, el más nuevo al final)
+                // Queremos mostrar los últimos 'numConfigured' tableros.
+                int numToShow = Math.min(snapshots.size(), numConfigured);
+                int startIndex = snapshots.size() - numToShow;
+                
+                for (int i = 0; i < numToShow; i++) {
+                    boardStringsToDisplay.add(snapshots.get(startIndex + i).toString());
+                }
+            }
+
+            if (!boardStringsToDisplay.isEmpty()) {
+                displayMultipleBoardStrings(boardStringsToDisplay);
+            } else { // Fallback si no hay snapshots (no debería ocurrir con la lógica actual)
+                System.out.println(partidaActual.getTablero().toString());
+            }
+
             System.out.println(jugadorBlanco.getNombre() + " (Blancas □): " + partidaActual.getTriangulosJugadorBlanco() + " triángulos.");
             System.out.println(jugadorNegro.getNombre() + " (Negras ■): " + partidaActual.getTriangulosJugadorNegro() + " triángulos.");
             
@@ -450,5 +471,44 @@ public class Interfaz {
     private void presioneEnterParaContinuar() {
         System.out.print("\nPresione Enter para continuar...");
         scanner.nextLine(); 
+    }
+
+    // NUEVO: Método para mostrar múltiples tableros lado a lado
+    private void displayMultipleBoardStrings(List<String> boardStrings) {
+        if (boardStrings.isEmpty()) {
+            return;
+        }
+
+        List<String[]> splitBoardLines = new ArrayList<>();
+        int maxLines = 0;
+        int boardDisplayWidth = 30; // Ancho para cada tablero, ajustar si es necesario
+
+        for (String bs : boardStrings) {
+            String[] lines = bs.split("\n");
+            splitBoardLines.add(lines);
+            if (lines.length > maxLines) {
+                maxLines = lines.length;
+            }
+        }
+
+        for (int i = 0; i < maxLines; i++) {
+            StringBuilder lineToShow = new StringBuilder();
+            for (String[] boardLines : splitBoardLines) {
+                if (i < boardLines.length) {
+                    // Formatea cada línea de tablero para que tenga un ancho fijo
+                    lineToShow.append(String.format("%-" + boardDisplayWidth + "s", boardLines[i]));
+                } else {
+                    // Si un tablero tiene menos líneas, rellena con espacios
+                    lineToShow.append(String.format("%-" + boardDisplayWidth + "s", ""));
+                }
+                lineToShow.append("    "); // Separador entre tableros
+            }
+            // Eliminar el último separador de la línea
+            if (lineToShow.length() > 5) { // "  |  " tiene 5 caracteres
+                 System.out.println(lineToShow.substring(0, lineToShow.length() - 5));
+            } else {
+                 System.out.println(lineToShow.toString());
+            }
+        } 
     }
 }

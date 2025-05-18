@@ -25,6 +25,22 @@ public class Tablero {
         this.inicializarPuntosDelTablero();
     }
 
+    // NUEVO: Constructor de copia
+    public Tablero(Tablero original) {
+        this(); // Llama al constructor por defecto para inicializar puntos y listas vacías
+
+        // Copia las bandas. Asumimos que los objetos Banda son inmutables una vez creados.
+        // Si fueran mutables, necesitarías crear nuevas instancias de Banda aquí.
+        for (Banda banda : original.bandasColocadas) {
+            this.bandasColocadas.add(banda);
+        }
+
+        // Copia los triángulos ganados. Similar a las bandas.
+        for (Triangulo triangulo : original.triangulosGanados) {
+            this.triangulosGanados.add(triangulo);
+        }
+    }
+
     // Inicializa los puntos
     private void inicializarPuntosDelTablero() {
         agregarPuntosFila(1, new char[]{'D', 'F', 'H', 'J'});

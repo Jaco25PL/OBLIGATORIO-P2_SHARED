@@ -23,13 +23,15 @@ public class Partida {
     private Jugador jugadorAbandono;
     private int movimientosRealizados; 
     private static final int MAX_TRIANGULOS_POSIBLES = 54; // Nuevo constante
+    private List<Tablero> historialDeTablerosSnapshots; // NUEVO: para guardar los estados del tablero
+    private int maxHistorialSnapshots; // NUEVO: cuántos tableros guardar según configuración
 
     // crea una nueva partida.
     public Partida(Jugador jugadorBlanco, Jugador jugadorNegro, ConfiguracionPartida configuracion) {
         this.jugadorBlanco = jugadorBlanco;
         this.jugadorNegro = jugadorNegro;
         this.configuracion = configuracion;
-        this.tablero = new Tablero(); 
+        this.tablero = new Tablero(); // Este es el tablero actual/vivo
         this.turnoActual = jugadorBlanco; 
         this.bandasColocadasEnPartida = 0;
         this.triangulosJugadorBlanco = 0;
@@ -39,6 +41,19 @@ public class Partida {
         this.ganador = null;
         this.jugadorAbandono = null;
         this.movimientosRealizados = 0;
+
+        this.maxHistorialSnapshots = configuracion.getCantidadTablerosMostrar(); // Guardar la configuración
+        this.historialDeTablerosSnapshots = new ArrayList<>();
+        
+        // Guardar el estado inicial del tablero si se mostrará más de uno (o siempre si es >=1)
+        if (this.maxHistorialSnapshots > 0) {
+            this.historialDeTablerosSnapshots.add(new Tablero(this.tablero));
+        }
+    }
+
+    // NUEVO: Getter para el historial de tableros
+    public List<Tablero> getHistorialDeTablerosSnapshots() {
+        return new ArrayList<>(this.historialDeTablerosSnapshots); // Devuelve una copia para evitar modificaciones externas
     }
 
     // obtiene el turno actual.
@@ -97,25 +112,28 @@ public class Partida {
 
         if ("X".equals(inputUpper)) {
             abandonarPartida(turnoActual);
+            // No se guarda snapshot aquí porque la partida termina. El estado final se muestra por determinarGanadorFinal.
             return true; 
         }
 
         if ("H".equals(inputUpper)) {
             mostrarHistorial();
-            return false; 
+            return false; // No es un movimiento de juego, no cambia el tablero, no se guarda snapshot
         }
         
         ParsedJugada jugada = parsearJugadaInput(inputUpper);
         if (jugada == null) {
             System.out.println("Formato de jugada incorrecto. Reingrese.");
-            return true; 
+            return true; // No es un movimiento válido, no cambia el tablero
         }
 
         if (!validarLogicaJugada(jugada)) {
-            return true; 
+            // Mensaje de error ya impreso por validarLogicaJugada
+            return true; // No es un movimiento válido, no cambia el tablero
         }
-        
-        Punto puntoActual = jugada.getOrigen();
+
+        // Lógica para colocar la banda y actualizar el tablero (this.tablero)
+        Punto puntoActual = jugada.getOrigen(); // Ya validado y obtenido del tablero
         List<Banda> segmentosColocadosEstaJugada = new ArrayList<>();
 
         for (int i = 0; i < jugada.getLargo(); i++) {
@@ -162,7 +180,15 @@ public class Partida {
         historialJugadas.add(inputJugada); 
         movimientosRealizados++;
 
-        
+        // Guardar snapshot del tablero DESPUÉS de una jugada válida y procesada
+        if (this.maxHistorialSnapshots > 0) {
+            this.historialDeTablerosSnapshots.add(new Tablero(this.tablero)); // Añade una COPIA del estado actual
+            // Mantener el tamaño del historial
+            while (this.historialDeTablerosSnapshots.size() > this.maxHistorialSnapshots) {
+                this.historialDeTablerosSnapshots.remove(0); // Elimina el más antiguo
+            }
+        }
+
         if (verificarFinPartida()) { // This now only sets the flag and returns true if game ended
             determinarGanadorFinal(); // This method now handles all final printing in order
         } else {
