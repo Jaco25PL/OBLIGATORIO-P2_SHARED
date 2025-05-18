@@ -9,54 +9,64 @@ import java.util.Random;
 
 public class FireworksAnimation {
 
-    // ANSI escape codes for colors
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_MAGENTA = "\u001B[35m";
-    public static final String ANSI_CYAN = "\u001B[36m";
-    public static final String ANSI_WHITE = "\u001B[37m";
+    private String ansiReset;
+    private String ansiRed;
+    private String ansiGreen;
+    private String ansiYellow;
+    private String ansiBlue;
+    private String ansiMagenta;
+    private String ansiCyan;
 
-    private static final String[] FIREWORK_COLORS = {
-            ANSI_RED, ANSI_GREEN, ANSI_YELLOW, ANSI_BLUE, ANSI_MAGENTA, ANSI_CYAN
-    };
+    private String[] fireworkColors;
+    private char[] particleChars;
 
-    private static final char[] PARTICLE_CHARS = {'*', 'o', '+'};
+    private int width;
+    private int height;
+    private String[][] frameBuffer;
+    private List<FireworkInstance> activeFireworks;
+    private Random random;
 
-    private final int width;
-    private final int height;
-    private final String[][] frameBuffer;
-    private final List<FireworkInstance> activeFireworks;
-    private final Random random;
-
+    // Crea nueva animación fuegos.
     public FireworksAnimation(int width, int height) {
         this.width = width;
         this.height = height;
         this.frameBuffer = new String[height][width];
         this.activeFireworks = new ArrayList<>();
         this.random = new Random();
+
+        this.ansiReset = "\u001B[0m";
+        this.ansiRed = "\u001B[31m";
+        this.ansiGreen = "\u001B[32m";
+        this.ansiYellow = "\u001B[33m";
+        this.ansiBlue = "\u001B[34m";
+        this.ansiMagenta = "\u001B[35m";
+        this.ansiCyan = "\u001B[36m";
+
+        this.fireworkColors = new String[]{
+                this.ansiRed, this.ansiGreen, this.ansiYellow, this.ansiBlue, this.ansiMagenta, this.ansiCyan
+        };
+        this.particleChars = new char[]{'*', 'o', '+'};
     }
 
+    // Limpia el buffer de fotogramas.
     private void clearFrameBuffer() {
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                frameBuffer[i][j] = " ";
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
+                this.frameBuffer[i][j] = " ";
             }
         }
     }
 
+    // Imprime fotograma en consola.
     private void printFrame(boolean firstFrame) {
         StringBuilder sb = new StringBuilder();
         if (!firstFrame) {
-            // Move cursor up by 'height' lines and clear screen from cursor down
             System.out.print(String.format("\033[%dA\033[0J", this.height));
         }
 
         for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < width; j++) {
-                sb.append(frameBuffer[i][j]);
+            for (int j = 0; j < this.width; j++) {
+                sb.append(this.frameBuffer[i][j]);
             }
             sb.append("\n");
         }
@@ -64,59 +74,42 @@ public class FireworksAnimation {
         System.out.flush();
     }
 
+    // Obtiene color aleatorio.
     private String getRandomColor() {
-        return FIREWORK_COLORS[random.nextInt(FIREWORK_COLORS.length)];
+        return this.fireworkColors[this.random.nextInt(this.fireworkColors.length)];
     }
 
+    // Obtiene partícula aleatoria.
     private char getRandomParticleChar() {
-        return PARTICLE_CHARS[random.nextInt(PARTICLE_CHARS.length)];
+        return this.particleChars[this.random.nextInt(this.particleChars.length)];
     }
 
+    // Inicia la animación de fuegos.
     public void play(int numberOfFireworks, int totalDurationMillis) {
-        long frameDelayMillis = 120; // Controls speed of animation
+        long frameDelayMillis = 120;
         long startTime = System.currentTimeMillis();
-        long nextFireworkLaunchTime = System.currentTimeMillis();
         int fireworksLaunched = 0;
 
-        activeFireworks.clear();
-
-        // Initial message and space for animation
-        // String winnerMessage = " ".repeat(Math.max(0,this.width/2 - 5)) + ANSI_YELLOW + "¡GANADOR!" + ANSI_RESET; // REMOVED
-        // System.out.println(winnerMessage); // REMOVED
-        //for(int i=0; i<this.height; i++) {
-        //    System.out.println(); 
-        //}
-        System.out.println(); 
+        this.activeFireworks.clear();
+        System.out.println();
 
         boolean firstFrame = true;
         while (System.currentTimeMillis() - startTime < totalDurationMillis) {
             long loopStartTime = System.currentTimeMillis();
             clearFrameBuffer();
 
-            // Launch new fireworks
-            if (fireworksLaunched < numberOfFireworks && loopStartTime >= nextFireworkLaunchTime) {
-                activeFireworks.add(new FireworkInstance());
-                fireworksLaunched++;
-                if (fireworksLaunched < numberOfFireworks) {
-                    long remainingTime = totalDurationMillis - (loopStartTime - startTime);
-                    int fireworksRemaining = numberOfFireworks - fireworksLaunched;
-                    if (fireworksRemaining > 0 && remainingTime > frameDelayMillis * 2) {
-                        long averageDelay = remainingTime / fireworksRemaining;
-                        // Stagger launch times
-                        nextFireworkLaunchTime = loopStartTime + Math.max(frameDelayMillis, (long) (averageDelay * (0.6 + random.nextDouble() * 0.8)));
-                    } else {
-                        nextFireworkLaunchTime = Long.MAX_VALUE; // No more launches if time is short
-                    }
-                } else {
-                    nextFireworkLaunchTime = Long.MAX_VALUE; // All fireworks launched
+            if (fireworksLaunched < numberOfFireworks) {
+                long expectedLaunchTime = startTime + (fireworksLaunched * (totalDurationMillis / Math.max(1, numberOfFireworks)));
+                if (loopStartTime >= expectedLaunchTime) {
+                    this.activeFireworks.add(new FireworkInstance());
+                    fireworksLaunched++;
                 }
             }
 
-            // Update and draw active fireworks
-            for (FireworkInstance fw : activeFireworks) {
+            for (FireworkInstance fw : this.activeFireworks) {
                 fw.updateAndDraw(this);
             }
-            activeFireworks.removeIf(FireworkInstance::isFaded);
+            this.activeFireworks.removeIf(FireworkInstance::isFaded);
 
             printFrame(firstFrame);
             firstFrame = false;
@@ -130,29 +123,26 @@ public class FireworksAnimation {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     System.err.println("Animación interrumpida.");
-                    break; 
+                    break;
                 }
             }
 
-            // Exit condition: all fireworks launched and faded, and a good portion of duration passed
-            if (fireworksLaunched >= numberOfFireworks && activeFireworks.isEmpty() &&
+            if (fireworksLaunched >= numberOfFireworks && this.activeFireworks.isEmpty() &&
                 (System.currentTimeMillis() - startTime) > totalDurationMillis * 0.75) {
                 break;
             }
         }
-        // Cleanup: Clear the animation area
-        if (firstFrame) { // If animation didn't even start (e.g., duration too short)
-             System.out.println(ANSI_RESET); // Just reset color
+
+        if (firstFrame) {
+             System.out.println(this.ansiReset);
         } else {
-            System.out.print(String.format("\033[%dA\033[0J", this.height)); // Move up and clear
-            // System.out.println(winnerMessage); // REMOVED
-            for(int i=0; i<3;i++) System.out.println(); // Some spacing after
+            System.out.print(String.format("\033[%dA\033[0J", this.height));
+            System.out.println();
         }
-        System.out.print(ANSI_RESET); // Ensure color is reset
+        System.out.print(this.ansiReset);
     }
 
-    // METHOD MOVED HERE
-    // Helper to set a character in the frame buffer
+    // Establece pixel en buffer.
     private void setPixel(int x, int y, String coloredChar) {
         if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
             this.frameBuffer[y][x] = coloredChar;
@@ -166,39 +156,38 @@ public class FireworksAnimation {
         boolean exploded;
         int explosionStep;
         int maxExplosionSteps;
-        int trailLength = 2; 
-        String color; 
+        int trailLength = 2;
+        String color;
         char rocketChar;
         long creationTimeMillis;
         long timeToExplodeMillis;
 
+        // Crea instancia de fuego artificial.
         FireworkInstance() {
-            this.currentX = (int) (width * 0.15 + random.nextDouble() * width * 0.7); // Launch from a range
-            this.currentY = height - 1; // Start from bottom
-            this.maxHeight = (int) (height * 0.1 + random.nextDouble() * height * 0.35); // Explode in upper part
+            this.currentX = (int) (FireworksAnimation.this.width * 0.15 + FireworksAnimation.this.random.nextDouble() * FireworksAnimation.this.width * 0.7);
+            this.currentY = FireworksAnimation.this.height - 1;
+            this.maxHeight = (int) (FireworksAnimation.this.height * 0.1 + FireworksAnimation.this.random.nextDouble() * FireworksAnimation.this.height * 0.35);
             this.exploded = false;
             this.explosionStep = 0;
-            this.maxExplosionSteps = 5 + random.nextInt(3); // Duration of explosion
-            this.color = getRandomColor(); 
-            this.rocketChar = (random.nextBoolean()) ? '^' : '|';
+            this.maxExplosionSteps = 5 + FireworksAnimation.this.random.nextInt(3);
+            this.color = FireworksAnimation.this.getRandomColor();
+            this.rocketChar = (FireworksAnimation.this.random.nextBoolean()) ? '^' : '|';
             this.creationTimeMillis = System.currentTimeMillis();
-            this.timeToExplodeMillis = 500 + random.nextInt(400); // Time rocket ascends
+            this.timeToExplodeMillis = 500 + FireworksAnimation.this.random.nextInt(400);
         }
 
+        // Actualiza y dibuja fuego.
         void updateAndDraw(FireworksAnimation parent) {
             if (!exploded) {
-                // Rocket ascending
                 if (currentY > maxHeight && (System.currentTimeMillis() - creationTimeMillis < timeToExplodeMillis)) {
-                    // Draw trail
                     for (int i = 1; i <= trailLength; i++) {
                         if (currentY + i < parent.height) {
-                            parent.setPixel(currentX, currentY + i, this.color + "." + ANSI_RESET);
+                            parent.setPixel(currentX, currentY + i, this.color + "." + parent.ansiReset);
                         }
                     }
-                    parent.setPixel(currentX, currentY, this.color + rocketChar + ANSI_RESET);
+                    parent.setPixel(currentX, currentY, this.color + rocketChar + parent.ansiReset);
                     currentY--;
                 } else {
-                    // Explode
                     exploded = true;
                     explosionX = currentX;
                     explosionY = currentY;
@@ -207,26 +196,26 @@ public class FireworksAnimation {
             }
 
             if (exploded && explosionStep <= maxExplosionSteps) {
-                // Draw explosion particles
-                int particlesThisStep = 5 + explosionStep * 2; 
+                int particlesThisStep = 5 + explosionStep;
+                int currentRadius = explosionStep * 2;
                 for (int i = 0; i < particlesThisStep; i++) {
-                    double angle = (2 * Math.PI / particlesThisStep) * i + (random.nextDouble() * 0.5 - 0.25); // Add some randomness to angle
-                    double radius = explosionStep * (1.0 + random.nextDouble() * 0.6); 
-                    double gravityEffect = 0.1 * explosionStep * explosionStep; // Particles fall a bit
-                    
-                    int px = explosionX + (int) Math.round(Math.cos(angle) * radius * 1.8); // Horizontal spread (1.8 for wider look)
-                    int py = explosionY + (int) Math.round(Math.sin(angle) * radius + gravityEffect);
+                    int offsetX = parent.random.nextInt(2 * currentRadius + 1) - currentRadius;
+                    int offsetY = parent.random.nextInt(2 * currentRadius + 1) - currentRadius;
+                    offsetY += explosionStep / 2; 
 
-                    if (random.nextDouble() > 0.1) { // Don't draw every potential particle for a sparser look
-                        parent.setPixel(px, py, parent.getRandomColor() + parent.getRandomParticleChar() + ANSI_RESET); // This call is now correct
+                    int px = explosionX + offsetX;
+                    int py = explosionY + offsetY;
+
+                    if (parent.random.nextDouble() > 0.2) {
+                        parent.setPixel(px, py, parent.getRandomColor() + parent.getRandomParticleChar() + parent.ansiReset);
                     }
                 }
                 explosionStep++;
             }
         }
 
+        // Verifica si fuego se desvaneció.
         boolean isFaded() {
-            // Firework is done after explosion finishes + a couple of steps for particles to clear
             return exploded && explosionStep > maxExplosionSteps + 2;
         }
     }

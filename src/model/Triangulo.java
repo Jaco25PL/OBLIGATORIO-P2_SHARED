@@ -2,19 +2,17 @@
  * Autores: [Matías Piedra 354007], [Joaquin Piedra 304804] 
  */
 
- package model;
+package model;
 
-// import model.Punto;
-// import model.Jugador;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Triangulo {
 
-    private final Punto punto1;
-    private final Punto punto2;
-    private final Punto punto3;
+    private Punto punto1;
+    private Punto punto2;
+    private Punto punto3;
     private Jugador jugadorGanador; 
     private boolean isWhitePlayer; // true if the winner is the white player
 
@@ -23,9 +21,20 @@ public class Triangulo {
         if (p1 == null || p2 == null || p3 == null) {
             throw new NullPointerException("Los puntos de un triángulo no pueden ser nulos.");
         }
-        this.punto1 = p1;
-        this.punto2 = p2;
-        this.punto3 = p3;
+        if (p1.equals(p2) || p1.equals(p3) || p2.equals(p3)) {
+            throw new IllegalArgumentException("Puntos deben ser distintos.");
+        }
+        // Ordenar puntos para consistencia en equals
+        Punto[] puntos = {p1, p2, p3};
+        Arrays.sort(puntos, (pt1, pt2) -> {
+            if (pt1.getFila() != pt2.getFila()) {
+                return Integer.compare(pt1.getFila(), pt2.getFila());
+            }
+            return Character.compare(pt1.getColumna(), pt2.getColumna());
+        });
+        this.punto1 = puntos[0];
+        this.punto2 = puntos[1];
+        this.punto3 = puntos[2];
         this.jugadorGanador = null; 
     }
 
@@ -80,10 +89,10 @@ public class Triangulo {
         if (o == null || getClass() != o.getClass()) return false;
         Triangulo otro = (Triangulo) o;
 
-        Set<Punto> misPuntos = new HashSet<>(Arrays.asList(this.punto1, this.punto2, this.punto3));
-        Set<Punto> otrosPuntos = new HashSet<>(Arrays.asList(otro.punto1, otro.punto2, otro.punto3));
-
-        return misPuntos.equals(otrosPuntos);
+        // Compara los puntos ordenados
+        return this.punto1.equals(otro.punto1) &&
+               this.punto2.equals(otro.punto2) &&
+               this.punto3.equals(otro.punto3);
     }
 
     // genera código hash.
@@ -96,15 +105,8 @@ public class Triangulo {
     // devuelve representación textual.
     @Override
     public String toString() {
-        String ganadorStr;
-        if (jugadorGanador != null) {
-            ganadorStr = "ganado por [" + jugadorGanador.getNombre() + "]";
-        } else {
-            ganadorStr = "(No ganado)";
-        }
-        return "Triángulo en [" + punto1.toString() +
-               ", " + punto2.toString() +
-               ", " + punto3.toString() +
-               "] " + ganadorStr;
+        String ganadorStr = (jugadorGanador != null) ?
+                "ganado por [" + jugadorGanador.getNombre() + "]" : "(No ganado)";
+        return "Triángulo [" + punto1 + ", " + punto2 + ", " + punto3 + "] " + ganadorStr;
     }
 }

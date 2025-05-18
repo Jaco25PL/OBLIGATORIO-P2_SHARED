@@ -7,17 +7,17 @@ package model;
 public class Direccion {
     private final char codigo; // Made final for immutability, a common practice
 
-    // Constructor: crea una nueva dirección.
+    // Crea nueva dirección.
     public Direccion(char codigo) {
         this.codigo = Character.toUpperCase(codigo);
     }
 
-    // obtiene el código de la dirección.
+    // Obtiene código de dirección.
     public char getCodigo() {
         return codigo;
     }
 
-    // compara esta dirección con otra.
+    // Compara esta dirección con otra.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -32,7 +32,7 @@ public class Direccion {
         return Character.hashCode(codigo);
     }
 
-    // devuelve representación textual de dirección.
+    // Representación textual de dirección.
     @Override
     public String toString() {
         return "Direccion[" + codigo + "]";

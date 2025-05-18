@@ -26,7 +26,7 @@ public class Partida {
     private List<Tablero> historialDeTablerosSnapshots; // NUEVO: para guardar los estados del tablero
     private int maxHistorialSnapshots; // NUEVO: cuántos tableros guardar según configuración
 
-    // crea una nueva partida.
+    // Crea una nueva partida.
     public Partida(Jugador jugadorBlanco, Jugador jugadorNegro, ConfiguracionPartida configuracion) {
         this.jugadorBlanco = jugadorBlanco;
         this.jugadorNegro = jugadorNegro;
@@ -51,7 +51,7 @@ public class Partida {
         }
     }
 
-    // NUEVO: Getter para el historial de tableros
+    // Obtiene historial de tableros.
     public List<Tablero> getHistorialDeTablerosSnapshots() {
         return new ArrayList<>(this.historialDeTablerosSnapshots); // Devuelve una copia para evitar modificaciones externas
     }
@@ -106,7 +106,7 @@ public class Partida {
         return movimientosRealizados;
     }
 
-    // procesa la jugada ingresada.
+    // Procesa la jugada ingresada.
     public boolean procesarJugada(String inputJugada) {
         if (partidaTerminada) {
             System.out.println("La partida ya ha terminado.");
@@ -117,153 +117,116 @@ public class Partida {
 
         if ("X".equals(inputUpper)) {
             abandonarPartida(turnoActual);
-            // No se guarda snapshot aquí porque la partida termina. El estado final se muestra por determinarGanadorFinal.
-            return true; 
+            return true;
         }
 
         if ("H".equals(inputUpper)) {
             mostrarHistorial();
-            return false; // No es un movimiento de juego, no cambia el tablero, no se guarda snapshot
+            return false;
         }
-        
+
         ParsedJugada jugada = parsearJugadaInput(inputUpper);
         if (jugada == null) {
-            System.out.println("Formato de jugada incorrecto. Reingrese.");
-            return true; // No es un movimiento válido, no cambia el tablero
+            System.out.println("Formato de jugada incorrecto.");
+            return true;
         }
 
         if (!validarLogicaJugada(jugada)) {
-            // Mensaje de error ya impreso por validarLogicaJugada
-            return true; // No es un movimiento válido, no cambia el tablero
+            return true;
         }
 
-        // Lógica para colocar la banda y actualizar el tablero (this.tablero)
-        Punto puntoActual = jugada.getOrigen(); // Ya validado y obtenido del tablero
-        List<Banda> segmentosColocadosEstaJugada = new ArrayList<>();
+        Punto puntoActualLoop = jugada.getOrigen();
 
         for (int i = 0; i < jugada.getLargo(); i++) {
-            Punto puntoSiguiente = calcularPuntoSiguiente(puntoActual, jugada.getDireccion());
+            Punto puntoSiguiente = calcularPuntoSiguiente(puntoActualLoop, jugada.getDireccion());
 
             if (puntoSiguiente == null || tablero.getPunto(puntoSiguiente.getColumna(), puntoSiguiente.getFila()) == null) {
-                
-                System.out.println("Error: Movimiento fuera del tablero o a punto inválido en el segmento " + (i+1));
-                
-                
-                return true; 
+                System.out.println("Error: Movimiento fuera de tablero.");
+                return true;
             }
-            
-            
-            Punto pA = tablero.getPunto(puntoActual.getColumna(), puntoActual.getFila());
+
+            Punto pA = tablero.getPunto(puntoActualLoop.getColumna(), puntoActualLoop.getFila());
             Punto pB = tablero.getPunto(puntoSiguiente.getColumna(), puntoSiguiente.getFila());
 
             if (pA == null || pB == null || !Tablero.sonPuntosAdyacentes(pA, pB)) {
-                System.out.println("Error: Segmento inválido " + pA + " a " + pB + ". No son adyacentes o no existen.");
-                return true; 
+                System.out.println("Error: Segmento inválido.");
+                return true;
             }
 
             Banda nuevoSegmento = new Banda(pA, pB, turnoActual);
-            
-            
-
             tablero.addBanda(nuevoSegmento);
-            segmentosColocadosEstaJugada.add(nuevoSegmento);
 
-            int nuevosTriangulos = detectarNuevosTriangulosConBanda(nuevoSegmento); // Changed method name here
+            int nuevosTriangulos = detectarNuevosTriangulosConBanda(nuevoSegmento);
             if (turnoActual.equals(jugadorBlanco)) {
                 triangulosJugadorBlanco += nuevosTriangulos;
             } else {
                 triangulosJugadorNegro += nuevosTriangulos;
             }
-
-
-            puntoActual = puntoSiguiente; 
+            puntoActualLoop = puntoSiguiente;
         }
-        
-        // Incrementar el contador de bandas colocadas en la partida DESPUÉS de que todos los segmentos de la banda actual se hayan colocado exitosamente.
-        this.bandasColocadasEnPartida++;
 
-        historialJugadas.add(inputJugada); 
+        this.bandasColocadasEnPartida++;
+        historialJugadas.add(inputJugada);
         movimientosRealizados++;
 
-        // Guardar snapshot del tablero DESPUÉS de una jugada válida y procesada
         if (this.maxHistorialSnapshots > 0) {
-            this.historialDeTablerosSnapshots.add(new Tablero(this.tablero)); // Añade una COPIA del estado actual
-            // Mantener el tamaño del historial
+            this.historialDeTablerosSnapshots.add(new Tablero(this.tablero));
             while (this.historialDeTablerosSnapshots.size() > this.maxHistorialSnapshots) {
-                this.historialDeTablerosSnapshots.remove(0); // Elimina el más antiguo
+                this.historialDeTablerosSnapshots.remove(0);
             }
         }
 
-        if (verificarFinPartida()) { // This now only sets the flag and returns true if game ended
-            determinarGanadorFinal(); // This method now handles all final printing in order
+        if (verificarFinPartida()) {
+            determinarGanadorFinal();
         } else {
             cambiarTurno();
         }
-        return true; 
+        return true;
     }
 
-    // Replace the detectarNuevosTriangulosConBanda method with this implementation:
+    // Detecta nuevos triángulos formados.
     private int detectarNuevosTriangulosConBanda(Banda banda) {
         int nuevos = 0;
         Punto a = banda.getPuntoA();
         Punto b = banda.getPuntoB();
         Jugador jugador = banda.getJugador();
-        
+
         List<Punto> adyacentesA = tablero.getPuntosAdyacentes(a);
         List<Punto> adyacentesB = tablero.getPuntosAdyacentes(b);
-        
-        // System.out.println("Checking for triangles with new banda: " + a + " to " + b);
 
         for (Punto c : adyacentesA) {
-            if (adyacentesB.contains(c)) { // 'c' es un punto común adyacente a 'a' y 'b'
-                // System.out.println("Found common adjacent point: " + c);
-                
+            if (adyacentesB.contains(c)) {
                 Banda acBanda = null;
                 Banda bcBanda = null;
-                
+
                 for (Banda other : tablero.getBandas()) {
-                    // Check for banda a-c
                     if ((other.getPuntoA().equals(a) && other.getPuntoB().equals(c)) ||
                         (other.getPuntoA().equals(c) && other.getPuntoB().equals(a))) {
                         acBanda = other;
                     }
-                    
-                    // Check for banda b-c
                     if ((other.getPuntoA().equals(b) && other.getPuntoB().equals(c)) ||
                         (other.getPuntoA().equals(c) && other.getPuntoB().equals(b))) {
                         bcBanda = other;
                     }
                 }
-                
+
                 if (acBanda != null && bcBanda != null) {
-                    // System.out.println("Found triangle with bands: " + banda + ", " + acBanda + ", " + bcBanda);
-                    
                     Triangulo nuevoTriangulo = new Triangulo(a, b, c);
                     boolean yaExiste = false;
                     for (Triangulo existente : tablero.getTriangulosGanados()) {
                         if (existente.equals(nuevoTriangulo)) {
                             yaExiste = true;
-                            // System.out.println("Triangle already exists in won triangles");
                             break;
                         }
                     }
-                    
                     if (!yaExiste) {
                         nuevoTriangulo.setJugadorGanador(jugador, jugador.equals(jugadorBlanco));
                         tablero.addTrianguloGanado(nuevoTriangulo);
-                        // System.out.println("New triangle added for player " + jugador.getNombre() + 
-                        //                   (jugador.equals(jugadorBlanco) ? " (White)" : " (Black)"));
                         nuevos++;
                     }
-                } else {
-                    // System.out.println("Missing bands for triangle. AC band: " + 
-                    //                   (acBanda != null ? "found" : "missing") + 
-                    //                   ", BC band: " + (bcBanda != null ? "found" : "missing"));
                 }
             }
         }
-        
-        // System.out.println("Found " + nuevos + " new triangles");
         return nuevos;
     }
 

@@ -3,9 +3,6 @@
 
 package model;
 
-// import model.Punto;
-// import model.Jugador;
-// import model.Banda;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -13,11 +10,11 @@ import java.util.List;
 
 public class Tablero {
 
-    private final List<Punto> puntosDisponibles;
-    private final List<Banda> bandasColocadas;
-    private final List<Triangulo> triangulosGanados;
+    private List<Punto> puntosDisponibles;
+    private List<Banda> bandasColocadas;
+    private List<Triangulo> triangulosGanados;
 
-    // Constructor
+    // Constructor del tablero.
     public Tablero() {
         this.puntosDisponibles = new ArrayList<>();
         this.bandasColocadas = new ArrayList<>();
@@ -25,23 +22,18 @@ public class Tablero {
         this.inicializarPuntosDelTablero();
     }
 
-    // NUEVO: Constructor de copia
+    // Constructor de copia.
     public Tablero(Tablero original) {
-        this(); // Llama al constructor por defecto para inicializar puntos y listas vacías
-
-        // Copia las bandas. Asumimos que los objetos Banda son inmutables una vez creados.
-        // Si fueran mutables, necesitarías crear nuevas instancias de Banda aquí.
+        this();
         for (Banda banda : original.bandasColocadas) {
             this.bandasColocadas.add(banda);
         }
-
-        // Copia los triángulos ganados. Similar a las bandas.
         for (Triangulo triangulo : original.triangulosGanados) {
             this.triangulosGanados.add(triangulo);
         }
     }
 
-    // Inicializa los puntos
+    // Inicializa los puntos.
     private void inicializarPuntosDelTablero() {
         agregarPuntosFila(1, new char[]{'D', 'F', 'H', 'J'});
         agregarPuntosFila(2, new char[]{'C', 'E', 'G', 'I', 'K'});
@@ -52,14 +44,14 @@ public class Tablero {
         agregarPuntosFila(7, new char[]{'D', 'F', 'H', 'J'});
     }
 
-    // Agrega puntos a una fila
+    // Agrega puntos a fila.
     private void agregarPuntosFila(int fila, char[] columnas) {
         for (char columna : columnas) {
             this.puntosDisponibles.add(new Punto(fila, columna));
         }
     }
 
-    // Devuelve punto por coordenadas
+    // Devuelve punto por coordenadas.
     public Punto getPunto(char columna, int fila) {
         for (Punto p : this.puntosDisponibles) {
             if (p.getFila() == fila && p.getColumna() == Character.toUpperCase(columna)) {
@@ -68,8 +60,8 @@ public class Tablero {
         }
         return null;
     }
-    
-    // Devuelve punto por string
+
+    // Devuelve punto por string.
     public Punto getPunto(String coordenada) {
         if (coordenada == null || coordenada.length() < 2) {
             return null;
@@ -83,31 +75,31 @@ public class Tablero {
         }
     }
 
-    // Agrega banda al tablero
+    // Agrega banda al tablero.
     public void addBanda(Banda banda) {
         if (banda != null) {
             this.bandasColocadas.add(banda);
         }
     }
 
-    // Devuelve todas las bandas
+    // Devuelve todas las bandas.
     public List<Banda> getBandas() {
         return this.bandasColocadas;
     }
 
-    // Agrega triángulo ganado
+    // Agrega triángulo ganado.
     public void addTrianguloGanado(Triangulo triangulo) {
         if (triangulo != null) {
             this.triangulosGanados.add(triangulo);
         }
     }
 
-    // Devuelve triángulos ganados
+    // Devuelve triángulos ganados.
     public List<Triangulo> getTriangulosGanados() {
         return this.triangulosGanados;
     }
 
-    // Triángulos ganados por jugador
+    // Triángulos ganados por jugador.
     public List<Triangulo> getTriangulosGanadosPor(Jugador jugador) {
         List<Triangulo> triangulosDelJugador = new ArrayList<>();
         if (jugador != null) {
@@ -119,8 +111,8 @@ public class Tablero {
         }
         return triangulosDelJugador;
     }
-    
-    // Bandas que usan un punto
+
+    // Bandas que usan punto.
     public List<Banda> getBandasQueUsanPunto(Punto punto) {
         List<Banda> bandasDelPunto = new ArrayList<>();
         if (punto != null) {
@@ -133,7 +125,7 @@ public class Tablero {
         return bandasDelPunto;
     }
 
-    // Verifica si puntos adyacentes
+    // Verifica si puntos adyacentes.
     public static boolean sonPuntosAdyacentes(Punto p1, Punto p2) {
         if (p1 == null || p2 == null || p1.equals(p2)) {
             return false;
@@ -147,7 +139,7 @@ public class Tablero {
         return mismaFilaAdy || filaAdyacenteAdy;
     }
 
-    // Devuelve puntos adyacentes
+    // Devuelve puntos adyacentes.
     public List<Punto> getPuntosAdyacentes(Punto punto) {
         List<Punto> adyacentes = new ArrayList<>();
         if (punto == null) {
@@ -161,13 +153,10 @@ public class Tablero {
         return adyacentes;
     }
 
-    // Representación textual del tablero
+    // Representación textual del tablero.
     @Override
     public String toString() {
         final int numFilasOriginal = 7;
-        // if (numFilasOriginal <= 0) {
-        //     return "";
-        // }
         final int numDisplayFilas = numFilasOriginal * 2 - 1;
         final int numColsLetras = 13;
         final int anchoDisplay = numColsLetras * 2 -1;
@@ -182,22 +171,22 @@ public class Tablero {
 
         for (Punto p : this.puntosDisponibles) {
             int displayFila = (p.getFila() - 1) * 2;
-            int displayCol = (p.getColumna() - 'A') * 2; 
+            int displayCol = (p.getColumna() - 'A') * 2;
             if(displayFila >= 0 && displayFila < numDisplayFilas && displayCol >=0 && displayCol < anchoDisplay){
-                 displayGrid[displayFila][displayCol] = '*'; 
+                 displayGrid[displayFila][displayCol] = '*';
             }
         }
         
         for (Banda banda : this.bandasColocadas) {
-            Punto pA = banda.getPuntoA(); 
-            Punto pB = banda.getPuntoB(); 
+            Punto pA = banda.getPuntoA();
+            Punto pB = banda.getPuntoB();
 
             int origFilaA = pA.getFila() - 1;
             int displayColA = (pA.getColumna() - 'A') * 2;
             int displayColB = (pB.getColumna() - 'A') * 2;
             int targetBandCol = (displayColA + displayColB) / 2;
 
-            if (pA.getFila() == pB.getFila()) {
+            if (pA.getFila() == pB.getFila()) { // Banda horizontal
                 int targetBandRow = origFilaA * 2;
                 if (targetBandRow >= 0 && targetBandRow < numDisplayFilas &&
                     targetBandCol - 1 >= 0 && targetBandCol + 1 < anchoDisplay) {
@@ -205,7 +194,7 @@ public class Tablero {
                     displayGrid[targetBandRow][targetBandCol] = '-';
                     displayGrid[targetBandRow][targetBandCol + 1] = '-';
                 }
-            } else {
+            } else { // Banda diagonal
                 int targetBandRow = origFilaA * 2 + 1;
                 char bandChar = (pB.getColumna() < pA.getColumna()) ? '/' : '\\';
                 if (targetBandRow >= 0 && targetBandRow < numDisplayFilas &&
@@ -220,85 +209,52 @@ public class Tablero {
             Punto p2 = t.getPunto2();
             Punto p3 = t.getPunto3();
             
-            char simboloTri;
-            if (t.getJugadorGanador() != null) {
-                if (t.isWhitePlayer()) {
-                    simboloTri = '□';  // White square for white player
-                } else {
-                    simboloTri = '■';  // Black square for black player
-                }
-            } else {
-                simboloTri = '?'; // No debería ocurrir si la lógica es correcta
-            }
+            char simboloTri = t.isWhitePlayer() ? '□' : '■';
 
             Punto[] puntosDelTriangulo = {p1, p2, p3};
-            // Ordenar los puntos: primero por fila, luego por columna.
-            // Esto ayuda a identificar la orientación del triángulo (hacia arriba o hacia abajo).
             Arrays.sort(puntosDelTriangulo, Comparator.comparingInt(Punto::getFila)
                                               .thenComparingInt(Punto::getColumna));
 
-            Punto ptA = puntosDelTriangulo[0]; // El punto más arriba (o más a la izquierda si están en la misma fila)
-            Punto ptB = puntosDelTriangulo[1]; // Punto intermedio
-            Punto ptC = puntosDelTriangulo[2]; // El punto más abajo (o más a la derecha si están en la misma fila)
+            Punto ptA = puntosDelTriangulo[0];
+            Punto ptB = puntosDelTriangulo[1];
+            Punto ptC = puntosDelTriangulo[2];
 
             int symbolDisplayRow = -1;
             int symbolDisplayCol = -1;
 
-            // Verificar si es un triángulo que apunta hacia ARRIBA
-            // (ptA es el pico superior, ptB y ptC forman la base horizontal inferior)
-            if (ptA.getFila() < ptB.getFila() && 
-                ptB.getFila() == ptC.getFila() && 
-                ptC.getColumna() - ptB.getColumna() == 2 && // Base tiene ancho 2 (ej. F, H)
-                ptA.getColumna() == ptB.getColumna() + 1) {  // Pico está centrado sobre la base
-                
-                symbolDisplayRow = (ptA.getFila() - 1) * 2 + 1; // Fila impar debajo del pico
-                symbolDisplayCol = (ptA.getColumna() - 'A') * 2; // Columna par del pico
-            } 
-            // Verificar si es un triángulo que apunta hacia ABAJO
-            // (ptC es el pico inferior, ptA y ptB forman la base horizontal superior)
-            else if (ptC.getFila() > ptA.getFila() && 
-                     ptA.getFila() == ptB.getFila() &&
-                     ptB.getColumna() - ptA.getColumna() == 2 && // Base tiene ancho 2
-                     ptC.getColumna() == ptA.getColumna() + 1) {  // Pico está centrado bajo la base
-                
-                symbolDisplayRow = (ptC.getFila() - 1) * 2 - 1; // Fila impar encima del pico
-                symbolDisplayCol = (ptC.getColumna() - 'A') * 2; // Columna par del pico
+            if (ptA.getFila() < ptB.getFila() && ptB.getFila() == ptC.getFila() &&
+                ptC.getColumna() - ptB.getColumna() == 2 && ptA.getColumna() == ptB.getColumna() + 1) {
+                symbolDisplayRow = (ptA.getFila() - 1) * 2 + 1;
+                symbolDisplayCol = (ptA.getColumna() - 'A') * 2;
+            } else if (ptC.getFila() > ptA.getFila() && ptA.getFila() == ptB.getFila() &&
+                     ptB.getColumna() - ptA.getColumna() == 2 && ptC.getColumna() == ptA.getColumna() + 1) {
+                symbolDisplayRow = (ptC.getFila() - 1) * 2 - 1;
+                symbolDisplayCol = (ptC.getColumna() - 'A') * 2;
             }
 
             if (symbolDisplayRow != -1 && symbolDisplayCol != -1 &&
                 symbolDisplayRow >= 0 && symbolDisplayRow < numDisplayFilas &&
                 symbolDisplayCol >= 0 && symbolDisplayCol < anchoDisplay) {
-                
                 if (displayGrid[symbolDisplayRow][symbolDisplayCol] == ' ') {
                     displayGrid[symbolDisplayRow][symbolDisplayCol] = simboloTri;
-                } else {
-                    // Si el lugar calculado no está vacío (inesperado para triángulos unitarios bien formados),
-                    // se podría imprimir un error o intentar un fallback muy simple,
-                    // pero es preferible no dibujar si no se encuentra un buen lugar.
-                    // System.err.println("Advertencia: La celda para el símbolo del triángulo " + t + " no estaba vacía: (" + symbolDisplayRow + "," + symbolDisplayCol + ") contiene '" + displayGrid[symbolDisplayRow][symbolDisplayCol] + "'");
                 }
-            } else {
-                // Si no se pudo determinar la posición (triángulo no estándar o error de cálculo)
-                // System.err.println("Advertencia: No se pudo determinar la posición para el símbolo del triángulo: " + t);
             }
-        }    
+        }
 
         StringBuilder sb = new StringBuilder();
-        // sb.append("  ");
         for (char c = 'A'; c < 'A' + numColsLetras; c++) {
             sb.append(c);
             if (c < 'A' + numColsLetras - 1) {
                 sb.append(" ");
             }
         }
-        sb.append("\n");
-        sb.append("\n");
+        sb.append("\n\n");
         
         for (int i = 0; i < numDisplayFilas; i++) {
             for (int j = 0; j < anchoDisplay; j++) {
                 sb.append(displayGrid[i][j]);
             }
-            sb.append("\n"); 
+            sb.append("\n");
         }
         return sb.toString();
     }
