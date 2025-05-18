@@ -427,30 +427,20 @@ public class Partida {
     }
 
     // determina ganador final.
-    // MODIFIED: This method now prints the final board, then the reason, then the summary.
+    // MODIFIED: Shows fireworks (if winner), then final board, then reason/summary.
     private void determinarGanadorFinal() {
         if (!partidaTerminada) return; 
 
-        // 1. Print the final board state
-        System.out.println("\n" + this.tablero.toString() + "\n");
-
-        // 2. Print the reason for natural game end (if not abandoned)
-        if (jugadorAbandono == null) {
-            String reason = getNaturalEndReason();
-            if (reason != null) {
-                System.out.println(reason);
-            }
-        }
-        // If abandoned, "El jugador X ha abandonado..." is printed by abandonarPartida()
-
+        // Determine winner/loser first, as this decides if fireworks are shown
         Jugador determinedWinner = null;
         Jugador determinedLoser = null;
 
         if (jugadorAbandono != null) { 
             determinedWinner = (jugadorAbandono.equals(jugadorBlanco)) ? jugadorNegro : jugadorBlanco;
             determinedLoser = jugadorAbandono;
-            // "Partida finalizada. Ganador: ..." will be printed below.
+            // The message "El jugador X ha abandonado la partida." is printed by abandonarPartida()
         } else { 
+            // Natural game end (not abandoned)
             if (triangulosJugadorBlanco > triangulosJugadorNegro) {
                 determinedWinner = jugadorBlanco;
                 determinedLoser = jugadorNegro;
@@ -458,12 +448,29 @@ public class Partida {
                 determinedWinner = jugadorNegro;
                 determinedLoser = jugadorBlanco;
             } else {
-                // Empate
+                // Empate, determinedWinner remains null
             }
         }
         
-        this.ganador = determinedWinner; 
-        
+        this.ganador = determinedWinner; // Set the class field 'ganador'
+
+        // 1. Show fireworks IF there is a winner (BEFORE board and other messages)
+        if (this.ganador != null) {
+            mostrarAnimacionFuegosArtificiales(); 
+        }
+
+        // 2. Print the final board state
+        System.out.println("\n" + this.tablero.toString() + "\n");
+
+        // 3. Print the reason for natural game end (if not abandoned)
+        if (jugadorAbandono == null) {
+            String reason = getNaturalEndReason();
+            if (reason != null) {
+                System.out.println(reason);
+            }
+        }
+
+        // 4. Announce winner/draw and update player stats
         if (this.ganador != null) {
             System.out.println("Partida finalizada. Ganador: " + this.ganador.getNombre());
             this.ganador.incrementarPartidasGanadas();
@@ -472,23 +479,22 @@ public class Partida {
             if (determinedLoser != null) {
                 determinedLoser.resetRachaActual();
             }
-        } else if (jugadorAbandono == null) { // Empate natural
+            System.out.println("¡Felicidades " + this.ganador.getNombre() + "!");
+        } else if (jugadorAbandono == null) { // Empate natural (not abandoned)
             System.out.println("Partida finalizada. Es un empate!");
             if (jugadorBlanco != null) jugadorBlanco.resetRachaActual();
             if (jugadorNegro != null) jugadorNegro.resetRachaActual();
+            System.out.println("¡Ha sido un empate!"); 
         }
-        // For abandonment, the "Partida finalizada. Ganador: ..." is handled above.
+        // Note: If it was an abandonment, "El jugador X ha abandonado..." was already printed.
+        // The "Partida finalizada. Ganador: ..." will still print correctly for the winner by abandonment.
 
+        // 5. Print final scores
         System.out.println("--- Puntuación Final ---");
         System.out.println(jugadorBlanco.getNombre() + " (Blanco): " + triangulosJugadorBlanco + " triángulos.");
         System.out.println(jugadorNegro.getNombre() + " (Negro): " + triangulosJugadorNegro + " triángulos.");
-
-        if (this.ganador != null) {
-            System.out.println("¡Felicidades " + this.ganador.getNombre() + "!");
-            mostrarAnimacionFuegosArtificiales(); // Call the new animation method
-        } else if (jugadorAbandono == null) { // Empate natural
-            System.out.println("¡Ha sido un empate!");
-        }
+        
+        // 6. Print end of game marker
         System.out.println("--- Fin de la Partida ---");
     }
 
