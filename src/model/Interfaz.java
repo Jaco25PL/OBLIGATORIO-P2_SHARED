@@ -253,12 +253,13 @@ public class Interfaz {
 
     // inicia y juega partida.
     private void jugarPartida() {
-        System.out.println("\n--- COMIENZO DE PARTIDA ---");
 
         if (jugadoresRegistrados.size() < 2) {
             System.out.println("No hay suficientes jugadores registrados (se necesitan al menos 2).");
             return;
         }
+
+        System.out.println("\n--- COMIENZO DE PARTIDA ---");
 
         ArrayList<Jugador> jugadoresOrdenados = new ArrayList<>(jugadoresRegistrados);
         Collections.sort(jugadoresOrdenados, Comparator.comparing(Jugador::getNombre, String.CASE_INSENSITIVE_ORDER));
@@ -325,7 +326,7 @@ public class Interfaz {
             System.out.println(jugadorBlanco.getNombre() + " (Blancas □): " + partidaActual.getTriangulosJugadorBlanco() + " triángulos.");
             System.out.println(jugadorNegro.getNombre() + " (Negras ■): " + partidaActual.getTriangulosJugadorNegro() + " triángulos.");
             
-            int bandasColocadas = partidaActual.getBandasColocadasEnPartida(); // Use the new getter
+            int bandasColocadas = partidaActual.getBandasColocadasEnPartida(); 
             System.out.println("Bandas colocadas: " + bandasColocadas + "/" + configuracionActual.getCantidadBandasFin());
             
             System.out.println("Turno de: " + partidaActual.getTurnoActual().getNombre() + 
@@ -336,7 +337,6 @@ public class Interfaz {
             String entrada = scanner.nextLine().trim(); 
 
             partidaActual.procesarJugada(entrada);
-            
         }
         
         System.out.println("\n--- Fin de la Partida ---");

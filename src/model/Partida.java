@@ -103,7 +103,6 @@ public class Partida {
             mostrarHistorial();
             return false; 
         }
-
         
         ParsedJugada jugada = parsearJugadaInput(inputUpper);
         if (jugada == null) {
@@ -111,12 +110,9 @@ public class Partida {
             return true; 
         }
 
-        
         if (!validarLogicaJugada(jugada)) {
-            
             return true; 
         }
-        
         
         Punto puntoActual = jugada.getOrigen();
         List<Banda> segmentosColocadosEstaJugada = new ArrayList<>();
@@ -253,9 +249,6 @@ public class Partida {
         if (Character.isDigit(input.charAt(1))) { 
             if (input.length() < 3) return null; 
             try {
-                
-                
-                
                 fila = Integer.parseInt(input.substring(1, 2));
                 dirIndex = 2;
             } catch (NumberFormatException e) {
@@ -273,24 +266,23 @@ public class Partida {
             try {
                 largo = Integer.parseInt(input.substring(dirIndex + 1));
             } catch (NumberFormatException e) {
-                
-                
-                
                 System.out.println("Largo de banda inválido.");
                 return null;
             }
         } else {
-            
-            
-            
             if (configuracion.isLargoBandasVariable()) {
                  largo = 4; 
             }
-            
         }
 
-
-        Punto origen = new Punto(fila, colChar); 
+        Punto origen = null; // MODIFICADO: Inicializar a null
+        try {
+            origen = new Punto(fila, colChar); 
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error en la jugada: " + e.getMessage()); // MODIFICADO: Mostrar mensaje de error
+            return null; // MODIFICADO: Retornar null si el punto es inválido
+        }
+        
         return new ParsedJugada(origen, dir, largo);
     }
 
