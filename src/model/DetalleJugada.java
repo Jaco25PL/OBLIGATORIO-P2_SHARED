@@ -1,7 +1,5 @@
 package model;
 
-// Originally from Partida.java
-
 public class DetalleJugada {
     private Punto origen;
     private Direccion direccion;
