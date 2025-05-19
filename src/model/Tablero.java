@@ -34,7 +34,7 @@ public class Tablero {
     }
 
     // Inicializa los puntos.
-    private void inicializarPuntosDelTablero() {
+    public void inicializarPuntosDelTablero() {
         agregarPuntosFila(1, new char[]{'D', 'F', 'H', 'J'});
         agregarPuntosFila(2, new char[]{'C', 'E', 'G', 'I', 'K'});
         agregarPuntosFila(3, new char[]{'B', 'D', 'F', 'H', 'J', 'L'});
@@ -45,7 +45,7 @@ public class Tablero {
     }
 
     // Agrega puntos a fila.
-    private void agregarPuntosFila(int fila, char[] columnas) {
+    public void agregarPuntosFila(int fila, char[] columnas) {
         for (char columna : columnas) {
             this.puntosDisponibles.add(new Punto(fila, columna));
         }

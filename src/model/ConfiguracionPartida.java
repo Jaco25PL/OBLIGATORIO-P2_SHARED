@@ -47,21 +47,21 @@ public class ConfiguracionPartida {
     }
 
     // Valida largo de banda.
-    private void validarLargoFijo(int largo) {
+    public void validarLargoFijo(int largo) {
         if (largo < minLargoBanda || largo > maxLargoBanda) {
             throw new IllegalArgumentException("Largo banda entre " + minLargoBanda + " y " + maxLargoBanda + ".");
         }
     }
 
     // Valida cantidad bandas fin.
-    private void validarCantidadBandasFin(int cantidad) {
+    public void validarCantidadBandasFin(int cantidad) {
         if (cantidad < minBandasFin) {
             throw new IllegalArgumentException("Cantidad bandas fin al menos " + minBandasFin + ".");
         }
     }
 
     // Valida tableros a mostrar.
-    private void validarCantidadTablerosMostrar(int cantidad) {
+    public void validarCantidadTablerosMostrar(int cantidad) {
         if (cantidad < minTablerosMostrar || cantidad > maxTablerosMostrar) {
             throw new IllegalArgumentException("Tableros mostrar entre " + minTablerosMostrar + " y " + maxTablerosMostrar + ".");
         }

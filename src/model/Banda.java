@@ -33,7 +33,7 @@ public class Banda {
     }
 
     // verifica si puntos son adyacentes.
-    private boolean sonAdyacentes(Punto p1, Punto p2) {
+    public boolean sonAdyacentes(Punto p1, Punto p2) {
         int diffFilas = Math.abs(p1.getFila() - p2.getFila());
         int diffCols = Math.abs(p1.getColumna() - p2.getColumna());
         boolean adyacentes = (diffFilas == 0 && diffCols == 2) || (diffFilas == 1 && diffCols == 1);
