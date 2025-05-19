@@ -75,13 +75,29 @@ public class FireworksAnimation {
     }
 
     // Obtiene color aleatorio.
-    private String getRandomColor() {
+    String getRandomColor() {
         return this.fireworkColors[this.random.nextInt(this.fireworkColors.length)];
     }
 
     // Obtiene partícula aleatoria.
-    private char getRandomParticleChar() {
+    char getRandomParticleChar() {
         return this.particleChars[this.random.nextInt(this.particleChars.length)];
+    }
+
+    Random getRandom() {
+        return this.random;
+    }
+
+    int getWidth() {
+        return this.width;
+    }
+
+    int getHeight() {
+        return this.height;
+    }
+
+    String getAnsiReset() {
+        return this.ansiReset;
     }
 
     // Inicia la animación de fuegos.
@@ -108,13 +124,13 @@ public class FireworksAnimation {
             if (fireworksLaunched < numberOfFireworks) {
                 long expectedLaunchTime = startTime + (fireworksLaunched * (totalDurationMillis / Math.max(1, numberOfFireworks)));
                 if (loopStartTime >= expectedLaunchTime) {
-                    this.activeFireworks.add(new FireworkInstance());
+                    this.activeFireworks.add(new FireworkInstance(this));
                     fireworksLaunched++;
                 }
             }
 
             for (FireworkInstance fw : this.activeFireworks) {
-                fw.updateAndDraw(this);
+                fw.updateAndDraw();
             }
             this.activeFireworks.removeIf(FireworkInstance::isFaded);
 
@@ -155,82 +171,9 @@ public class FireworksAnimation {
     }
 
     // Establece pixel en buffer.
-    private void setPixel(int x, int y, String coloredChar) {
+    void setPixel(int x, int y, String coloredChar) {
         if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
             this.frameBuffer[y][x] = coloredChar;
-        }
-    }
-
-    private class FireworkInstance {
-        int currentX, currentY;
-        int explosionX, explosionY;
-        int maxHeight;
-        boolean exploded;
-        int explosionStep;
-        int maxExplosionSteps;
-        int trailLength = 2;
-        String color;
-        char rocketChar;
-        long creationTimeMillis;
-        long timeToExplodeMillis;
-
-        // Crea instancia de fuego artificial.
-        FireworkInstance() {
-            this.currentX = (int) (FireworksAnimation.this.width * 0.15 + 
-                FireworksAnimation.this.random.nextDouble() * FireworksAnimation.this.width * 0.7);
-            this.maxHeight = (int) (FireworksAnimation.this.height * 0.1 + 
-                FireworksAnimation.this.random.nextDouble() * FireworksAnimation.this.height * 0.35);
-            this.currentY = FireworksAnimation.this.height - 1;
-            this.exploded = false;
-            this.explosionStep = 0;
-            this.maxExplosionSteps = 5 + FireworksAnimation.this.random.nextInt(3);
-            this.color = FireworksAnimation.this.getRandomColor();
-            this.rocketChar = (FireworksAnimation.this.random.nextBoolean()) ? '^' : '|';
-            this.creationTimeMillis = System.currentTimeMillis();
-            this.timeToExplodeMillis = 500 + FireworksAnimation.this.random.nextInt(400);
-        }
-
-        // Actualiza y dibuja fuego.
-        void updateAndDraw(FireworksAnimation parent) {
-            if (!exploded) {
-                if (currentY > maxHeight && (System.currentTimeMillis() - creationTimeMillis < timeToExplodeMillis)) {
-                    for (int i = 1; i <= trailLength; i++) {
-                        if (currentY + i < parent.height) {
-                            parent.setPixel(currentX, currentY + i, this.color + "." + parent.ansiReset);
-                        }
-                    }
-                    parent.setPixel(currentX, currentY, this.color + rocketChar + parent.ansiReset);
-                    currentY--;
-                } else {
-                    exploded = true;
-                    explosionX = currentX;
-                    explosionY = currentY;
-                    explosionStep = 1;
-                }
-            }
-
-            if (exploded && explosionStep <= maxExplosionSteps) {
-                int particlesThisStep = 5 + explosionStep;
-                int currentRadius = explosionStep * 2;
-                for (int i = 0; i < particlesThisStep; i++) {
-                    int offsetX = parent.random.nextInt(2 * currentRadius + 1) - currentRadius;
-                    int offsetY = parent.random.nextInt(2 * currentRadius + 1) - currentRadius;
-                    offsetY += explosionStep / 2; 
-
-                    int px = explosionX + offsetX;
-                    int py = explosionY + offsetY;
-
-                    if (parent.random.nextDouble() > 0.2) {
-                        parent.setPixel(px, py, parent.getRandomColor() + parent.getRandomParticleChar() + parent.ansiReset);
-                    }
-                }
-                explosionStep++;
-            }
-        }
-
-        // Verifica si fuego se desvaneció.
-        boolean isFaded() {
-            return exploded && explosionStep > maxExplosionSteps + 2;
         }
     }
 }
