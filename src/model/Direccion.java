@@ -5,7 +5,7 @@
 package model;
 
 public class Direccion {
-    private final char codigo; // Made final for immutability, a common practice
+    private char codigo;
 
     // Crea nueva dirección.
     public Direccion(char codigo) {
@@ -30,10 +30,8 @@ public class Direccion {
         return sonIguales;
     }
 
-    // genera código hash para dirección.
-    @Override
-    public int hashCode() {
-        return Character.hashCode(codigo);
+    public int generarValorNumerico() {
+        return (int) codigo;
     }
 
     // Representación textual de dirección.

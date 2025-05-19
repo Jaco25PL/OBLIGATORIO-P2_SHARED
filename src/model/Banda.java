@@ -6,10 +6,9 @@ package model;
 
 public class Banda {
 
-    // Atributos finales para inmutabilidad
-    private final Punto puntoA;
-    private final Punto puntoB;
-    private final Jugador jugador;
+    private Punto puntoA;
+    private Punto puntoB;
+    private Jugador jugador;
 
     // crea una nueva banda.
     public Banda(Punto pA, Punto pB, Jugador jugador) {
