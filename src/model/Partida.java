@@ -353,12 +353,39 @@ public class Partida {
         }
 
         if (esValida && configuracion.isRequiereContacto() && movimientosRealizados > 0) {
-            boolean contactoEncontrado = false;
+            boolean contactoEstablecido = false;
+            // Check if the origin point itself has contact
             if (origenTablero != null && !tablero.getBandasQueUsanPunto(origenTablero).isEmpty()) {
-                contactoEncontrado = true;
+                contactoEstablecido = true;
             }
-            if (!contactoEncontrado) {
-                System.out.println("Jugada inválida: Se requiere contacto con una banda existente y el punto de origen no lo tiene.");
+
+            // If origin point doesn't have contact, check all subsequent points of the proposed band
+            if (!contactoEstablecido) {
+                Punto puntoActualEnVerificacion = origenTablero;
+                for (int i = 0; i < jugada.getLargo(); i++) {
+                    Punto puntoSiguienteEnVerificacion = calcularPuntoSiguiente(puntoActualEnVerificacion, jugada.getDireccion());
+
+                    // Ensure the next point is valid and on the board
+                    if (puntoSiguienteEnVerificacion == null || tablero.getPunto(puntoSiguienteEnVerificacion.getColumna(), puntoSiguienteEnVerificacion.getFila()) == null) {
+                        // Band would go off-board here, so it cannot make further contact along this path.
+                        // The move will likely be invalidated by the later path check anyway.
+                        break;
+                    }
+
+                    if (!tablero.getBandasQueUsanPunto(puntoSiguienteEnVerificacion).isEmpty()) {
+                        contactoEstablecido = true;
+                        break; // Contact found
+                    }
+                    puntoActualEnVerificacion = puntoSiguienteEnVerificacion;
+                }
+            }
+
+            if (!contactoEstablecido) {
+                String jugadaPropuestaStr = jugada.getOrigen().coordenadaCompleta() +
+                                          jugada.getDireccion().getCodigo() +
+                                          Integer.toString(jugada.getLargo());
+                System.out.println("Jugada inválida: Se requiere contacto con una banda existente y ningún punto de la nueva banda propuesta (" +
+                                   jugadaPropuestaStr + ") lo tiene.");
                 esValida = false;
             }
         }

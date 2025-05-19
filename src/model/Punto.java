@@ -68,4 +68,8 @@ public class Punto {
         result = 31 * result + (int) columna; 
         return result; 
     }
+
+    public String coordenadaCompleta() {
+        return "" + Character.toUpperCase(this.columna) + this.fila;
+    }
 }
