@@ -6,11 +6,11 @@ package model;
 
 public class ConfiguracionPartida {
 
-    private final int maxTablerosMostrar = 4;
-    private final int minTablerosMostrar = 1;
-    private final int minLargoBanda = 1;
-    private final int maxLargoBanda = 4;
-    private final int minBandasFin = 1;
+    private int maxTablerosMostrar = 4;
+    private int minTablerosMostrar = 1;
+    private int minLargoBanda = 1;
+    private int maxLargoBanda = 4;
+    private int minBandasFin = 1;
 
     private boolean requiereContacto;
     private boolean largoBandasVariable;

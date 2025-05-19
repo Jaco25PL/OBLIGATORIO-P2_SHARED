@@ -26,7 +26,7 @@ public class Partida {
     private List<Tablero> historialDeTablerosSnapshots;
     private int maxHistorialSnapshots;
 
-    // Creates a new game instance.
+    // Crea nueva instancia de partida.
     public Partida(Jugador jugadorBlanco, Jugador jugadorNegro, ConfiguracionPartida configuracion) {
         this.jugadorBlanco = jugadorBlanco;
         this.jugadorNegro = jugadorNegro;
@@ -51,62 +51,62 @@ public class Partida {
         }
     }
 
-    // Gets board history snapshots.
+    // Obtiene historial de tableros 
     public List<Tablero> getHistorialDeTablerosSnapshots() {
         return new ArrayList<>(this.historialDeTablerosSnapshots);
     }
 
-    // Gets current player's turn.
+    // Obtiene jugador del turno actual.
     public Jugador getTurnoActual() {
         return turnoActual;
     }
 
-    // Gets the current game board.
+    // Obtiene el tablero de juego actual.
     public Tablero getTablero() {
         return tablero;
     }
 
-    // Gets white player's triangles.
+    // Obtiene triángulos del jugador blanco.
     public int getTriangulosJugadorBlanco() {
         return triangulosJugadorBlanco;
     }
 
-    // Gets black player's triangles.
+    // Obtiene triángulos del jugador negro.
     public int getTriangulosJugadorNegro() {
         return triangulosJugadorNegro;
     }
 
-    // Gets list of moves made.
+    // Obtiene la lista de jugadas realizadas.
     public List<String> getHistorialJugadas() {
         return new ArrayList<>(historialJugadas);
     }
 
-    // Checks if game has ended.
+    // Verifica si la partida ha terminado.
     public boolean isPartidaTerminada() {
         return partidaTerminada;
     }
 
-    // Gets the game winner.
+    // Obtiene el ganador de la partida.
     public Jugador getGanador() {
         return ganador;
     }
 
-    // Gets player who forfeited.
+    // Obtiene jugador que abandonó partida.
     public Jugador getJugadorAbandono() {
         return jugadorAbandono;
     }
 
-    // Gets bands placed in game.
+    // Obtiene bandas colocadas en partida.
     public int getBandasColocadasEnPartida() {
         return bandasColocadasEnPartida;
     }
 
-    // Gets total moves made.
+    // Obtiene total de movimientos realizados.
     public int getMovimientosRealizados() {
         return movimientosRealizados;
     }
 
-    // Processes player's move input.
+    // Procesa la jugada ingresada por jugador.
     public boolean procesarJugada(String inputJugada) {
         boolean continuarProcesando = true;
         boolean jugadaValidaYProcesada = true;
@@ -122,11 +122,10 @@ public class Partida {
 
             if ("X".equals(inputUpper)) {
                 abandonarPartida(turnoActual);
-                // jugadaValidaYProcesada remains true
                 continuarProcesando = false;
             } else if ("H".equals(inputUpper)) {
                 mostrarHistorial();
-                jugadaValidaYProcesada = false; // History shown, but not a game move processed
+                jugadaValidaYProcesada = false; 
                 continuarProcesando = false;
             }
         }
@@ -135,17 +134,16 @@ public class Partida {
             ParsedJugada jugada = parsearJugadaInput(inputJugada.toUpperCase());
             if (jugada == null) {
                 System.out.println("Formato de jugada incorrecto.");
-                // jugadaValidaYProcesada remains true (as per original logic, it returned true)
                 continuarProcesando = false;
             } else {
                 if (!validarLogicaJugada(jugada)) {
-                    // jugadaValidaYProcesada remains true (as per original logic, it returned true)
                     continuarProcesando = false;
                 } else {
                     Punto puntoActualLoop = jugada.getOrigen();
                     boolean errorEnLoop = false;
+                    int segmentosProcesados = 0;
 
-                    for (int i = 0; i < jugada.getLargo() && !errorEnLoop; i++) {
+                    while (segmentosProcesados < jugada.getLargo() && !errorEnLoop) {
                         Punto puntoSiguiente = calcularPuntoSiguiente(puntoActualLoop, jugada.getDireccion());
 
                         if (puntoSiguiente == null || tablero.getPunto(puntoSiguiente.getColumna(), puntoSiguiente.getFila()) == null) {
@@ -171,12 +169,10 @@ public class Partida {
                                 puntoActualLoop = puntoSiguiente;
                             }
                         }
+                        segmentosProcesados++;
                     }
 
-                    if (errorEnLoop) {
-                        // jugadaValidaYProcesada remains true (as per original logic, it returned true)
-                        // No further processing for this move
-                    } else {
+                    if (!errorEnLoop) {
                         this.bandasColocadasEnPartida++;
                         historialJugadas.add(inputJugada);
                         movimientosRealizados++;
@@ -193,7 +189,6 @@ public class Partida {
                         } else {
                             cambiarTurno();
                         }
-                        // jugadaValidaYProcesada remains true
                     }
                 }
             }
@@ -201,7 +196,7 @@ public class Partida {
         return jugadaValidaYProcesada;
     }
 
-    // Detects new triangles from band.
+    // Detecta nuevos triángulos con banda.
     private int detectarNuevosTriangulosConBanda(Banda banda) {
         int nuevos = 0;
         Punto a = banda.getPuntoA();
@@ -230,12 +225,15 @@ public class Partida {
                 if (acBanda != null && bcBanda != null) {
                     Triangulo nuevoTriangulo = new Triangulo(a, b, c);
                     boolean yaExiste = false;
-                    for (Triangulo existente : tablero.getTriangulosGanados()) {
-                        if (existente.equals(nuevoTriangulo)) {
+                    int k = 0;
+                    List<Triangulo> triangulosExistentes = tablero.getTriangulosGanados();
+                    while(k < triangulosExistentes.size() && !yaExiste) {
+                        if (triangulosExistentes.get(k).equals(nuevoTriangulo)) {
                             yaExiste = true;
-                            break;
                         }
+                        k++;
                     }
+                    
                     if (!yaExiste) {
                         nuevoTriangulo.setJugadorGanador(jugador, jugador.equals(jugadorBlanco));
                         tablero.addTrianguloGanado(nuevoTriangulo);
@@ -247,7 +245,7 @@ public class Partida {
         return nuevos;
     }
 
-    // Parses player move string.
+    // Analiza entrada de jugada del jugador.
     private ParsedJugada parsearJugadaInput(String input) {
         ParsedJugada jugadaParseada = null;
         boolean errorParseo = false;
@@ -258,10 +256,10 @@ public class Partida {
 
         if (!errorParseo) {
             char colChar = input.charAt(0);
-            int fila = 0; // Initialize
-            Direccion dir = null; // Initialize
+            int fila = 0; 
+            Direccion dir = null; 
             int largo = configuracion.isLargoBandasVariable() ? 0 : configuracion.getLargoFijo();
-            int dirIndex = 0; // Initialize
+            int dirIndex = 0; 
 
             if (Character.isDigit(input.charAt(1))) {
                 if (input.length() < 3) {
@@ -305,7 +303,7 @@ public class Partida {
                     }
                 } else {
                     if (configuracion.isLargoBandasVariable()) {
-                        largo = 4; // Default if not specified and variable
+                        largo = 4; 
                     }
                 }
             }
@@ -317,14 +315,13 @@ public class Partida {
                     jugadaParseada = new ParsedJugada(origen, dir, largo);
                 } catch (IllegalArgumentException e) {
                     System.out.println("Error en la jugada: " + e.getMessage());
-                    // jugadaParseada remains null
                 }
             }
         }
         return jugadaParseada;
     }
 
-    // Validates move logic.
+    // Valida la lógica de la jugada.
     private boolean validarLogicaJugada(ParsedJugada jugada) {
         boolean esValida = true;
 
@@ -335,7 +332,7 @@ public class Partida {
         }
 
         if (esValida) {
-            jugada.setOrigen(origenTablero); // Update jugada with the actual point from board
+            jugada.setOrigen(origenTablero); 
 
             if (configuracion.isLargoBandasVariable()) {
                 if (jugada.getLargo() < this.configuracion.getMinLargoBanda() || jugada.getLargo() > this.configuracion.getMaxLargoBanda()) {
@@ -343,7 +340,7 @@ public class Partida {
                                        this.configuracion.getMinLargoBanda() + " y " + this.configuracion.getMaxLargoBanda() + ".");
                     esValida = false;
                 }
-            } else { // Largo fijo
+            } else { 
                 if (jugada.getLargo() != configuracion.getLargoFijo()) {
                     System.out.println("Largo de banda debe ser fijo de " + configuracion.getLargoFijo() +
                                        ", se intentó " + jugada.getLargo());
@@ -354,29 +351,26 @@ public class Partida {
 
         if (esValida && configuracion.isRequiereContacto() && movimientosRealizados > 0) {
             boolean contactoEstablecido = false;
-            // Check if the origin point itself has contact
             if (origenTablero != null && !tablero.getBandasQueUsanPunto(origenTablero).isEmpty()) {
                 contactoEstablecido = true;
             }
 
-            // If origin point doesn't have contact, check all subsequent points of the proposed band
             if (!contactoEstablecido) {
                 Punto puntoActualEnVerificacion = origenTablero;
-                for (int i = 0; i < jugada.getLargo(); i++) {
+                boolean continuarBusquedaContacto = true;
+                for (int i = 0; i < jugada.getLargo() && continuarBusquedaContacto; i++) {
                     Punto puntoSiguienteEnVerificacion = calcularPuntoSiguiente(puntoActualEnVerificacion, jugada.getDireccion());
 
-                    // Ensure the next point is valid and on the board
                     if (puntoSiguienteEnVerificacion == null || tablero.getPunto(puntoSiguienteEnVerificacion.getColumna(), puntoSiguienteEnVerificacion.getFila()) == null) {
-                        // Band would go off-board here, so it cannot make further contact along this path.
-                        // The move will likely be invalidated by the later path check anyway.
-                        break;
+                        continuarBusquedaContacto = false; 
+                    } else {
+                        if (!tablero.getBandasQueUsanPunto(puntoSiguienteEnVerificacion).isEmpty()) {
+                            contactoEstablecido = true;
+                            continuarBusquedaContacto = false; 
+                        } else {
+                           puntoActualEnVerificacion = puntoSiguienteEnVerificacion;
+                        }
                     }
-
-                    if (!tablero.getBandasQueUsanPunto(puntoSiguienteEnVerificacion).isEmpty()) {
-                        contactoEstablecido = true;
-                        break; // Contact found
-                    }
-                    puntoActualEnVerificacion = puntoSiguienteEnVerificacion;
                 }
             }
 
@@ -392,28 +386,28 @@ public class Partida {
 
         if (esValida) {
             Punto current = origenTablero;
-            for (int i = 0; i < jugada.getLargo(); i++) {
+            for (int i = 0; i < jugada.getLargo() && esValida; i++) {
                 Punto next = calcularPuntoSiguiente(current, jugada.getDireccion());
                 if (next == null || tablero.getPunto(next.getColumna(), next.getFila()) == null) {
                     System.out.println("La banda se sale del tablero o pasa por un punto inválido en el segmento " + (i + 1) + ".");
                     esValida = false;
-                    break;
-                }
-                Punto currentFromBoard = tablero.getPunto(current.getColumna(), current.getFila());
-                Punto nextFromBoard = tablero.getPunto(next.getColumna(), next.getFila());
+                } else {
+                    Punto currentFromBoard = tablero.getPunto(current.getColumna(), current.getFila());
+                    Punto nextFromBoard = tablero.getPunto(next.getColumna(), next.getFila());
 
-                if (currentFromBoard == null || nextFromBoard == null || !Tablero.sonPuntosAdyacentes(currentFromBoard, nextFromBoard)) {
-                    System.out.println("Segmento " + (i + 1) + " (" + current + " a " + next + ") no conecta puntos adyacentes.");
-                    esValida = false;
-                    break;
+                    if (currentFromBoard == null || nextFromBoard == null || !Tablero.sonPuntosAdyacentes(currentFromBoard, nextFromBoard)) {
+                        System.out.println("Segmento " + (i + 1) + " (" + current.coordenadaCompleta() + " a " + next.coordenadaCompleta() + ") no conecta puntos adyacentes.");
+                        esValida = false;
+                    } else {
+                        current = next;
+                    }
                 }
-                current = next;
             }
         }
         return esValida;
     }
 
-    // Calculates next point from direction.
+    // Calcula el siguiente punto dada dirección.
     private Punto calcularPuntoSiguiente(Punto actual, Direccion dir) {
         Punto puntoSiguiente = null;
         if (actual != null && dir != null) {
@@ -462,7 +456,7 @@ public class Partida {
         return puntoSiguiente;
     }
 
-    // Switches to the next player.
+    // Cambia el turno al siguiente jugador.
     private void cambiarTurno() {
         if (turnoActual.equals(jugadorBlanco)) {
             turnoActual = jugadorNegro;
@@ -472,14 +466,14 @@ public class Partida {
         System.out.println("Turno del jugador: " + turnoActual.getNombre());
     }
 
-    // Checks game end conditions.
+    // Verifica condiciones de fin de partida.
     private boolean verificarFinPartida() {
         boolean fin = false;
         if (this.bandasColocadasEnPartida >= configuracion.getCantidadBandasFin()) {
             partidaTerminada = true;
             fin = true;
         }
-        if (!fin) { // Check only if not already ended by band limit
+        if (!fin) { 
             int totalTriangulosFormados = this.triangulosJugadorBlanco + this.triangulosJugadorNegro;
             if (totalTriangulosFormados >= this.maxTriangulosPosibles) {
                 partidaTerminada = true;
@@ -489,12 +483,12 @@ public class Partida {
         return fin;
     }
 
-    // Gets reason for natural end.
+    // Obtiene razón de fin natural partida.
     private String getNaturalEndReason() {
         String reason = null;
         if (this.bandasColocadasEnPartida >= configuracion.getCantidadBandasFin()) {
             reason = "Partida terminada: Se alcanzó el límite de bandas colocadas.";
-        } else { // Check only if not ended by band limit
+        } else { 
             int totalTriangulosFormados = this.triangulosJugadorBlanco + this.triangulosJugadorNegro;
             if (totalTriangulosFormados >= this.maxTriangulosPosibles) {
                 reason = "Partida terminada: Se formaron todos los triángulos posibles en el tablero.";
@@ -503,74 +497,73 @@ public class Partida {
         return reason;
     }
 
-    // Determines and announces game winner.
+    // Determina y anuncia el ganador final.
     private void determinarGanadorFinal() {
-        if (!partidaTerminada) {
-             // Early exit for void method is fine
-            return;
-        }
+        boolean procederConDeterminacion = partidaTerminada;
 
-        Jugador determinedWinner = null;
-        Jugador determinedLoser = null;
+        if (procederConDeterminacion) {
+            Jugador determinedWinner = null;
+            Jugador determinedLoser = null;
 
-        if (jugadorAbandono != null) {
-            determinedWinner = (jugadorAbandono.equals(jugadorBlanco)) ? jugadorNegro : jugadorBlanco;
-            determinedLoser = jugadorAbandono;
-        } else {
-            if (triangulosJugadorBlanco > triangulosJugadorNegro) {
-                determinedWinner = jugadorBlanco;
-                determinedLoser = jugadorNegro;
-            } else if (triangulosJugadorNegro > triangulosJugadorBlanco) {
-                determinedWinner = jugadorNegro;
-                determinedLoser = jugadorBlanco;
+            if (jugadorAbandono != null) {
+                determinedWinner = (jugadorAbandono.equals(jugadorBlanco)) ? jugadorNegro : jugadorBlanco;
+                determinedLoser = jugadorAbandono;
+            } else {
+                if (triangulosJugadorBlanco > triangulosJugadorNegro) {
+                    determinedWinner = jugadorBlanco;
+                    determinedLoser = jugadorNegro;
+                } else if (triangulosJugadorNegro > triangulosJugadorBlanco) {
+                    determinedWinner = jugadorNegro;
+                    determinedLoser = jugadorBlanco;
+                }
             }
-        }
 
-        this.ganador = determinedWinner;
+            this.ganador = determinedWinner;
 
-        if (this.ganador != null) {
-            mostrarAnimacionFuegosArtificiales();
-        }
-
-        System.out.println("\n" + this.tablero.toString() + "\n");
-
-        if (jugadorAbandono == null) {
-            String reason = getNaturalEndReason();
-            if (reason != null) {
-                System.out.println(reason);
+            if (this.ganador != null) {
+                mostrarAnimacionFuegosArtificiales();
             }
-        }
 
-        if (this.ganador != null) {
-            System.out.println("Partida finalizada. Ganador: " + this.ganador.getNombre());
-            this.ganador.incrementarPartidasGanadas();
-            this.ganador.incrementarRachaActual();
-            this.ganador.actualizarRachaMaxima();
-            if (determinedLoser != null) {
-                determinedLoser.resetRachaActual();
+            System.out.println("\n" + this.tablero.toString() + "\n");
+
+            if (jugadorAbandono == null) {
+                String reason = getNaturalEndReason();
+                if (reason != null) {
+                    System.out.println(reason);
+                }
             }
-            System.out.println("¡Felicidades " + this.ganador.getNombre() + "!");
-        } else if (jugadorAbandono == null) {
-            System.out.println("Partida finalizada. Es un empate!");
-            if (jugadorBlanco != null) jugadorBlanco.resetRachaActual();
-            if (jugadorNegro != null) jugadorNegro.resetRachaActual();
-            System.out.println("¡Ha sido un empate!");
+
+            if (this.ganador != null) {
+                System.out.println("Partida finalizada. Ganador: " + this.ganador.getNombre());
+                this.ganador.incrementarPartidasGanadas();
+                this.ganador.incrementarRachaActual();
+                this.ganador.actualizarRachaMaxima();
+                if (determinedLoser != null) {
+                    determinedLoser.resetRachaActual();
+                }
+                System.out.println("¡Felicidades " + this.ganador.getNombre() + "!");
+            } else if (jugadorAbandono == null) {
+                System.out.println("Partida finalizada. Es un empate!");
+                if (jugadorBlanco != null) jugadorBlanco.resetRachaActual();
+                if (jugadorNegro != null) jugadorNegro.resetRachaActual();
+                System.out.println("¡Ha sido un empate!");
+            }
+
+            System.out.println("--- Puntuación Final ---");
+            System.out.println(jugadorBlanco.getNombre() + " (Blanco): " + triangulosJugadorBlanco + " triángulos.");
+            System.out.println(jugadorNegro.getNombre() + " (Negro): " + triangulosJugadorNegro + " triángulos.");
+
+            System.out.println("--- Fin de la Partida ---");
         }
-
-        System.out.println("--- Puntuación Final ---");
-        System.out.println(jugadorBlanco.getNombre() + " (Blanco): " + triangulosJugadorBlanco + " triángulos.");
-        System.out.println(jugadorNegro.getNombre() + " (Negro): " + triangulosJugadorNegro + " triángulos.");
-
-        System.out.println("--- Fin de la Partida ---");
     }
 
-    // Displays fireworks animation for winner.
+    // Muestra animación de fuegos artificiales.
     private void mostrarAnimacionFuegosArtificiales() {
         FireworksAnimation animator = new FireworksAnimation(70, 20);
         animator.play(5, 6000);
     }
 
-    // Handles player forfeiting the game.
+    // Maneja abandono de partida por jugador.
     private void abandonarPartida(Jugador jugadorQueAbandona) {
         this.partidaTerminada = true;
         this.jugadorAbandono = jugadorQueAbandona;
@@ -578,7 +571,7 @@ public class Partida {
         determinarGanadorFinal();
     }
 
-    // Displays history of moves.
+    // Muestra el historial de jugadas.
     private void mostrarHistorial() {
         System.out.println("--- Historial de Jugadas ---");
         if (historialJugadas.isEmpty()) {
@@ -595,35 +588,34 @@ public class Partida {
         System.out.println("----------------------------");
     }
 
-    // Represents a parsed player move.
     private static class ParsedJugada {
         private Punto origen;
         private Direccion direccion;
         private int largo;
 
-        // Creates parsed move data object.
+        // Crea objeto de datos jugada parseada.
         public ParsedJugada(Punto origen, Direccion direccion, int largo) {
             this.origen = origen;
             this.direccion = direccion;
             this.largo = largo;
         }
 
-        // Gets move origin point.
+        // Obtiene punto de origen del movimiento.
         public Punto getOrigen() {
             return origen;
         }
 
-        // Sets move origin point.
+        // Establece punto de origen del movimiento.
         public void setOrigen(Punto origen) {
             this.origen = origen;
         }
 
-        // Gets move direction.
+        // Obtiene dirección del movimiento.
         public Direccion getDireccion() {
             return direccion;
         }
 
-        // Gets move band length.
+        // Obtiene largo de banda del movimiento.
         public int getLargo() {
             return largo;
         }

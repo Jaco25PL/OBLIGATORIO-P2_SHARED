@@ -61,14 +61,7 @@ public class Punto {
         return sonIguales;
     }
 
-    // genera código hash.
-    @Override
-    public int hashCode() { 
-        int result = fila; 
-        result = 31 * result + (int) columna; 
-        return result; 
-    }
-
+    // Devuelve coordenada completa formateada.
     public String coordenadaCompleta() {
         return "" + Character.toUpperCase(this.columna) + this.fila;
     }

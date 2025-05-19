@@ -121,10 +121,11 @@ public class Interfaz {
                 System.out.println("El nombre no puede estar vacío.");
             } else {
                 boolean nombreExiste = false;
-                for (Jugador j : jugadoresRegistrados) {
+
+                for (int i = 0; i < jugadoresRegistrados.size() && !nombreExiste; i++) {
+                    Jugador j = jugadoresRegistrados.get(i);
                     if (j.getNombre().equalsIgnoreCase(nombre)) {
                         nombreExiste = true;
-                        break;
                     }
                 }
                 if (!nombreExiste) {
@@ -229,7 +230,7 @@ public class Interfaz {
                                      configuracionActual.getMaxLargoBanda() + ") (Actual: " + configuracionActual.getLargoFijo() + "): ");
                     try {
                         int inputVal = scanner.nextInt();
-                        scanner.nextLine(); // Consume newline
+                        scanner.nextLine(); 
                         if (inputVal >= configuracionActual.getMinLargoBanda() && inputVal <= configuracionActual.getMaxLargoBanda()) {
                             tempLargoFijo = inputVal;
                             inputValido = true;
@@ -239,7 +240,7 @@ public class Interfaz {
                         }
                     } catch (InputMismatchException e) {
                         System.out.println("Entrada inválida. Ingrese un número.");
-                        scanner.nextLine(); // Consume invalid input
+                        scanner.nextLine();
                     }
                 }
             }
@@ -250,7 +251,7 @@ public class Interfaz {
                                  configuracionActual.getMinBandasFin() + ") (Actual: " + configuracionActual.getCantidadBandasFin() + "): ");
                 try {
                     int inputVal = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline
+                    scanner.nextLine(); 
                     if (inputVal >= configuracionActual.getMinBandasFin()) {
                         tempCantBandasFin = inputVal;
                         inputValido = true;
@@ -259,7 +260,7 @@ public class Interfaz {
                     }
                 } catch (InputMismatchException e) {
                     System.out.println("Entrada inválida. Ingrese un número.");
-                    scanner.nextLine(); // Consume invalid input
+                    scanner.nextLine(); 
                 }
             }
 
@@ -269,7 +270,7 @@ public class Interfaz {
                                  configuracionActual.getMaxTablerosMostrar() + ") (Actual: " + configuracionActual.getCantidadTablerosMostrar() + "): ");
                 try {
                     int inputVal = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline
+                    scanner.nextLine(); 
                     if (inputVal >= configuracionActual.getMinTablerosMostrar() && inputVal <= configuracionActual.getMaxTablerosMostrar()) {
                         tempCantTableros = inputVal;
                         inputValido = true;
@@ -279,7 +280,7 @@ public class Interfaz {
                     }
                 } catch (InputMismatchException e) {
                     System.out.println("Entrada inválida. Ingrese un número.");
-                    scanner.nextLine(); // Consume invalid input
+                    scanner.nextLine(); 
                 }
             }
 

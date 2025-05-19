@@ -55,10 +55,12 @@ public class Tablero {
     public Punto getPunto(char columna, int fila) {
         Punto puntoEncontrado = null;
         char colMayuscula = Character.toUpperCase(columna);
-        for (Punto p : this.puntosDisponibles) {
+        boolean encontrado = false; 
+        for (int i = 0; i < this.puntosDisponibles.size() && !encontrado; i++) {
+            Punto p = this.puntosDisponibles.get(i);
             if (p.getFila() == fila && p.getColumna() == colMayuscula) {
                 puntoEncontrado = p;
-                break;
+                encontrado = true;
             }
         }
         return puntoEncontrado;
@@ -73,7 +75,7 @@ public class Tablero {
                 int fil = Integer.parseInt(coordenada.substring(1));
                 puntoResultado = getPunto(col, fil);
             } catch (NumberFormatException e) {
-                // puntoResultado permanece null si hay error de formato
+                
             }
         }
         return puntoResultado;
@@ -245,21 +247,21 @@ public class Tablero {
             }
         }
 
-        StringBuilder resultBuilder = new StringBuilder();
+        String resultString = "";
         for (char c = 'A'; c < 'A' + numColsLetras; c++) {
-            resultBuilder.append(c); 
+            resultString += c; 
             if (c < 'A' + numColsLetras - 1) {
-                resultBuilder.append(" ");
+                resultString += " ";
             }
         }
-        resultBuilder.append("\n\n");
+        resultString += "\n\n";
         
         for (int i = 0; i < numDisplayFilas; i++) {
             for (int j = 0; j < anchoDisplay; j++) {
-                resultBuilder.append(displayGrid[i][j]); 
+                resultString += displayGrid[i][j]; 
             }
-            resultBuilder.append("\n");
+            resultString += "\n";
         }
-        return resultBuilder.toString();
+        return resultString;
     }
 }

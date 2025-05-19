@@ -9,7 +9,7 @@ public class Banda {
     // Atributos finales para inmutabilidad
     private final Punto puntoA;
     private final Punto puntoB;
-    private final Jugador jugador; // Jugador que colocó la banda
+    private final Jugador jugador;
 
     // crea una nueva banda.
     public Banda(Punto pA, Punto pB, Jugador jugador) {
@@ -67,14 +67,6 @@ public class Banda {
             sonIguales = puntoA.equals(otraBanda.puntoA) && puntoB.equals(otraBanda.puntoB);
         }
         return sonIguales;
-    }
-
-    //genera código hash para banda.
-    @Override
-    public int hashCode() {
-        int result = puntoA.hashCode();
-        result = 31 * result + puntoB.hashCode();
-        return result;
     }
 
     // devuelve representación textual de banda.

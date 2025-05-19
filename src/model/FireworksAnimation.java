@@ -59,18 +59,18 @@ public class FireworksAnimation {
 
     // Imprime fotograma en consola.
     private void printFrame(boolean firstFrame) {
-        StringBuilder sb = new StringBuilder();
+        String frameString = "";
         if (!firstFrame) {
             System.out.print(String.format("\033[%dA\033[0J", this.height));
         }
 
         for (int i = 0; i < this.height; i++) {
             for (int j = 0; j < this.width; j++) {
-                sb.append(this.frameBuffer[i][j]);
+                frameString += this.frameBuffer[i][j];
             }
-            sb.append("\n");
+            frameString += "\n";
         }
-        System.out.print(sb.toString());
+        System.out.print(frameString);
         System.out.flush();
     }
 
@@ -91,10 +91,17 @@ public class FireworksAnimation {
         int fireworksLaunched = 0;
 
         this.activeFireworks.clear();
-        System.out.println();
+        System.out.println(); 
 
         boolean firstFrame = true;
-        while (System.currentTimeMillis() - startTime < totalDurationMillis) {
+        boolean animationShouldContinue = true; 
+
+        while (animationShouldContinue) {
+            if (System.currentTimeMillis() - startTime >= totalDurationMillis) {
+                animationShouldContinue = false;
+                continue; 
+            }
+
             long loopStartTime = System.currentTimeMillis();
             clearFrameBuffer();
 
@@ -123,13 +130,18 @@ public class FireworksAnimation {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     System.err.println("Animación interrumpida.");
-                    break;
+                    animationShouldContinue = false; 
                 }
             }
 
-            if (fireworksLaunched >= numberOfFireworks && this.activeFireworks.isEmpty() &&
+            if (!animationShouldContinue) {
+                continue;
+            }
+
+            if (fireworksLaunched >= numberOfFireworks &&
+                this.activeFireworks.isEmpty() &&
                 (System.currentTimeMillis() - startTime) > totalDurationMillis * 0.75) {
-                break;
+                animationShouldContinue = false; 
             }
         }
 
