@@ -131,7 +131,7 @@ public class Partida {
         }
 
         if (continuarProcesando) {
-            ParsedJugada jugada = parsearJugadaInput(inputJugada.toUpperCase());
+            DetalleJugada jugada = parsearJugadaInput(inputJugada.toUpperCase());
             if (jugada == null) {
                 System.out.println("Formato de jugada incorrecto.");
                 continuarProcesando = false;
@@ -246,8 +246,8 @@ public class Partida {
     }
 
     // Analiza entrada de jugada del jugador.
-    private ParsedJugada parsearJugadaInput(String input) {
-        ParsedJugada jugadaParseada = null;
+    private DetalleJugada parsearJugadaInput(String input) {
+        DetalleJugada jugadaParseada = null;
         boolean errorParseo = false;
 
         if (input == null || input.length() < 2) {
@@ -312,7 +312,7 @@ public class Partida {
                 Punto origen = null;
                 try {
                     origen = new Punto(fila, colChar);
-                    jugadaParseada = new ParsedJugada(origen, dir, largo);
+                    jugadaParseada = new DetalleJugada(origen, dir, largo);
                 } catch (IllegalArgumentException e) {
                     System.out.println("Error en la jugada: " + e.getMessage());
                 }
@@ -322,7 +322,7 @@ public class Partida {
     }
 
     // Valida la lógica de la jugada.
-    private boolean validarLogicaJugada(ParsedJugada jugada) {
+    private boolean validarLogicaJugada(DetalleJugada jugada) {
         boolean esValida = true;
 
         Punto origenTablero = tablero.getPunto(jugada.getOrigen().getColumna(), jugada.getOrigen().getFila());
@@ -586,38 +586,5 @@ public class Partida {
         }
         System.out.println("");
         System.out.println("----------------------------");
-    }
-
-    private static class ParsedJugada {
-        private Punto origen;
-        private Direccion direccion;
-        private int largo;
-
-        // Crea objeto de datos jugada parseada.
-        public ParsedJugada(Punto origen, Direccion direccion, int largo) {
-            this.origen = origen;
-            this.direccion = direccion;
-            this.largo = largo;
-        }
-
-        // Obtiene punto de origen del movimiento.
-        public Punto getOrigen() {
-            return origen;
-        }
-
-        // Establece punto de origen del movimiento.
-        public void setOrigen(Punto origen) {
-            this.origen = origen;
-        }
-
-        // Obtiene dirección del movimiento.
-        public Direccion getDireccion() {
-            return direccion;
-        }
-
-        // Obtiene largo de banda del movimiento.
-        public int getLargo() {
-            return largo;
-        }
     }
 }
